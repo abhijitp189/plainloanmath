@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "plainloanmath",
+  "compatibility_date": "2026-08-03",
+
+  // No "main" key on purpose. There is no Worker script — this is a
+  // pure static site. Cloudflare serves the files straight from the
+  // edge, never invokes a Worker, and never bills for CPU.
+  "assets": {
+    // Next.js `output: "export"` writes the finished site to /out
+    "directory": "./out",
+
+    // Serves out/404.html with a real 404 status.
+    // Never use "single-page-application" here — it would return a
+    // 200 for missing pages and pollute the search index with soft 404s.
+    "not_found_handling": "404-page",
+
+    // Matches next.config.ts trailingSlash: true
+    "html_handling": "auto-trailing-slash"
+  }
+}

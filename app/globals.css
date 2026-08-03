@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens — brief v2 §7. Single source of truth for colour. */
+:root {
+  --ink: #0E1A24;
+  --ink-2: #1C2E3D;
+  --paper: #F4F6F8;
+  --surface: #FFFFFF;
+  --accent: #0D6E5F;
+  --accent-dk: #0A574B;
+  --accent-soft: #E6F2EF;
+  --brass: #9C6A12;
+  --brass-soft: #FBF3E2;
+  --before: #8A98A5;
+  --muted: #5B6B79;
+  --line: #DFE5EA;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* All figures use tabular numerals so columns of numbers line up.
+   This is the site's typographic personality and it costs 0 KB. */
+.num {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
