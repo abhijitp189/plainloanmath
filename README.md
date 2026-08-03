@@ -1,4 +1,4 @@
-# Plain Loan Math
+# Plain Loan Math.
 
 Static site. Next.js App Router with `output: "export"`, TypeScript, Tailwind CSS.
 Built and deployed by Cloudflare Pages. See `plain-loan-math-technical-brief-v1.md`.
