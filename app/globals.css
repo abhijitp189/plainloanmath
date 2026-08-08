@@ -2,8 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design tokens — brief v2 §7. Single source of truth for colour. */
+/* Design tokens — design guide v1 §1. Single source of truth for color.
+   Every value here is mirrored in tailwind.config.ts. Change both or they
+   drift apart and the site develops two slightly different palettes. */
 :root {
+  /* core — design guide §1.1 */
   --ink: #0E1A24;
   --ink-2: #1C2E3D;
   --paper: #F4F6F8;
@@ -16,6 +19,34 @@
   --before: #8A98A5;
   --muted: #5B6B79;
   --line: #DFE5EA;
+
+  /* utility — design guide §1.2 */
+  --paper-2: #EAEFF3;
+  --line-strong: #C2CED8;
+  --focus: #0D6E5F;
+  --ink-deep: #08302A;
+  --gold-dark: #F3C560;
+  --mint: #EFF6F4;
+  --indigo-soft: #EAF0F7;
+  --shadow-sm: 0 1px 2px rgba(14, 26, 36, 0.07);
+  --shadow: 0 1px 2px rgba(14, 26, 36, 0.06), 0 10px 28px -14px rgba(14, 26, 36, 0.24);
+  --radius: 12px;
+
+  /* the data palette — design guide §1.4. Each cost owns one hue and keeps
+     it everywhere: donut segment, legend swatch, card icon, chart series. */
+  --c-pi: #0D6E5F;
+  --c-pi-2: #17A188;
+  --c-tax: #2E7FD1;
+  --c-ins: #EF9A2E;
+  --c-pmi: #8B6FB0;
+  --c-hoa: #C4788C;
+  --c-interest: #4E748F;
+
+  /* type — design guide §2. No web fonts, ever. */
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --gutter: clamp(1rem, 4vw, 2rem);
 }
 
 html {
@@ -27,11 +58,40 @@ body {
   color: var(--ink);
 }
 
-/* All figures use tabular numerals so columns of numbers line up.
-   This is the site's typographic personality and it costs 0 KB. */
+/* Every figure on the site is set in mono with tabular numerals so columns of
+   numbers line up and digits don't jitter while someone types. Design guide
+   §2.1 — never set a figure in the sans face. Costs 0 KB. */
 .num {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-family: var(--mono);
   font-variant-numeric: tabular-nums;
+}
+
+/* Accessibility floor — design guide §7. Applied globally rather than per
+   component so a new page cannot ship without it. */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* The banner gradient — design guide §1.6. One value, used identically on the
+   homepage hero and every inner-page stripe. The glow opacities are low on
+   purpose: anything brighter competes with the savings figure, which is the
+   one thing on the page allowed to win. */
+.banner {
+  position: relative;
+  color: #fff;
+  background:
+    radial-gradient(720px 480px at 88% -14%, rgba(31, 190, 158, 0.3), transparent 66%),
+    radial-gradient(520px 400px at 4% 108%, rgba(243, 197, 96, 0.08), transparent 62%),
+    linear-gradient(124deg, #0A4A40 0%, #0C5A4E 48%, #0F6A5B 100%);
+}
+
+.banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23fff' fill-opacity='.07'/%3E%3C/svg%3E");
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -81,7 +81,7 @@ export default function PayoffCalculator() {
   const basePayment = monthlyPayment(principal, annualRate, termMonths);
 
   // The scheduled payment must at least cover the first month's interest or
-  // the loan never amortises. Worth saying plainly rather than showing NaN.
+  // the loan never amortizes. Worth saying plainly rather than showing NaN.
   const impossible =
     principal > 0 &&
     termMonths > 0 &&

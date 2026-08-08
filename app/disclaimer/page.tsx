@@ -43,7 +43,7 @@ export default function DisclaimerPage() {
       <Section title="What our numbers actually cover">
         <p>
           Our calculators model principal and interest using standard monthly
-          amortisation. Unless a page says otherwise, the figures exclude
+          amortization. Unless a page says otherwise, the figures exclude
           property taxes, homeowners insurance, mortgage insurance, HOA dues,
           closing costs, origination fees, points, and prepayment penalties.
         </p>
@@ -102,7 +102,7 @@ export default function DisclaimerPage() {
       <Section title="United States focus">
         <p>
           This site describes United States mortgage conventions — monthly
-          compounding, fixed-rate amortisation, and US loan products. If you are
+          compounding, fixed-rate amortization, and US loan products. If you are
           borrowing in another country, the arithmetic on this site may not
           match how your lender calculates interest.
         </p>
