@@ -201,24 +201,40 @@ export type PitiBreakdown = {
 /**
  * Whether mortgage insurance applies, and when it comes off.
  *
- * Both milestones are measured against the ORIGINAL value of the home, not a
- * later appraisal, and both follow the loan's original payment schedule —
- * extra payments do not move these dates by themselves. The two thresholds
- * differ in kind, which is why they are reported separately:
+ * The Homeowners Protection Act of 1998 (12 U.S.C. § 4901 et seq.) sets three
+ * separate milestones, and they are genuinely different from one another.
+ * Verified against the CFPB and NCUA summaries on August 8, 2026 — see
+ * lib/constants.ts for the citations.
  *
- *   requestMonth   — the balance reaches the request threshold. The borrower
- *                    has to ask; nothing happens automatically.
- *   automaticMonth — the balance reaches the automatic threshold. The
- *                    servicer is required to drop it without being asked.
+ *   requestMonth   80% of original value. The borrower has to ASK in writing,
+ *                  and must be current and able to show the property has not
+ *                  fallen in value. Nothing happens automatically.
+ *   automaticMonth 78% of original value. The servicer must act unasked.
+ *   finalMonth     The month after the midpoint of the original term — month
+ *                  181 of a 30-year loan. This applies EVEN IF the balance has
+ *                  not reached 78%, which is why it cannot be left out: on a
+ *                  high-LTV loan it is often the milestone that arrives first.
  *
- * Thresholds are parameters rather than constants because they are a matter
- * of federal law, and any page stating them must cite the statute. Passing
- * them in keeps the citation next to the number on the page.
+ * "Original value" is the lower of the contract sales price and the appraised
+ * value at purchase — not a later appraisal.
+ *
+ * Extra payments cut across these differently, which is a genuinely confusing
+ * point worth getting right on the page. They can bring the 80% REQUEST date
+ * forward, because that test looks at the actual balance. They do not move the
+ * 78% automatic date, because that one is read off the ORIGINAL amortization
+ * schedule regardless of what has actually been paid.
+ *
+ * Thresholds are parameters rather than baked-in constants because they are a
+ * matter of federal law, and any page stating them has to cite the statute.
+ * Passing them in keeps the citation next to the number on the page.
  */
 export type PmiSchedule = {
   applies: boolean;
   requestMonth: number | null;
   automaticMonth: number | null;
+  finalMonth: number | null;
+  /** The earliest date PMI is actually gone without the borrower asking. */
+  endsMonth: number | null;
 };
 
 export function pmiSchedule(
@@ -229,17 +245,19 @@ export function pmiSchedule(
   requestLtv: number,
   automaticLtv: number,
 ): PmiSchedule {
-  if (homePrice <= 0 || loanAmount <= 0) {
-    return { applies: false, requestMonth: null, automaticMonth: null };
-  }
+  const none: PmiSchedule = {
+    applies: false,
+    requestMonth: null,
+    automaticMonth: null,
+    finalMonth: null,
+    endsMonth: null,
+  };
 
-  const applies = loanAmount / homePrice > requestLtv;
-  if (!applies) {
-    return { applies: false, requestMonth: null, automaticMonth: null };
-  }
+  if (homePrice <= 0 || loanAmount <= 0 || termMonths <= 0) return none;
+  if (loanAmount / homePrice <= requestLtv) return none;
 
-  // The original schedule, with no extra payment. This is the schedule the
-  // thresholds are measured against.
+  // The ORIGINAL schedule, with no extra payment. The statutory tests are read
+  // off this, not off whatever the borrower actually pays.
   const { schedule } = amortize(loanAmount, annualRatePct, termMonths, 0);
 
   const firstMonthAtOrBelow = (ltv: number): number | null => {
@@ -248,10 +266,20 @@ export function pmiSchedule(
     return row ? row.month : null;
   };
 
+  const requestMonth = firstMonthAtOrBelow(requestLtv);
+  const automaticMonth = firstMonthAtOrBelow(automaticLtv);
+  const finalMonth = Math.floor(termMonths / 2) + 1;
+
+  const candidates = [automaticMonth, finalMonth].filter(
+    (m): m is number => m !== null,
+  );
+
   return {
     applies: true,
-    requestMonth: firstMonthAtOrBelow(requestLtv),
-    automaticMonth: firstMonthAtOrBelow(automaticLtv),
+    requestMonth,
+    automaticMonth,
+    finalMonth,
+    endsMonth: candidates.length ? Math.min(...candidates) : null,
   };
 }
 

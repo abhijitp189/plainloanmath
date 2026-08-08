@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 
 const GA_MEASUREMENT_ID = "G-4EFBNNEMNP";
 
@@ -9,7 +11,8 @@ export const metadata: Metadata = {
     default: "Plain Loan Math",
     template: "%s | Plain Loan Math",
   },
-  description: "Mortgage math, explained plainly.",
+  description:
+    "Free mortgage calculators and plain explanations of the math. No lender pays us, and there are no rate quotes or lead forms.",
   alternates: { canonical: "/" },
 };
 
@@ -36,7 +39,11 @@ gtag('config', '${GA_MEASUREMENT_ID}');`,
           }}
         />
       </head>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="flex min-h-screen flex-col bg-surface font-sans text-ink antialiased">
+        <SiteHeader />
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
+      </body>
     </html>
   );
 }
