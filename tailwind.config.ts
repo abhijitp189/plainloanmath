@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 
 // Design system "the instrument" — design guide v1.
 //
-// Every colour below is also a CSS variable in app/globals.css. They are
+// Every color below is also a CSS variable in app/globals.css. They are
 // declared twice on purpose: Tailwind needs literal values at build time to
 // generate classes, and hand-written SVG needs the variables at runtime.
 //

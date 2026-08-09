@@ -35,7 +35,8 @@ export default function DisclaimerPage() {
         </p>
         <p>
           For advice about your own circumstances, speak to a licensed mortgage
-          professional, a housing counsellor, or a financial adviser who is
+          professional, a HUD-approved housing counselor, or a financial
+          professional who is
           able to look at the whole picture.
         </p>
       </Section>

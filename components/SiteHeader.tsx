@@ -5,10 +5,14 @@ import { PAYOFF_PATH } from "@/lib/routes";
 // There is deliberately no /mortgage/ nav item: that path 301s to "/" at the
 // Cloudflare edge, because a hub page there would target the same query as the
 // homepage and split whatever authority the site earns.
+// Three items, which is what fits on a phone. Disclaimer moved to the footer:
+// it is legal boilerplate, and a top menu is for what a visitor came to do.
+// When the third calculator ships, replace the first item with a single
+// "Calculators" link and let the homepage tool grid carry the rest.
 const NAV = [
   { href: PAYOFF_PATH, label: "Payoff calculator" },
   { href: "/methodology/", label: "Methodology" },
-  { href: "/disclaimer/", label: "Disclaimer" },
+  { href: "/about/", label: "About" },
 ];
 
 export default function SiteHeader() {
