@@ -1,11 +1,12 @@
 import Link from "next/link";
+import { PAYOFF_PATH } from "@/lib/routes";
 
 // The homepage is the hub — it holds the payment calculator and the tool grid.
 // There is deliberately no /mortgage/ nav item: that path 301s to "/" at the
 // Cloudflare edge, because a hub page there would target the same query as the
 // homepage and split whatever authority the site earns.
 const NAV = [
-  { href: "/mortgage/payoff-with-extra-payments/", label: "Payoff calculator" },
+  { href: PAYOFF_PATH, label: "Payoff calculator" },
   { href: "/methodology/", label: "Methodology" },
   { href: "/disclaimer/", label: "Disclaimer" },
 ];

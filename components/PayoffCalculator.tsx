@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   comparePayoff,
   formatUSD,
   formatDuration,
   monthlyPayment,
 } from "@/lib/mortgage";
+import { EXAMPLE } from "@/lib/constants";
 
 // Everything here runs in the browser. No figure the visitor types is ever
 // sent anywhere — which is what the privacy policy promises.
@@ -67,11 +68,30 @@ function num(value: string): number {
 }
 
 export default function PayoffCalculator() {
-  const [amount, setAmount] = useState("300,000");
-  const [rate, setRate] = useState("6.5");
-  const [years, setYears] = useState("30");
+  const [amount, setAmount] = useState(
+    EXAMPLE.loanAmount.toLocaleString("en-US"),
+  );
+  const [rate, setRate] = useState(String(EXAMPLE.annualRatePct));
+  const [years, setYears] = useState(String(EXAMPLE.termYears));
   const [extra, setExtra] = useState("200");
   const [showSchedule, setShowSchedule] = useState(false);
+
+  // Prefill from the query string when the visitor arrives from the homepage
+  // teaser or a shared link. Read after mount rather than during render: the
+  // page is statically exported, so the server has no query string and doing
+  // this in render would produce a hydration mismatch.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const loan = num(q.get("loan") ?? "");
+    const r = num(q.get("rate") ?? "");
+    const y = num(q.get("years") ?? "");
+    const x = q.get("extra");
+
+    if (loan > 0) setAmount(loan.toLocaleString("en-US"));
+    if (r > 0) setRate(String(r));
+    if (y > 0) setYears(String(y));
+    if (x !== null && num(x) >= 0) setExtra(String(num(x)));
+  }, []);
 
   const principal = num(amount);
   const annualRate = num(rate);

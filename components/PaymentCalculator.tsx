@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { monthlyPiti, pmiSchedule, formatUSD, formatNumber } from "@/lib/mortgage";
 import { PMI, EXAMPLE, FIELD_DEFAULTS } from "@/lib/constants";
+import { usePublishCalc } from "@/components/CalcState";
 
 // The homepage calculator. Design guide §8.1 — the homepage doubles as the
 // mortgage payment page, so this is the site's single most important component.
@@ -119,6 +120,19 @@ export default function PaymentCalculator() {
   }, [settled]);
 
   const { piti, pmi } = result;
+
+  // Hand the three fields the price table reads down the page. Published from
+  // `settled`, so it moves on the same 90ms debounce as everything else.
+  const publish = usePublishCalc();
+  useEffect(() => {
+    const price = num(settled.homePrice);
+    publish({
+      ratePct: num(settled.rate),
+      termYears: num(settled.termYears),
+      downPct: price > 0 ? (num(settled.downAmt) / price) * 100 : 0,
+      loanAmount: piti.loanAmount,
+    });
+  }, [settled, piti.loanAmount, publish]);
 
   const segments: Segment[] = [
     {
