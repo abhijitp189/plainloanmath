@@ -6,7 +6,7 @@ import {
   ReviewMeta,
   breadcrumbSchema,
 } from "@/components/PageChrome";
-import { SITE, LAST_REVIEWED } from "@/lib/constants";
+import { LAST_REVIEWED } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Editorial Policy",
@@ -142,8 +142,8 @@ export default function EditorialPolicyPage() {
 
         <Block title="Holding us to this">
           <p>
-            If something here falls short of the above, write to{" "}
-            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. That includes
+            If something here falls short of the above,{" "}
+            <a href="/contact/">tell us</a>. That includes
             copy that reads like advice, a figure without a source, or a page
             that has gone stale.
           </p>

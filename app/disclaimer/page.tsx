@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/disclaimer/" },
 };
 
-const LAST_UPDATED = "8 August 2026";
+const LAST_UPDATED = "August 8, 2026";
 
 export default function DisclaimerPage() {
   return (
@@ -68,12 +68,12 @@ export default function DisclaimerPage() {
           code, in the explanation, or in a source we relied on.
         </p>
         <p>
-          If you find something wrong, tell us at{" "}
+          If you find something wrong,{" "}
           <a
             className="text-accent underline underline-offset-2 hover:text-accent-dk"
-            href="mailto:plainloanmath@gmail.com"
+            href="/contact/"
           >
-            plainloanmath@gmail.com
+            tell us
           </a>{" "}
           and we will correct it and note the correction. Do not rely on any
           figure from this site for a decision that matters without confirming

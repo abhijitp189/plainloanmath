@@ -342,8 +342,7 @@ export default function MethodologyPage() {
           <p>
             Take any figure on this site and reproduce it &mdash; by hand, in a
             spreadsheet, or against another calculator. If ours disagrees, we
-            want to know: write to{" "}
-            <a href={`mailto:${SITE.email}`}>{SITE.email}</a> and see the{" "}
+            want to know: <a href="/contact/">tell us</a> and see the{" "}
             <a href="/corrections/">corrections page</a> for what happens next.
           </p>
         </Block>

@@ -102,7 +102,7 @@ export default function ContactPage() {
           </p>
         </Block>
 
-        <ReviewMeta updated={LAST_REVIEWED} />
+        <ReviewMeta updated={LAST_REVIEWED} showContact={false} />
       </Prose>
     </main>
   );

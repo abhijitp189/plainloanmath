@@ -108,7 +108,14 @@ export function Block({
 }
 
 /** The review line every page carries. Design guide §8.4. */
-export function ReviewMeta({ updated }: { updated: string }) {
+export function ReviewMeta({
+  updated,
+  showContact = true,
+}: {
+  updated: string;
+  /** Set false on the contact page itself, so the line does not link to itself. */
+  showContact?: boolean;
+}) {
   return (
     <div className="!mt-10 border-t border-line pt-5 text-[0.85rem] text-muted">
       <p>
@@ -116,8 +123,13 @@ export function ReviewMeta({ updated }: { updated: string }) {
         <time className="num" dateTime={updated}>
           {updated}
         </time>
-        . Questions or corrections:{" "}
-        <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+        .
+        {showContact ? (
+          <>
+            {" "}
+            Questions or corrections: <a href="/contact/">contact us</a>.
+          </>
+        ) : null}
       </p>
     </div>
   );

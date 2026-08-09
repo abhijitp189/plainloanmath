@@ -6,7 +6,7 @@ import {
   ReviewMeta,
   breadcrumbSchema,
 } from "@/components/PageChrome";
-import { SITE, LAST_REVIEWED } from "@/lib/constants";
+import { LAST_REVIEWED } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Corrections",
@@ -86,9 +86,8 @@ export default function CorrectionsPage() {
 
         <Block title="Telling us about one">
           <p>
-            Email{" "}
-            <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with the page, the
-            figure you saw, and what you believe it should be. You do not need
+            <a href="/contact/">Tell us</a> — include the page, the figure you
+            saw, and what you believe it should be. You do not need
             to be certain &mdash; a question that turns out to be nothing costs
             us five minutes, and a real error left in place costs a reader far
             more. Corrections jump the queue ahead of everything else.

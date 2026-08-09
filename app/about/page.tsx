@@ -6,7 +6,7 @@ import {
   ReviewMeta,
   breadcrumbSchema,
 } from "@/components/PageChrome";
-import { SITE, LAST_REVIEWED } from "@/lib/constants";
+import { LAST_REVIEWED } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "About Plain Loan Math",
@@ -126,9 +126,8 @@ export default function AboutPage() {
             licensed mortgage professional or a HUD-approved housing counselor.
           </p>
           <p>
-            Reach us at{" "}
-            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. We read
-            everything, and corrections get priority.
+            Reach us <a href="/contact/">here</a>. We read everything, and
+            corrections get priority.
           </p>
         </Block>
 

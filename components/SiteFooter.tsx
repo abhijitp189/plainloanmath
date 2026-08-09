@@ -78,15 +78,6 @@ export default function SiteFooter() {
             an estimate for education, not financial advice.
           </p>
           <p className="mt-4 text-[0.88rem] text-muted">
-            <a
-              href={`mailto:${SITE.email}`}
-              className="text-accent-dk hover:underline"
-            >
-              {SITE.email}
-            </a>
-            <span className="mx-2 text-line-strong" aria-hidden="true">
-              ·
-            </span>
             <span className="num">
               &copy; {new Date().getFullYear()} {SITE.name}
             </span>
