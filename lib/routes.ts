@@ -14,6 +14,24 @@
 /** Settled August 9, 2026 — project brief §2.3. */
 export const PAYOFF_PATH = "/mortgage/payoff-with-extra-payments/";
 
+/**
+ * The monthly payment calculator, moved off the homepage on August 10, 2026.
+ *
+ * This reverses the "homepage doubles as the payment calculator" entry in the
+ * ledger. The path deliberately mirrors PAYOFF_PATH — `/mortgage/<what it
+ * does>/` — so the two read as siblings rather than as one tool that happens
+ * to live at the root and another that doesn't.
+ *
+ * On the name: the head term "mortgage calculator" is Tier 3 and unwinnable
+ * for years (project brief §7), so the slug targets the phrase that is
+ * actually winnable — a payment calculator that includes taxes and insurance,
+ * which is the gap the tool genuinely fills.
+ *
+ * Nothing is indexed and there is no sitemap yet, so this is still one line to
+ * change. After indexing it is a 301 and a ranking dip.
+ */
+export const PAYMENT_PATH = "/mortgage/payment-with-taxes-and-insurance/";
+
 export type PayoffParams = {
   loanAmount: number;
   ratePct: number;

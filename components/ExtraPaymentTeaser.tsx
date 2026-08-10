@@ -34,7 +34,7 @@ export default function ExtraPaymentTeaser() {
   return (
     <section className="py-[clamp(2.2rem,5vw,3.6rem)]">
       <div className="mx-auto max-w-wrap px-[var(--gutter)]">
-        <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+        <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
           <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold tracking-[-.03em] text-ink">
             What if you paid a little extra?
           </h2>

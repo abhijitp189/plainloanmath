@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { PAYOFF_PATH } from "@/lib/routes";
+import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
 
-// The homepage is the hub — it holds the payment calculator and the tool grid.
+// The homepage is the hub — it holds the tool grid and the site's positioning.
+// The payment calculator has its own page; do not point a nav item at "/" for
+// it, which is the mistake the footer made after the split.
 // There is deliberately no /mortgage/ nav item: that path 301s to "/" at the
 // Cloudflare edge, because a hub page there would target the same query as the
 // homepage and split whatever authority the site earns.
@@ -10,9 +12,9 @@ import { PAYOFF_PATH } from "@/lib/routes";
 // When the third calculator ships, replace the first item with a single
 // "Calculators" link and let the homepage tool grid carry the rest.
 const NAV = [
+  { href: PAYMENT_PATH, label: "Payment calculator" },
   { href: PAYOFF_PATH, label: "Payoff calculator" },
   { href: "/methodology/", label: "Methodology" },
-  { href: "/about/", label: "About" },
 ];
 
 export default function SiteHeader() {

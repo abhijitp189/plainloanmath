@@ -91,7 +91,7 @@ export function scheduleToCsv(
 
 /**
  * The payment breakdown as CSV — one row per component of the monthly payment.
- * Used by the homepage calculator, which answers "what is my payment made of"
+ * Used by the payment calculator, which answers "what is my payment made of"
  * rather than "how does the balance run down".
  */
 export function breakdownToCsv(

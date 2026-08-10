@@ -10,7 +10,7 @@ import {
 } from "react";
 import { EXAMPLE } from "@/lib/constants";
 
-// Project brief §8.1 asks for a price table "computed from the visitor's own
+// The brief asks for a price table "computed from the visitor's own
 // rate and down payment." The calculator owns those inputs and the table sits
 // several sections further down the page, so the two need one shared value.
 //

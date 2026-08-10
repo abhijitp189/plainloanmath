@@ -14,8 +14,9 @@ import ResultActions from "@/components/ResultActions";
 import { breakdownToCsv } from "@/lib/csv";
 import { encodeParams, readNum, syncAddressBar } from "@/lib/share";
 
-// The homepage calculator. Design guide §8.1 — the homepage doubles as the
-// mortgage payment page, so this is the site's single most important component.
+// The monthly payment calculator. It lived on the homepage until August 10,
+// 2026 and now has its own page at PAYMENT_PATH, so it can be tuned for one
+// query and maintained on its own. Still the site's most important component.
 //
 // No math lives in here. Every number comes out of lib/mortgage.ts, which is
 // pure TypeScript with no React in it, so the same engine drops into the

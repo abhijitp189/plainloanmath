@@ -39,7 +39,7 @@ export function PageHeader({
           </ol>
         </nav>
 
-        <div className="mt-[1.05rem] grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:items-end">
+        <div className="mt-[1.05rem] grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.72fr)] lg:items-stretch">
           <div>
             <p className="tag inline-flex items-center gap-2 bg-white/12 text-white/90">
               {eyebrow}
@@ -52,8 +52,10 @@ export function PageHeader({
             </p>
           </div>
 
-          {/* The always-filled right slot. */}
-          <div>
+          {/* The always-filled right slot. items-stretch plus a centered
+              flex column, so a short list cannot leave a dead region beside
+              a tall headline — design guide §3.4. */}
+          <div className="flex flex-col justify-center border-white/20 lg:border-l lg:pl-8">
             <p className="label text-white/60">Related</p>
             <ul className="mt-2.5 flex flex-wrap gap-2">
               {siblings.map((s) => (

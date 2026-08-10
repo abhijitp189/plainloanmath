@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PAYOFF_PATH } from "@/lib/routes";
+import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
 import { SITE } from "@/lib/constants";
 
 // Light footer, deliberately. Design guide §3.2: the dark band is spent once
@@ -11,7 +11,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
     {
       heading: "Calculators",
       links: [
-        { href: "/", label: "Monthly payment" },
+        { href: PAYMENT_PATH, label: "Monthly payment" },
         {
           href: PAYOFF_PATH,
           label: "Payoff with extra payments",

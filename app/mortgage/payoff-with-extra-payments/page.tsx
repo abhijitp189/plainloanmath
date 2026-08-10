@@ -1,44 +1,113 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LAST_REVIEWED } from "@/lib/constants";
+import { LAST_REVIEWED, SITE } from "@/lib/constants";
 import PayoffCalculator from "@/components/PayoffCalculator";
 import Disclaimer from "@/components/Disclaimer";
+import { breadcrumbSchema } from "@/components/PageChrome";
+import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
 
 export const metadata: Metadata = {
   title: "Mortgage Payoff Calculator with Extra Payments",
   description:
     "See how much time and interest an extra monthly payment takes off your mortgage. Shows the formula and the year-by-year balance.",
-  alternates: { canonical: "/mortgage/payoff-with-extra-payments/" },
+  alternates: { canonical: PAYOFF_PATH },
+};
+
+// Technical brief §10 makes WebApplication schema on calculator pages and
+// BreadcrumbList on inner pages non-negotiable. This page had neither — it
+// shipped before the rule was written down and nothing went back for it.
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Mortgage Payoff Calculator with Extra Payments",
+  url: `${SITE.url}${PAYOFF_PATH}`,
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
 };
 
 export default function MortgagePayoffPage() {
   return (
-    <main className="mx-auto max-w-wrap px-[var(--gutter)] py-12">
-      <nav aria-label="Breadcrumb" className="text-[0.85rem] text-muted">
-        <ol className="flex flex-wrap items-center gap-1.5">
-          <li>
-            <Link href="/" className="hover:text-accent-dk hover:underline">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">&rsaquo;</li>
-          <li className="text-ink-2">Payoff with extra payments</li>
-        </ol>
-      </nav>
+    <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbSchema("Payoff with extra payments", PAYOFF_PATH),
+          ),
+        }}
+      />
 
-      <h1 className="mt-3 max-w-[22ch] text-[clamp(1.7rem,4.6vw,2.55rem)] font-[660] leading-[1.12] tracking-[-.02em] text-ink">
-        Mortgage Payoff Calculator with Extra Payments
-      </h1>
-      <p className="mt-3 max-w-lede text-lg text-muted">
-        How much does paying a little extra each month actually save?
-      </p>
+      {/* Same stripe as the payment calculator. This page used to open with a
+          plain heading on white, which made the two calculators look like they
+          came from different sites. Design guide §8.4 — every page opens with
+          a banner or stripe, right slot filled. */}
+      <section className="banner">
+        <div className="relative mx-auto max-w-wrap px-[var(--gutter)] pb-11 pt-[clamp(1.1rem,2.8vw,1.7rem)]">
+          <nav aria-label="Breadcrumb" className="text-[0.85rem] text-white/70">
+            <ol className="flex flex-wrap items-center gap-1.5">
+              <li>
+                <Link href="/" className="underline-offset-2 hover:underline">
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true">&rsaquo;</li>
+              <li aria-current="page" className="text-white/85">
+                Payoff with extra payments
+              </li>
+            </ol>
+          </nav>
 
+          <div className="mt-[1.05rem] grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.72fr)] lg:items-stretch">
+            <div>
+              <p className="tag inline-flex items-center gap-2 bg-white/12 text-white/90">
+                <span className="h-1.5 w-1.5 bg-[var(--gold-dark)]" />
+                Payoff calculator
+              </p>
+              <h1 className="mt-3 text-[clamp(1.85rem,4.6vw,2.7rem)] font-extrabold leading-[1.08] tracking-[-.035em]">
+                Mortgage payoff calculator with extra payments
+              </h1>
+              <p className="mt-3 max-w-[62ch] text-[1.02rem] leading-relaxed text-white/80">
+                How much does paying a little extra each month actually save?
+                Add any amount and see the payoff date move, along with the
+                interest you never hand over.
+              </p>
+            </div>
+
+            <div className="flex flex-col justify-center border-white/20 lg:border-l lg:pl-8">
+              <p className="label text-white/60">Related</p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {[
+                  { href: PAYMENT_PATH, label: "Monthly payment" },
+                  { href: "/methodology/", label: "Methodology" },
+                ].map((s) => (
+                  <li key={s.href}>
+                    <Link
+                      href={s.href}
+                      className="inline-flex min-h-tap items-center border border-white/25 bg-white/10 px-3.5 text-[0.88rem] text-white/90 transition-colors duration-150 hover:bg-white/20"
+                    >
+                      {s.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-wrap px-[var(--gutter)] py-12">
       <PayoffCalculator />
 
       <Disclaimer />
 
       <section className="mt-14 border-t border-line pt-10">
-        <h2 className="text-xl font-semibold tracking-tight text-ink">
+        <h2 className="text-[clamp(1.35rem,3vw,1.65rem)] font-extrabold tracking-[-.03em] text-ink">
           Why an extra payment does so much
         </h2>
         <div className="mt-4 space-y-4 text-ink-2">
@@ -66,7 +135,7 @@ export default function MortgagePayoffPage() {
       </section>
 
       <section className="mt-12">
-        <h2 className="text-xl font-semibold tracking-tight text-ink">
+        <h2 className="text-[clamp(1.35rem,3vw,1.65rem)] font-extrabold tracking-[-.03em] text-ink">
           The formula
         </h2>
         <div className="mt-4 space-y-4 text-ink-2">
@@ -105,7 +174,7 @@ export default function MortgagePayoffPage() {
       </section>
 
       <section className="mt-12">
-        <h2 className="text-xl font-semibold tracking-tight text-ink">
+        <h2 className="text-[clamp(1.35rem,3vw,1.65rem)] font-extrabold tracking-[-.03em] text-ink">
           What this calculator leaves out
         </h2>
         <div className="mt-4 space-y-4 text-ink-2">
@@ -131,15 +200,12 @@ export default function MortgagePayoffPage() {
       </section>
 
       <section className="mt-14 border-t border-line pt-8">
-        <h2 className="text-[11px] font-bold uppercase tracking-[.13em] text-muted">
+        <h2 className="label">
           Related
         </h2>
         <ul className="mt-3 grid gap-2 sm:grid-cols-2">
           <li>
-            <Link
-              href="/"
-              className="btn btn-secondary"
-            >
+            <Link href={PAYMENT_PATH} className="btn btn-secondary">
               What your full monthly payment is made of
             </Link>
           </li>
@@ -157,6 +223,7 @@ export default function MortgagePayoffPage() {
       <p className="mt-10 text-[0.85rem] text-muted">
         Last reviewed <time className="num" dateTime={LAST_REVIEWED}>{LAST_REVIEWED}</time>
       </p>
+      </div>
     </main>
   );
 }

@@ -154,7 +154,7 @@ export function formatDuration(months: number): string {
 // ─────────────────────────────────────────────────────────────────────────────
 // Full monthly payment — PITI
 //
-// The homepage calculator answers "what is my monthly payment", which is not
+// The payment calculator answers "what is my monthly payment", which is not
 // principal and interest alone. It is principal, interest, property tax and
 // homeowners insurance, plus mortgage insurance below 20% down and HOA dues
 // where they apply.
