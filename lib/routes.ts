@@ -1,16 +1,17 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Internal routes, in one place.
 //
-// Project brief §3, defect 2: the payoff calculator's URL is still an open
-// decision, and five different answers exist across the documents. Nothing is
-// indexed yet, so it is still free to change — but only if changing it is one
-// edit rather than a hunt through every page that links to it.
+// The payoff calculator's URL was settled on August 9, 2026 and is recorded in
+// the decisions ledger (project brief §2.3). The four rival paths that used to
+// appear across the documents are superseded. This comment previously said the
+// decision was still open, which was true when it was written and stale by the
+// time anyone read it.
 //
-// When the decision lands, change PAYOFF_PATH here and record it in the
-// decisions ledger. Nothing else needs touching.
+// It should not be revisited after indexing. If it ever is, it is one edit
+// here rather than a hunt through every page that links to it.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** What is actually deployed today. Not yet a settled decision. */
+/** Settled August 9, 2026 — project brief §2.3. */
 export const PAYOFF_PATH = "/mortgage/payoff-with-extra-payments/";
 
 export type PayoffParams = {

@@ -44,8 +44,8 @@ export default function PriceTable() {
   return (
     <section className="bg-paper py-[clamp(2.2rem,5vw,3.6rem)]">
       <div className="mx-auto max-w-wrap px-[var(--gutter)]">
-        <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b border-line pb-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-          <h2 className="text-[clamp(1.32rem,3.1vw,1.85rem)] font-[660] tracking-tight text-ink">
+        <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+          <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold tracking-[-.03em] text-ink">
             How much is a mortgage on a house?
           </h2>
           <p className="text-[0.95rem] leading-relaxed text-muted">
@@ -68,7 +68,7 @@ export default function PriceTable() {
 
         {/* Design guide §4.5 — horizontal scroll on phones rather than a
             squeezed table. */}
-        <div className="overflow-x-auto rounded-card border border-line bg-surface">
+        <div className="tablewrap panel overflow-x-auto" data-print-full>
           <table className="w-full min-w-[38rem] border-collapse text-[0.92rem]">
             <caption className="sr-only">
               Monthly principal and interest by home price, at{" "}
@@ -76,20 +76,20 @@ export default function PriceTable() {
               {Math.round(downPct)}% down
             </caption>
             <thead>
-              <tr className="bg-paper-2 text-left text-[11px] font-bold uppercase tracking-[.13em] text-muted">
-                <th scope="col" className="px-4 py-3">
+              <tr className="border-b-rule border-line-strong bg-paper-2 text-left">
+                <th scope="col" className="label px-4 py-3">
                   Home price
                 </th>
-                <th scope="col" className="px-4 py-3 text-right">
+                <th scope="col" className="label px-4 py-3 text-right">
                   Down payment
                 </th>
-                <th scope="col" className="px-4 py-3 text-right">
+                <th scope="col" className="label px-4 py-3 text-right">
                   Loan amount
                 </th>
-                <th scope="col" className="px-4 py-3 text-right">
+                <th scope="col" className="label px-4 py-3 text-right">
                   Monthly P&amp;I
                 </th>
-                <th scope="col" className="px-4 py-3 text-right">
+                <th scope="col" className="label px-4 py-3 text-right">
                   Interest over the loan
                 </th>
               </tr>

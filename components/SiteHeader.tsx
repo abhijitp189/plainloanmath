@@ -17,7 +17,10 @@ const NAV = [
 
 export default function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
+    <header
+      data-site-header
+      className="sticky top-0 z-40 border-b-rule border-line-strong bg-surface/95 backdrop-blur"
+    >
       <div className="mx-auto flex max-w-wrap items-center justify-between gap-4 px-[var(--gutter)] py-3">
         <Link
           href="/"
@@ -40,7 +43,7 @@ export default function SiteHeader() {
             <rect x="14" y="4" width="2.4" height="16" fill="var(--c-pi-2)" />
             <rect x="18" y="2.5" width="2.4" height="17.5" fill="var(--accent)" />
           </svg>
-          <span className="text-[1.02rem] font-semibold tracking-tight text-ink">
+          <span className="text-[1.05rem] font-extrabold tracking-[-.025em] text-ink">
             Plain Loan Math
           </span>
         </Link>
@@ -51,7 +54,7 @@ export default function SiteHeader() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="flex min-h-tap items-center rounded-lg px-2.5 text-ink-2 transition-colors duration-150 hover:bg-accent-soft hover:text-accent-dk sm:px-3"
+                  className="flex min-h-tap items-center px-2.5 text-ink-2 transition-colors duration-150 hover:bg-accent-soft hover:text-accent-dk sm:px-3"
                 >
                   {item.label}
                 </Link>

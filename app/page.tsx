@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 // ── The worked example, computed rather than typed ─────────────────────────
 // Project brief §10 — one recurring example site-wide. These come out of the
 // same pure engine the calculator uses, so the prose can never drift from the
-// tool. Nothing here is a market figure; EXAMPLE is labelled as an example in
+// tool. Nothing here is a market figure; EXAMPLE is labeled as an example in
 // lib/constants.ts and is safe to state in prose.
 const EX_TERM_MONTHS = EXAMPLE.termYears * 12;
 const EX_PAYMENT = monthlyPayment(
@@ -347,7 +347,7 @@ function IconTile({
   return (
     <span
       aria-hidden="true"
-      className="inline-flex shrink-0 items-center justify-center rounded-[11px] border"
+      className="inline-flex shrink-0 items-center justify-center border"
       style={{
         width: size,
         height: size,
@@ -361,9 +361,9 @@ function IconTile({
         height={size * 0.5}
         fill="none"
         stroke={a}
-        strokeWidth={1.7}
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeWidth={1.8}
+        strokeLinecap="square"
+        strokeLinejoin="miter"
       >
         {children}
       </svg>
@@ -374,8 +374,8 @@ function IconTile({
 /** Design guide §3.3 — heading left, intro beside it, hairline underneath. */
 function SectionHead({ title, intro }: { title: string; intro: string }) {
   return (
-    <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b border-line pb-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      <h2 className="text-[clamp(1.32rem,3.1vw,1.85rem)] font-[660] tracking-tight text-ink">
+    <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+      <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold tracking-[-.03em] text-ink">
         {title}
       </h2>
       <p className="text-[0.95rem] leading-relaxed text-muted">{intro}</p>
@@ -401,11 +401,11 @@ export default function Home() {
           <div className="relative mx-auto max-w-wrap px-[var(--gutter)] pb-12 pt-[clamp(1.6rem,4vw,2.6rem)]">
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-end">
               <div>
-                <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-[0.73rem] font-semibold uppercase tracking-[.11em]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--gold-dark)]" />
+                <p className="tag inline-flex items-center gap-2 bg-white/12 text-white/90">
+                  <span className="h-1.5 w-1.5 bg-[var(--gold-dark)]" />
                   No lender pays us
                 </p>
-                <h1 className="mt-3 text-[clamp(1.7rem,4.6vw,2.55rem)] font-[660] leading-[1.1] tracking-[-.02em]">
+                <h1 className="mt-3 text-[clamp(1.95rem,5.2vw,2.95rem)] font-extrabold leading-[1.06] tracking-[-.035em]">
                   Your mortgage payment is more than principal and interest
                 </h1>
                 <p className="mt-3 max-w-lede text-[1.02rem] leading-relaxed text-white/80">
@@ -428,7 +428,7 @@ export default function Home() {
                   <li key={p} className="flex items-start gap-2">
                     <span
                       aria-hidden="true"
-                      className="mt-[0.45rem] h-1 w-1 shrink-0 rounded-full bg-[var(--gold-dark)]"
+                      className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 bg-[var(--gold-dark)]"
                     />
                     {p}
                   </li>
@@ -454,10 +454,10 @@ export default function Home() {
               {COSTS.map((c) => (
                 <li
                   key={c.title}
-                  className="rounded-card border-l-[3px] border border-line bg-surface p-4"
+                  className="border border-l-[3px] border-line-strong bg-surface p-4"
                   style={{ borderLeftColor: c.color }}
                 >
-                  <h3 className="text-[1.02rem] font-[660] tracking-tight text-ink">
+                  <h3 className="text-[1.05rem] font-extrabold tracking-[-.025em] text-ink">
                     {c.title}
                   </h3>
                   <p className="mt-1.5 text-[0.91rem] leading-relaxed text-ink-2">
@@ -476,7 +476,7 @@ export default function Home() {
         <ExtraPaymentTeaser />
 
         {/* ── Three steps ────────────────────────────────────────── */}
-        <section className="bg-[linear-gradient(180deg,#F0F8F5_0%,#FFF_78%)] py-[clamp(2.2rem,5vw,3.6rem)]">
+        <section className="bg-mint py-[clamp(2.2rem,5vw,3.6rem)]">
           <div className="mx-auto max-w-wrap px-[var(--gutter)]">
             <SectionHead
               title="Three steps, about a minute"
@@ -486,7 +486,7 @@ export default function Home() {
               {STEPS.map((s) => (
                 <li
                   key={s.no}
-                  className="rounded-card border border-line bg-surface p-5"
+                  className="border border-line bg-surface p-5"
                 >
                   <p className="text-[11px] font-bold uppercase tracking-[.13em] text-muted">
                     {s.no}
@@ -520,7 +520,7 @@ export default function Home() {
                 const inner = (
                   <>
                     {t.flag && (
-                      <span className="absolute right-3 top-3 rounded-full bg-paper-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[.11em] text-muted">
+                      <span className="tag absolute right-3 top-3 bg-paper-2 text-muted">
                         {t.flag}
                       </span>
                     )}
@@ -545,12 +545,12 @@ export default function Home() {
                     {t.href ? (
                       <Link
                         href={t.href}
-                        className="relative flex h-full min-h-tap flex-col rounded-card border border-line bg-surface p-5 transition-colors duration-150 hover:border-accent"
+                        className="relative flex h-full min-h-tap flex-col border border-line bg-surface p-5 transition-colors duration-150 hover:border-accent"
                       >
                         {inner}
                       </Link>
                     ) : (
-                      <div className="relative flex h-full flex-col rounded-card border border-dashed border-line bg-surface/60 p-5">
+                      <div className="relative flex h-full flex-col border border-dashed border-line bg-surface/60 p-5">
                         {inner}
                       </div>
                     )}
@@ -578,7 +578,7 @@ export default function Home() {
                   formula. Everything else is an annual figure divided by
                   twelve.
                 </p>
-                <div className="num rounded-card border border-line bg-surface px-5 py-4 text-center text-[0.95rem] text-ink">
+                <div className="num border border-line bg-surface px-5 py-4 text-center text-[0.95rem] text-ink">
                   M = P &times; r(1 + r)<sup>n</sup> &divide; ((1 + r)
                   <sup>n</sup> &minus; 1)
                 </div>
@@ -637,7 +637,7 @@ export default function Home() {
                   charging a fee on a shrinking balance does.
                 </p>
                 <div
-                  className="rounded-card border-l-[3px] border border-line bg-[var(--indigo-soft)] p-4 text-[0.92rem] leading-relaxed"
+                  className="border-l-[3px] border border-line bg-[var(--indigo-soft)] p-4 text-[0.92rem] leading-relaxed"
                   style={{ borderLeftColor: "var(--c-tax)" }}
                 >
                   <strong className="font-semibold text-ink">
@@ -767,7 +767,7 @@ export default function Home() {
               {GLOSSARY.map(([term, def]) => (
                 <div
                   key={term}
-                  className="rounded-card border border-line bg-surface p-4"
+                  className="border border-line bg-surface p-4"
                 >
                   <dt className="text-[0.95rem] font-[660] text-ink">{term}</dt>
                   <dd className="mt-1 text-[0.9rem] leading-relaxed text-ink-2">

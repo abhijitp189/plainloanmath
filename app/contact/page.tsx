@@ -36,7 +36,7 @@ export default function ContactPage() {
       />
 
       <Prose>
-        <div className="rounded-card border border-line bg-accent-soft p-5">
+        <div className="border border-line bg-accent-soft p-5">
           <p className="text-[11px] font-bold uppercase tracking-[.13em] text-muted">
             Email
           </p>

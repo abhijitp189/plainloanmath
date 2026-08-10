@@ -55,7 +55,7 @@ export const PMI_SOURCE = {
  * A $425,000 home with 20% down is exactly a $340,000 loan.
  *
  * This is an illustration, not a claim about the market. It is safe to state
- * in prose because it is labelled as an example.
+ * in prose because it is labeled as an example.
  */
 export const EXAMPLE = {
   homePrice: 425_000,

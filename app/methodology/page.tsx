@@ -56,7 +56,7 @@ const usd = (n: number) =>
 
 function Formula({ children }: { children: React.ReactNode }) {
   return (
-    <div className="num rounded-card border border-line bg-paper px-5 py-4 text-center text-[0.95rem] text-ink">
+    <div className="num border border-line bg-paper px-5 py-4 text-center text-[0.95rem] text-ink">
       {children}
     </div>
   );

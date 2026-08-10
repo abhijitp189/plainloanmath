@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-// Design system "the instrument" — design guide v1.
+// Design system "the instrument" — design guide, Modernist revision.
 //
 // Every color below is also a CSS variable in app/globals.css. They are
 // declared twice on purpose: Tailwind needs literal values at build time to
@@ -69,12 +69,32 @@ const config: Config = {
         ],
       },
       borderRadius: {
-        // design guide §1.2 — one radius, used everywhere
-        card: "12px",
+        // Modernist, August 10 2026 — square corners are the system's whole
+        // gesture, so the entire scale is overridden rather than just the one
+        // named key. `rounded-full`, `rounded-lg` and friends all resolve to
+        // zero, which means a stray utility on a future page cannot quietly
+        // reintroduce a curve. Mirrors --radius in globals.css.
+        none: "0px",
+        sm: "0px",
+        DEFAULT: "0px",
+        md: "0px",
+        lg: "0px",
+        xl: "0px",
+        "2xl": "0px",
+        "3xl": "0px",
+        full: "0px",
+        card: "0px",
+      },
+      borderWidth: {
+        // Two weights and only two — see globals.css. `border-rule` separates
+        // structure, the default hairline separates repetition.
+        rule: "2px",
       },
       boxShadow: {
-        sm: "0 1px 2px rgba(14,26,36,.07)",
-        card: "0 1px 2px rgba(14,26,36,.06), 0 10px 28px -14px rgba(14,26,36,.24)",
+        // Elevation comes from the rule, not from a shadow. Both keys resolve
+        // to none so an existing `shadow-card` cannot re-soften a panel.
+        sm: "none",
+        card: "none",
       },
       maxWidth: {
         // design guide §2.3 — prose measure. Never applied to a heading.

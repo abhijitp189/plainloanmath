@@ -8,7 +8,7 @@ import Link from "next/link";
  */
 export default function Disclaimer() {
   return (
-    <aside className="mt-12 rounded-lg border border-line bg-surface px-5 py-4 text-sm text-muted">
+    <aside className="mt-12 border-l-[3px] border-line-strong bg-paper px-5 py-4 text-sm text-muted">
       <p>
         <strong className="font-semibold text-ink-2">
           This is an estimate, not advice.

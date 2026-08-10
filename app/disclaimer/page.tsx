@@ -17,7 +17,7 @@ export default function DisclaimerPage() {
       </h1>
       <p className="mt-3 text-sm text-muted">Last updated: {LAST_UPDATED}</p>
 
-      <div className="mt-8 rounded-lg border border-line bg-accent-soft px-5 py-4">
+      <div className="mt-8 border border-line bg-accent-soft px-5 py-4">
         <p className="text-ink-2">
           We publish arithmetic and explanations. We are not a lender, not a
           broker, not a licensed financial adviser, and we are not paid by

@@ -1,9 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { monthlyPiti, pmiSchedule, formatUSD, formatNumber } from "@/lib/mortgage";
+import {
+  monthlyPiti,
+  pmiSchedule,
+  amortize,
+  formatUSD,
+  formatNumber,
+} from "@/lib/mortgage";
 import { PMI, EXAMPLE, FIELD_DEFAULTS } from "@/lib/constants";
 import { usePublishCalc } from "@/components/CalcState";
+import ResultActions from "@/components/ResultActions";
+import { breakdownToCsv } from "@/lib/csv";
+import { encodeParams, readNum, syncAddressBar } from "@/lib/share";
 
 // The homepage calculator. Design guide §8.1 — the homepage doubles as the
 // mortgage payment page, so this is the site's single most important component.
@@ -35,6 +44,20 @@ type Segment = {
   note: string;
 };
 
+const TERMS = [15, 30];
+
+/** What a share link omits, because it matches the starting state anyway. */
+const URL_DEFAULTS = {
+  price: EXAMPLE.homePrice,
+  down: EXAMPLE.downPaymentPct,
+  rate: EXAMPLE.annualRatePct,
+  term: EXAMPLE.termYears,
+  tax: FIELD_DEFAULTS.propertyTaxPct,
+  ins: FIELD_DEFAULTS.homeInsurancePct,
+  pmi: FIELD_DEFAULTS.pmiRatePct,
+  hoa: FIELD_DEFAULTS.monthlyHoa,
+};
+
 export default function PaymentCalculator() {
   const [homePrice, setHomePrice] = useState(String(EXAMPLE.homePrice));
   const [downAmt, setDownAmt] = useState(
@@ -56,6 +79,45 @@ export default function PaymentCalculator() {
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [homePrice, downAmt, rate, termYears, taxPct, insPct, pmiPct, hoa]);
+
+  // ── Incoming share links ──────────────────────────────────────────────
+  // Read after mount, never during render. The page is statically exported, so
+  // the server has no query string at all and reading one while rendering
+  // produces a hydration mismatch. Technical brief §7.
+  const hydrated = useRef(false);
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+
+    const price = readNum(q, "price", { min: 1 });
+    const down = readNum(q, "down", { min: 0, max: 100 });
+    const r = readNum(q, "rate", { min: 0, max: 30 });
+    const term = readNum(q, "term", { min: 1, max: 50 });
+    const tax = readNum(q, "tax", { min: 0, max: 20 });
+    const ins = readNum(q, "ins", { min: 0, max: 20 });
+    const mi = readNum(q, "pmi", { min: 0, max: 20 });
+    const dues = readNum(q, "hoa", { min: 0 });
+
+    if (price !== null) setHomePrice(String(price));
+    if (r !== null) setRate(String(r));
+    if (term !== null) setTermYears(String(term));
+    if (tax !== null) setTaxPct(String(tax));
+    if (ins !== null) setInsPct(String(ins));
+    if (mi !== null) setPmiPct(String(mi));
+    if (dues !== null) setHoa(String(dues));
+
+    // Down payment last, and derived from whichever price actually applies, so
+    // the dollar field and the percent field agree on arrival.
+    const effectivePrice = price ?? EXAMPLE.homePrice;
+    if (down !== null) {
+      setDownPct(String(down));
+      setDownAmt(String(Math.round((effectivePrice * down) / 100)));
+    } else if (price !== null) {
+      setDownAmt(String(Math.round((price * EXAMPLE.downPaymentPct) / 100)));
+    }
+
+    hydrated.current = true;
+  }, []);
 
   // Down payment is two fields showing one quantity. Editing either updates the
   // other, and the guard stops the two setters chasing each other in a loop.
@@ -116,20 +178,43 @@ export default function PaymentCalculator() {
       PMI.automaticLtv,
     );
 
-    return { piti, pmi, termMonths };
+    return { piti, pmi, termMonths, price, down };
   }, [settled]);
 
-  const { piti, pmi } = result;
+  const { piti, pmi, termMonths, price, down } = result;
+
+  // ── Outgoing share links ──────────────────────────────────────────────
+  // The address bar tracks the settled inputs, so whatever is on screen is
+  // always what a copied URL reproduces. Held back until the incoming read
+  // above has run, or the first paint would wipe an arriving link.
+  useEffect(() => {
+    if (!hydrated.current) return;
+    const p = Math.max(num(settled.homePrice), 1);
+    const query = encodeParams(
+      {
+        price: num(settled.homePrice),
+        down: Number(((num(settled.downAmt) / p) * 100).toFixed(2)),
+        rate: num(settled.rate),
+        term: num(settled.termYears),
+        tax: num(settled.taxPct),
+        ins: num(settled.insPct),
+        pmi: num(settled.pmiPct),
+        hoa: num(settled.hoa),
+      },
+      URL_DEFAULTS,
+    );
+    syncAddressBar(query);
+  }, [settled]);
 
   // Hand the three fields the price table reads down the page. Published from
   // `settled`, so it moves on the same 90ms debounce as everything else.
   const publish = usePublishCalc();
   useEffect(() => {
-    const price = num(settled.homePrice);
+    const p = num(settled.homePrice);
     publish({
       ratePct: num(settled.rate),
       termYears: num(settled.termYears),
-      downPct: price > 0 ? (num(settled.downAmt) / price) * 100 : 0,
+      downPct: p > 0 ? (num(settled.downAmt) / p) * 100 : 0,
       loanAmount: piti.loanAmount,
     });
   }, [settled, piti.loanAmount, publish]);
@@ -172,15 +257,15 @@ export default function PaymentCalculator() {
     },
   ].filter((s) => s.value > 0.005);
 
-  return (
-    <div className="calc rounded-card border border-line bg-surface p-5 shadow-card sm:p-6 lg:grid lg:grid-cols-[minmax(320px,380px)_1fr] lg:gap-8">
-      {/* ── Inputs ───────────────────────────────────────────────── */}
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-[.13em] text-muted">
-          Your loan
-        </p>
+  const termNow = Math.round(num(termYears));
 
-        <div className="mt-3 space-y-3.5">
+  return (
+    <div className="calc panel lg:grid lg:grid-cols-[minmax(320px,380px)_1fr]">
+      {/* ── Inputs ───────────────────────────────────────────────── */}
+      <div className="border-b-rule border-line-strong p-5 sm:p-6 lg:border-b-0 lg:border-r-rule">
+        <p className="label text-accent">Your loan</p>
+
+        <div className="mt-3.5 space-y-3.5">
           <Field
             id="home-price"
             label="Home price"
@@ -208,27 +293,58 @@ export default function PaymentCalculator() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
-            <Field
-              id="rate"
-              label="Interest rate"
-              suffix="%"
-              value={rate}
-              onChange={setRate}
-            />
-            <Field
-              id="term"
-              label="Term"
-              suffix="yrs"
-              value={termYears}
-              onChange={setTermYears}
-            />
+          <Field
+            id="rate"
+            label="Interest rate"
+            suffix="%"
+            value={rate}
+            onChange={setRate}
+          />
+
+          {/* Segmented control rather than a typed field. 15 and 30 are what
+              virtually every US fixed-rate loan actually is, and two taps beat
+              selecting a number and retyping it on a phone. The typed field
+              appears underneath only for anything unusual. */}
+          <div>
+            <p className="mb-1.5 text-[0.83rem] font-semibold text-ink-2">Term</p>
+            <div className="seg">
+              {TERMS.map((t) => (
+                <label key={t} className="seg-opt">
+                  <input
+                    type="radio"
+                    name="term-preset"
+                    checked={termNow === t}
+                    onChange={() => setTermYears(String(t))}
+                  />
+                  <span className="num">{t}</span>
+                  <span className="ml-1">years</span>
+                </label>
+              ))}
+              <label className="seg-opt">
+                <input
+                  type="radio"
+                  name="term-preset"
+                  checked={!TERMS.includes(termNow)}
+                  onChange={() => setTermYears("20")}
+                />
+                Other
+              </label>
+            </div>
+            {!TERMS.includes(termNow) && (
+              <div className="mt-2.5">
+                <Field
+                  id="term"
+                  label="Term in years"
+                  suffix="yrs"
+                  value={termYears}
+                  onChange={setTermYears}
+                />
+              </div>
+            )}
           </div>
         </div>
 
-        <p className="mt-6 text-[11px] font-bold uppercase tracking-[.13em] text-muted">
-          Everything else
-        </p>
+        <p className="label mt-7">Everything else</p>
         <p className="mt-1.5 text-[0.83rem] leading-relaxed text-muted">
           These start as round placeholders, not local averages. Replace them
           with figures from a real listing or your county assessor.
@@ -274,64 +390,110 @@ export default function PaymentCalculator() {
       </div>
 
       {/* ── Results ──────────────────────────────────────────────── */}
-      <div className="mt-8 border-t border-line pt-6 lg:mt-0 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
-        <p className="text-[11px] font-bold uppercase tracking-[.13em] text-muted">
-          Estimated monthly payment
-        </p>
+      <div className="p-5 sm:p-6">
+        <p className="label">Estimated monthly payment</p>
 
-        <p className="num mt-1 text-[clamp(2.2rem,7vw,3.2rem)] font-[640] leading-[1.05] tracking-tight text-ink">
-          {formatUSD(piti.total)}
-        </p>
+        <p className="figure-xl mt-1 text-ink">{formatUSD(piti.total)}</p>
 
-        <p className="mt-1 text-[0.9rem] text-muted">
-          on a <span className="num">{formatUSD(piti.loanAmount)}</span> loan
+        <p className="mt-1.5 text-[0.9rem] text-muted">
+          on a{" "}
+          <span className="num text-ink-2">{formatUSD(piti.loanAmount)}</span>{" "}
+          loan
           {" · "}
-          <span className="num">{piti.ltvPct.toFixed(0)}%</span> loan-to-value
+          <span className="num text-ink-2">{piti.ltvPct.toFixed(0)}%</span>{" "}
+          loan-to-value
         </p>
 
-        {/* Legend in HTML above the chart, never inside the SVG — design
-            guide §5.1. In-SVG legends collide with labels and don't scale. */}
+        {/* Legend in HTML above the chart, never inside the SVG — design guide
+            §5.1. In-SVG legends collide with labels and don't scale. Ruled rows
+            rather than a bulleted list: this is a statement of account and it
+            should read like one. */}
         <div className="mt-5 min-h-tab">
-          <ul className="space-y-1.5">
+          <ul className="border-t border-line">
             {segments.map((s) => (
-              <li key={s.key} className="flex items-baseline gap-2.5 text-[0.92rem]">
+              <li
+                key={s.key}
+                className="flex items-baseline gap-2.5 border-b border-line py-2.5 text-[0.92rem]"
+              >
                 <span
                   aria-hidden="true"
-                  className="mt-[0.35rem] h-2.5 w-2.5 shrink-0 rounded-[3px]"
+                  className="mt-[0.35rem] h-2.5 w-2.5 shrink-0"
                   style={{ background: s.color }}
                 />
                 <span className="flex-1 text-ink-2">{s.label}</span>
-                <span className="num font-medium text-ink">
+                <span className="num font-semibold text-ink">
                   {formatUSD(s.value)}
                 </span>
               </li>
             ))}
           </ul>
 
-          <div className="mt-4 flex justify-center">
+          <div className="mt-5 flex justify-center">
             <Donut segments={segments} total={piti.total} />
           </div>
         </div>
 
         {pmi.applies && pmi.endsMonth && (
-          <p className="mt-4 rounded-lg border border-c-pmi/30 bg-[var(--paper)] px-3.5 py-3 text-[0.87rem] leading-relaxed text-ink-2">
-            Below 20% down, mortgage insurance is added. On a conventional
-            loan, if you stay current, your servicer must drop it by month{" "}
-            <span className="num font-medium text-ink">
+          <p className="mt-4 border-l-[3px] border-c-pmi bg-paper px-3.5 py-3 text-[0.87rem] leading-relaxed text-ink-2">
+            Below 20% down, mortgage insurance is added. On a conventional loan,
+            if you stay current, your servicer must drop it by month{" "}
+            <span className="num font-semibold text-ink">
               {formatNumber(pmi.endsMonth)}
             </span>
             {pmi.requestMonth && pmi.requestMonth < pmi.endsMonth && (
               <>
                 , and you can request it from month{" "}
-                <span className="num font-medium text-ink">
+                <span className="num font-semibold text-ink">
                   {formatNumber(pmi.requestMonth)}
                 </span>
               </>
             )}
-            . FHA loans follow different rules and usually carry the premium
-            for the life of the loan.
+            . FHA loans follow different rules and usually carry the premium for
+            the life of the loan.
           </p>
         )}
+
+        <ResultActions
+          csvFilename="plain-loan-math-payment.csv"
+          disabled={piti.total <= 0}
+          note="The CSV holds the payment breakdown and the full month-by-month schedule behind it."
+          buildCsv={() => {
+            const breakdown = breakdownToCsv(
+              segments.map((s) => ({ label: s.label, value: s.value })),
+              {
+                homePrice: price,
+                downPayment: down,
+                annualRatePct: num(settled.rate),
+                termMonths,
+              },
+            );
+
+            // Built on click rather than during render: this is 360 rows that
+            // nobody looks at unless they ask for the file.
+            const { schedule } = amortize(
+              piti.loanAmount,
+              num(settled.rate),
+              termMonths,
+              0,
+            );
+
+            const rows = [
+              "",
+              "Month,Payment,Interest,Principal,Balance",
+              ...schedule.map((r) =>
+                [
+                  r.month,
+                  (r.interest + r.principal).toFixed(2),
+                  r.interest.toFixed(2),
+                  r.principal.toFixed(2),
+                  r.balance.toFixed(2),
+                ].join(","),
+              ),
+            ].join("\r\n");
+
+            return breakdown + rows + "\r\n";
+          }}
+        />
       </div>
     </div>
   );
@@ -396,18 +558,12 @@ function Donut({ segments, total }: { segments: Segment[]; total: number }) {
         textAnchor="middle"
         className="num"
         fontSize="21"
-        fontWeight="640"
+        fontWeight="700"
         fill="var(--ink)"
       >
         {formatUSD(total)}
       </text>
-      <text
-        x="90"
-        y="104"
-        textAnchor="middle"
-        fontSize="13"
-        fill="var(--muted)"
-      >
+      <text x="90" y="104" textAnchor="middle" fontSize="13" fill="var(--muted)">
         per month
       </text>
     </svg>
@@ -440,11 +596,11 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="block text-[0.83rem] font-medium text-ink-2"
+        className="block text-[0.83rem] font-semibold text-ink-2"
       >
         {label}
       </label>
-      <div className="relative mt-1">
+      <div className="relative mt-1.5">
         {prefix && (
           <span
             aria-hidden="true"
@@ -461,7 +617,7 @@ function Field({
           disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
-          className={`num min-h-[46px] w-full rounded-[10px] border border-line-strong bg-surface py-2 text-[0.98rem] text-ink transition-shadow duration-150 focus:border-accent focus:shadow-[0_0_0_3px_var(--accent-soft)] focus:outline-none disabled:bg-paper disabled:text-muted ${
+          className={`num min-h-[46px] w-full border border-line-strong bg-surface py-2 text-[0.98rem] text-ink transition-colors duration-150 focus:border-accent focus:outline-none disabled:bg-paper disabled:text-muted ${
             prefix ? "pl-7" : "pl-3"
           } ${suffix ? "pr-12" : "pr-3"}`}
         />

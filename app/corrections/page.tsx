@@ -96,14 +96,14 @@ export default function CorrectionsPage() {
 
         <Block title="The log">
           {CORRECTIONS.length === 0 ? (
-            <p className="rounded-card border border-line bg-paper p-4">
+            <p className="border border-line bg-paper p-4">
               No corrections have been issued yet. This site launched recently
               and has published a small number of pages. When the first
               correction happens it will appear here, dated, rather than
               disappearing into an edit.
             </p>
           ) : (
-            <div className="overflow-x-auto rounded-card border border-line bg-surface">
+            <div className="overflow-x-auto border border-line bg-surface">
               <table className="w-full min-w-[34rem] border-collapse text-[0.92rem]">
                 <thead>
                   <tr className="bg-paper-2 text-left text-[11px] font-bold uppercase tracking-[.13em] text-muted">

@@ -34,8 +34,8 @@ export default function ExtraPaymentTeaser() {
   return (
     <section className="py-[clamp(2.2rem,5vw,3.6rem)]">
       <div className="mx-auto max-w-wrap px-[var(--gutter)]">
-        <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b border-line pb-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-          <h2 className="text-[clamp(1.32rem,3.1vw,1.85rem)] font-[660] tracking-tight text-ink">
+        <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+          <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold tracking-[-.03em] text-ink">
             What if you paid a little extra?
           </h2>
           <p className="text-[0.95rem] leading-relaxed text-muted">
@@ -45,30 +45,25 @@ export default function ExtraPaymentTeaser() {
           </p>
         </div>
 
-        <div className="rounded-card border border-line bg-surface p-5 sm:p-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-10">
+        <div className="panel p-5 sm:p-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-10">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[.13em] text-muted">
-              Extra each month
-            </p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {PRESETS.map((p) => {
-                const on = p === extra;
-                return (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => setExtra(p)}
-                    aria-pressed={on}
-                    className={`num min-h-tap rounded-full border px-4 text-[0.95rem] transition-colors duration-150 ${
-                      on
-                        ? "border-accent bg-accent-soft font-semibold text-accent-dk"
-                        : "border-line text-ink-2 hover:border-accent"
-                    }`}
-                  >
-                    ${p}
-                  </button>
-                );
-              })}
+            <p className="label">Extra each month</p>
+            {/* Segmented control, matching the payoff page it hands off to.
+                Preset chips only, never an input field — project brief §8:
+                two calculators on one page is a competitor weakness, and the
+                moment this takes typed input it has become the second one. */}
+            <div className="seg mt-2">
+              {PRESETS.map((p) => (
+                <label key={p} className="seg-opt">
+                  <input
+                    type="radio"
+                    name="teaser-extra"
+                    checked={p === extra}
+                    onChange={() => setExtra(p)}
+                  />
+                  <span className="num">${p}</span>
+                </label>
+              ))}
             </div>
             <p className="mt-3 max-w-prose text-[0.9rem] leading-relaxed text-ink-2">
               On{" "}
@@ -84,11 +79,9 @@ export default function ExtraPaymentTeaser() {
           <div className="mt-5 min-h-[150px] lg:mt-0">
             {usable ? (
               <>
-                <p className="text-[11px] font-bold uppercase tracking-[.13em] text-muted">
-                  Interest you would not pay
-                </p>
+                <p className="label">Interest you would not pay</p>
                 {/* Design guide §1.3 — brass, and only here. */}
-                <p className="num mt-1 text-[clamp(2rem,6vw,2.8rem)] font-[640] leading-none text-brass">
+                <p className="figure-xl mt-1 text-brass">
                   {formatUSD(result.interestSaved)}
                 </p>
                 <p className="mt-2 text-[0.95rem] text-ink-2">
@@ -113,7 +106,7 @@ export default function ExtraPaymentTeaser() {
                     termYears,
                     extra,
                   })}
-                  className="mt-4 inline-flex min-h-tap items-center rounded-md bg-accent px-4 text-[0.95rem] font-semibold text-white transition-colors duration-150 hover:bg-accent-dk"
+                  className="btn btn-primary mt-4"
                 >
                   See the full schedule and chart →
                 </Link>

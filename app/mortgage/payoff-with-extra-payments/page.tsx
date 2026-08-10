@@ -71,7 +71,7 @@ export default function MortgagePayoffPage() {
         </h2>
         <div className="mt-4 space-y-4 text-ink-2">
           <p>The scheduled monthly payment on a fixed-rate loan is:</p>
-          <div className="rounded-lg border border-line bg-paper px-5 py-4 font-mono text-sm text-ink">
+          <div className="border border-line bg-paper px-5 py-4 font-mono text-sm text-ink">
             M = P &times; r(1 + r)<sup>n</sup> &divide; ((1 + r)<sup>n</sup>
             &minus; 1)
           </div>
@@ -138,7 +138,7 @@ export default function MortgagePayoffPage() {
           <li>
             <Link
               href="/"
-              className="flex min-h-tap items-center rounded-lg border border-line px-4 text-[0.95rem] text-ink-2 transition-colors duration-150 hover:border-accent hover:text-accent-dk"
+              className="btn btn-secondary"
             >
               What your full monthly payment is made of
             </Link>
@@ -146,7 +146,7 @@ export default function MortgagePayoffPage() {
           <li>
             <Link
               href="/methodology/"
-              className="flex min-h-tap items-center rounded-lg border border-line px-4 text-[0.95rem] text-ink-2 transition-colors duration-150 hover:border-accent hover:text-accent-dk"
+              className="btn btn-secondary"
             >
               How every figure on this site is calculated
             </Link>

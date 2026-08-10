@@ -2,9 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design tokens — design guide v1 §1. Single source of truth for color.
+/* Design tokens — design guide §1. Single source of truth for color.
    Every value here is mirrored in tailwind.config.ts. Change both or they
-   drift apart and the site develops two slightly different palettes. */
+   drift apart and the site develops two slightly different palettes.
+
+   AUGUST 10, 2026 — the "Modernist" pass. The palette is unchanged; the
+   geometry is not. Corners are square, dividers are structural rather than
+   decorative, and shadows are gone. See the design guide changelog. */
 :root {
   /* core — design guide §1.1 */
   --ink: #0E1A24;
@@ -28,9 +32,24 @@
   --gold-dark: #F3C560;
   --mint: #EFF6F4;
   --indigo-soft: #EAF0F7;
-  --shadow-sm: 0 1px 2px rgba(14, 26, 36, 0.07);
-  --shadow: 0 1px 2px rgba(14, 26, 36, 0.06), 0 10px 28px -14px rgba(14, 26, 36, 0.24);
-  --radius: 12px;
+
+  /* Geometry. Square corners are the whole gesture of this system: a
+     measuring instrument has edges, not pillows. One value, and it is zero —
+     anything that wants a curve has to justify itself against this line. */
+  --radius: 0px;
+
+  /* Two divider weights, and only two. 2px separates structure (a panel from
+     the panel beside it). 1px separates repetition (one table row from the
+     next). Using the wrong one is the most common way this system goes soft. */
+  --rule: 2px;
+  --hair: 1px;
+
+  /* Kept as tokens so the design guide and the config still agree, but
+     deliberately unused: elevation in this system comes from the rule, not
+     from a shadow. Reintroducing one is a design guide change, not a
+     component decision. */
+  --shadow-sm: none;
+  --shadow: none;
 
   /* the data palette — design guide §1.4. Each cost owns one hue and keeps
      it everywhere: donut segment, legend swatch, card icon, chart series. */
@@ -42,7 +61,11 @@
   --c-hoa: #C4788C;
   --c-interest: #4E748F;
 
-  /* type — design guide §2. No web fonts, ever. */
+  /* type — design guide §2. No web fonts, ever. The Modernist mockups are set
+     in Archivo; adopting it would mean either a third-party request (banned)
+     or 60-90 KB of self-hosted woff2 against a 250 KB page budget that the
+     JavaScript has already overrun. The weight and the tracking below carry
+     most of what Archivo was doing. This is a real compromise, named as one. */
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
@@ -58,12 +81,222 @@ body {
   color: var(--ink);
 }
 
+/* Headings carry the system's voice: heavy, tight, square. Weight 800 rather
+   than the old 660 — without Archivo the extra weight is what stops a heading
+   reading as ordinary body copy set larger. */
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
 /* Every figure on the site is set in mono with tabular numerals so columns of
    numbers line up and digits don't jitter while someone types. Design guide
-   §2.1 — never set a figure in the sans face. Costs 0 KB. */
+   §2.1 — never set a figure in the sans face. Costs 0 KB.
+
+   The Modernist mockups set figures in the heading face. Not adopted, and the
+   reason is specific rather than stubborn: these numbers change under the
+   reader's fingers as they type, and proportional digits make the whole line
+   shift on every keystroke. Tabular mono is the right call for a calculator
+   even where it is the wrong call for a poster. */
 .num {
   font-family: var(--mono);
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+@layer components {
+  /* ── The micro-label ─────────────────────────────────────────────
+     Design guide §2.2 — the instrument's dial marking. Sits above figures and
+     section groups. Modernist runs it at 12px/.09em rather than 11px/.13em:
+     slightly larger, slightly tighter, noticeably less fussy. */
+  .label {
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+  }
+
+  /* The headline figure. One per result panel, never two. */
+  .figure-xl {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(2.4rem, 7.5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────────────
+     44px minimum, which clears the design guide §7 floor of 42px with room
+     to spare. Square corners, square icon caps. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 1rem;
+    border: var(--hair) solid transparent;
+    border-radius: var(--radius);
+    font-size: 0.93rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 150ms, border-color 150ms, color 150ms;
+  }
+
+  .btn svg {
+    display: block;
+    flex: none;
+  }
+
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-dk);
+  }
+
+  .btn-secondary {
+    border-color: var(--line-strong);
+    background: var(--surface);
+    color: var(--ink);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-dk);
+  }
+
+  /* ── Segmented control ───────────────────────────────────────────
+     Replaces the old pill chips. One bordered strip, hairline between
+     options, the selected option filled. Radio inputs underneath, so it is
+     keyboard-navigable and announced as a group without any ARIA. */
+  .seg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    border: var(--hair) solid var(--line-strong);
+    border-radius: var(--radius);
+  }
+
+  .seg-opt {
+    position: relative; /* anchors the visually-hidden radio inside the label */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 0.95rem;
+    font-size: 0.93rem;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    /* Explicit, not inherited. Design guide §4.2 — see the .calc note below. */
+    color: var(--ink);
+    background: var(--surface);
+    transition: background-color 150ms, color 150ms;
+  }
+
+  .seg-opt + .seg-opt {
+    border-left: var(--hair) solid var(--line-strong);
+  }
+
+  /* At 375px the four-option payoff control clears the panel by roughly 24px,
+     which is inside the margin of error on text measurement. Tightening the
+     padding on small screens buys enough room that it cannot wrap — and a
+     wrapped segmented control looks broken, because the first option on the
+     second row keeps the divider that only makes sense mid-row. flex-wrap
+     stays on as a backstop, not as the plan. */
+  @media (max-width: 480px) {
+    .seg-opt {
+      padding: 0 0.55rem;
+    }
+  }
+
+  .seg-opt input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .seg-opt:hover {
+    background: var(--paper-2);
+  }
+
+  .seg-opt:has(input:checked) {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .seg-opt:has(input:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: -3px;
+  }
+
+  /* ── Tag ─────────────────────────────────────────────────────────
+     Square, flat, small. The old rounded-full pill is gone. */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: var(--radius);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── Panel ───────────────────────────────────────────────────────
+     The system's one container. A hairline box on white, no shadow, no
+     radius. Structure inside it is drawn with .rule. */
+  .panel {
+    border: var(--hair) solid var(--line-strong);
+    background: var(--surface);
+    border-radius: var(--radius);
+    /* See .calc below — a panel can sit on the banner too. */
+    color: var(--ink);
+  }
+
+  /* ── The white-on-white guard ────────────────────────────────────
+     Design guide §4.2, and the single most expensive line in this file.
+
+     The calculator card sits inside .banner, which is color:#fff. Anything
+     inside it without an explicit color of its own inherits white, renders
+     white on a white card, and disappears — invisible to whoever built it
+     and obvious to a visitor. It has now happened twice.
+
+     This sets the floor rather than forcing every descendant (`.calc *`
+     would also overwrite the white text on a selected segment, which is
+     correct where it appears). Components that need a different color still
+     set one; components that forget one land on ink instead of white. */
+  .calc {
+    color: var(--ink);
+  }
+
+  .rule-t {
+    border-top: var(--rule) solid var(--line-strong);
+  }
+
+  .rule-b {
+    border-bottom: var(--rule) solid var(--line-strong);
+  }
 }
 
 /* Accessibility floor — design guide §7. Applied globally rather than per
@@ -73,25 +306,16 @@ body {
   outline-offset: 2px;
 }
 
-/* The banner gradient — design guide §1.6. One value, used identically on the
-   homepage hero and every inner-page stripe. The glow opacities are low on
-   purpose: anything brighter competes with the savings figure, which is the
-   one thing on the page allowed to win. */
+/* The banner — design guide §1.6, revised August 10, 2026.
+   Was three stacked gradients plus a dot texture. Now one flat field.
+   A gradient and a square corner are arguing with each other, and in a system
+   whose whole claim is "precise, quiet, data-first" the flat field wins. The
+   gold rule underneath is the only ornament left, and it is 3px of it. */
 .banner {
   position: relative;
   color: #fff;
-  background:
-    radial-gradient(720px 480px at 88% -14%, rgba(31, 190, 158, 0.3), transparent 66%),
-    radial-gradient(520px 400px at 4% 108%, rgba(243, 197, 96, 0.08), transparent 62%),
-    linear-gradient(124deg, #0A4A40 0%, #0C5A4E 48%, #0F6A5B 100%);
-}
-
-.banner::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23fff' fill-opacity='.07'/%3E%3C/svg%3E");
+  background: var(--ink-deep);
+  border-bottom: 3px solid var(--gold-dark);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -103,4 +327,93 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ── Print / Save as PDF ────────────────────────────────────────────
+   Design guide §9: this is the entire PDF feature. window.print(), no
+   library, nothing to load. It was specified there in full and had never
+   been implemented, so until now the Save-as-PDF button would have produced
+   a document containing the site navigation and four columns of footer
+   links. Every rule below is from that section.
+
+   Accordions are forced open in JavaScript before printing rather than here
+   — a closed <details> cannot be reliably opened with CSS alone, and this is
+   exactly the class of thing that ships looking fine and prints empty. */
+@media print {
+  :root {
+    --paper: #fff;
+    --paper-2: #fff;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  /* Hidden: site chrome, navigation, controls, ad slots. Nothing that a
+     reader cannot act on from a sheet of paper. */
+  .no-print,
+  header[data-site-header],
+  footer nav,
+  .seg,
+  .btn,
+  .tabs {
+    display: none !important;
+  }
+
+  /* The banner prints as white with ink text and a teal rule, so it does not
+     lay down a block of solid ink across the top of the page. */
+  .banner {
+    background: #fff !important;
+    color: var(--ink) !important;
+    border-bottom: 2px solid var(--accent) !important;
+  }
+
+  .banner * {
+    color: var(--ink) !important;
+  }
+
+  /* Tables print complete: no scroll box, no sticky header, no clipping. */
+  .tablewrap,
+  [data-print-full] {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  thead {
+    position: static !important;
+    display: table-header-group;
+  }
+
+  tr,
+  li {
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  /* External links carry their destination, since a printed link is useless
+     otherwise. Internal ones do not — the path alone tells a reader nothing. */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    font-weight: 400;
+    word-break: break-all;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+}
+
+/* The print header block. Hidden on screen, shown on paper. Carries the site
+   name and the standing disclaimer; the browser's own print chrome supplies
+   the page title, the URL and today's date, which is why none of those are
+   hard-coded here — a build-time date would be wrong the day after it shipped. */
+.print-only {
+  display: none;
 }

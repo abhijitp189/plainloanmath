@@ -41,10 +41,10 @@ export function PageHeader({
 
         <div className="mt-[1.05rem] grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:items-end">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-[0.73rem] font-semibold uppercase tracking-[.11em]">
+            <p className="tag inline-flex items-center gap-2 bg-white/12 text-white/90">
               {eyebrow}
             </p>
-            <h1 className="mt-3 text-[clamp(1.7rem,4.6vw,2.55rem)] font-[660] leading-[1.1] tracking-[-.02em]">
+            <h1 className="mt-3 text-[clamp(1.9rem,5vw,2.8rem)] font-extrabold leading-[1.08] tracking-[-.03em]">
               {title}
             </h1>
             <p className="mt-3 max-w-[62ch] text-[1.02rem] leading-relaxed text-white/80">
@@ -54,15 +54,13 @@ export function PageHeader({
 
           {/* The always-filled right slot. */}
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[.13em] text-white/55">
-              Related
-            </p>
+            <p className="label text-white/60">Related</p>
             <ul className="mt-2.5 flex flex-wrap gap-2">
               {siblings.map((s) => (
                 <li key={s.href}>
                   <Link
                     href={s.href}
-                    className="inline-flex min-h-tap items-center rounded-full border border-white/25 bg-white/10 px-3.5 text-[0.88rem] text-white/90 transition-colors duration-150 hover:bg-white/20"
+                    className="inline-flex min-h-tap items-center border border-white/25 bg-white/10 px-3.5 text-[0.88rem] text-white/90 transition-colors duration-150 hover:bg-white/20"
                   >
                     {s.label}
                   </Link>
@@ -98,8 +96,8 @@ export function Block({
   children: React.ReactNode;
 }) {
   return (
-    <div className="!mt-9 border-t border-line pt-7">
-      <h2 className="text-[1.22rem] font-[660] tracking-tight text-ink">
+    <div className="!mt-9 border-t-rule border-line-strong pt-7">
+      <h2 className="text-[1.3rem] font-extrabold tracking-[-.025em] text-ink">
         {title}
       </h2>
       <div className="mt-3 space-y-4">{children}</div>
@@ -117,7 +115,7 @@ export function ReviewMeta({
   showContact?: boolean;
 }) {
   return (
-    <div className="!mt-10 border-t border-line pt-5 text-[0.85rem] text-muted">
+    <div className="!mt-10 border-t-rule border-line-strong pt-5 text-[0.85rem] text-muted">
       <p>
         Last reviewed{" "}
         <time className="num" dateTime={updated}>

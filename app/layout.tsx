@@ -40,6 +40,18 @@ gtag('config', '${GA_MEASUREMENT_ID}');`,
         />
       </head>
       <body className="flex min-h-screen flex-col bg-surface font-sans text-ink antialiased">
+        {/* Print header — design guide §9. Hidden on screen. The browser's own
+            print chrome supplies the page title, the URL and today's date, so
+            none of those are rendered here: a date baked in at build time is
+            wrong the day after it ships, which is the bug the footer copyright
+            year already has. */}
+        <div className="print-only border-b-rule border-line-strong pb-3 text-[0.8rem]">
+          <p className="font-bold">Plain Loan Math &mdash; plainloanmath.com</p>
+          <p>
+            Estimates only. Not financial advice, and not a loan offer.
+          </p>
+        </div>
+
         <SiteHeader />
         <div className="flex-1">{children}</div>
         <SiteFooter />
