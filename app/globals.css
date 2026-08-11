@@ -8,28 +8,65 @@
 
    AUGUST 10, 2026 — the "Modernist" pass. The palette is unchanged; the
    geometry is not. Corners are square, dividers are structural rather than
-   decorative, and shadows are gone. See the design guide changelog. */
+   decorative, and shadows are gone. See the design guide changelog.
+
+   AUGUST 11, 2026 — the palette pass, and this one is the palette.
+   Three changes, each with a reason:
+
+   1. The ground is warm now (#F2EEE6, was #F4F6F8). The old paper sat 2%
+      away from --surface, which meant a white panel did not read as a panel
+      and every boundary on the site had to be drawn with a hairline. Warming
+      and darkening the ground lets the panels lift on their own, and the
+      hairlines go back to being punctuation rather than structure.
+   2. --brass is a role, not an ornament. It was declared, used once as a 3px
+      rule in a lighter shade that appeared nowhere else (--gold-dark), and
+      otherwise idle. It now marks status and consequence: the Next/Soon
+      flags, the banner rule, the one figure on a page that should change
+      someone's mind.
+   3. --ink is warm-neutral (#171A1D, was #0E1A24). The old ink was a blue
+      black, which on a warm ground reads as a color choice rather than as
+      ink. Nothing else about it changes.
+
+   Unchanged on purpose: --accent stays #0D6E5F. The teal was never the
+   problem — it was that the accent appeared once per page while six data
+   hues did the decorating. See app/page.tsx. */
 :root {
   /* core — design guide §1.1 */
-  --ink: #0E1A24;
-  --ink-2: #1C2E3D;
-  --paper: #F4F6F8;
+  --ink: #171A1D;
+  --ink-2: #3A4249;
+  --paper: #F2EEE6;
   --surface: #FFFFFF;
   --accent: #0D6E5F;
   --accent-dk: #0A574B;
-  --accent-soft: #E6F2EF;
+  --accent-soft: #E4EFEB;
   --brass: #9C6A12;
-  --brass-soft: #FBF3E2;
-  --before: #8A98A5;
-  --muted: #5B6B79;
-  --line: #DFE5EA;
+  --brass-soft: #F6EEDC;
+  --before: #98917F;
+  /* AUGUST 11 CORRECTION. The palette pass proposed #6B7379, which measures
+     4.17:1 on the new --paper and 3.70:1 on --paper-2 — both under the 4.5
+     body floor, and --muted is the color of the footer text on every page,
+     the standing disclaimer, and every table header via .label. #5A6066 is
+     the same hue and saturation, three steps darker: 6.36:1 on --surface,
+     5.50:1 on --paper, 4.88:1 on --paper-2. Do not lighten it again without
+     recomputing all three. */
+  --muted: #5A6066;
+  --line: #E0D9CB;
 
   /* utility — design guide §1.2 */
-  --paper-2: #EAEFF3;
-  --line-strong: #C2CED8;
+  --paper-2: #E7E1D4;
+  --line-strong: #C9C0AE;
   --focus: #0D6E5F;
-  --ink-deep: #08302A;
-  --gold-dark: #F3C560;
+  --ink-deep: #101A18;
+
+  /* A brass tint, for brass on the dark band where the full-strength value
+     goes muddy. Kept under its old name so nothing that referenced it
+     breaks; it is no longer a separate gold. */
+  --gold-dark: #C88F2A;
+
+  /* Retained so existing references resolve, but no longer part of the
+     system: these were the pale category tints behind the homepage tool
+     icons, and category tints are what the August 11 pass removed. Do not
+     reach for them on a new page. */
   --mint: #EFF6F4;
   --indigo-soft: #EAF0F7;
 
@@ -52,7 +89,12 @@
   --shadow: none;
 
   /* the data palette — design guide §1.4. Each cost owns one hue and keeps
-     it everywhere: donut segment, legend swatch, card icon, chart series. */
+     it everywhere: donut segment, legend swatch, card icon, chart series.
+
+     These seven hues are for data and nothing else. As of August 11 they are
+     no longer allowed to decorate navigation, cards or icons — a reader who
+     has learned that orange means insurance should never meet an orange that
+     means "coming soon". */
   --c-pi: #0D6E5F;
   --c-pi-2: #17A188;
   --c-tax: #2E7FD1;
@@ -130,6 +172,19 @@ h4 {
     font-weight: 700;
     line-height: 1;
     letter-spacing: -0.035em;
+  }
+
+  /* ── The consequential figure ────────────────────────────────────
+     Design guide §2.1, added August 11. Brass, and rationed: at most one per
+     page, on the number a reader should act on — lifetime interest, interest
+     saved, the break-even month. Everything else stays ink. If two figures on
+     a page are both brass, neither is. */
+  .figure-note {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--brass);
   }
 
   /* ── Buttons ─────────────────────────────────────────────────────
@@ -263,6 +318,21 @@ h4 {
     text-transform: uppercase;
   }
 
+  /* The status tag — "Next", "Soon". Flat text, not a tinted chip.
+     Added August 11 with the tool list rebuild.
+
+     NOT brass, for two reasons. Design guide §1.3 and do-not #7 reserve brass
+     for savings figures, and promoting it to a status role is a rule change
+     that belongs in the design guide before it appears in a component. And
+     --brass measures 4.05:1 on --paper, which is the page ground — under the
+     4.5 floor for text this size. --muted is 5.50:1 there. */
+  .tag-status {
+    padding: 0;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+
   /* ── Panel ───────────────────────────────────────────────────────
      The system's one container. A hairline box on white, no shadow, no
      radius. Structure inside it is drawn with .rule. */
@@ -309,13 +379,18 @@ h4 {
 /* The banner — design guide §1.6, revised August 10, 2026.
    Was three stacked gradients plus a dot texture. Now one flat field.
    A gradient and a square corner are arguing with each other, and in a system
-   whose whole claim is "precise, quiet, data-first" the flat field wins. The
-   gold rule underneath is the only ornament left, and it is 3px of it. */
+   whose whole claim is "precise, quiet, data-first" the flat field wins.
+
+   August 11: the rule underneath is brass at full strength rather than the
+   lighter gold that appeared nowhere else on the site. And this is now the
+   only dark field on the homepage — the second one is a white panel between
+   two rules. Two dark bands with a light grid between them read as two
+   different websites stacked. */
 .banner {
   position: relative;
   color: #fff;
   background: var(--ink-deep);
-  border-bottom: 3px solid var(--gold-dark);
+  border-bottom: 3px solid var(--brass);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -371,6 +446,11 @@ h4 {
 
   .banner * {
     color: var(--ink) !important;
+  }
+
+  /* Brass survives print — it is the one figure worth carrying onto paper. */
+  .figure-note {
+    color: var(--brass) !important;
   }
 
   /* Tables print complete: no scroll box, no sticky header, no clipping. */

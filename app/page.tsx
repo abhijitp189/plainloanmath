@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LAST_REVIEWED, SITE } from "@/lib/constants";
 import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
 
-// The hub, from August 10, 2026.
+// The hub, from August 10, 2026. Repaletted August 11.
 //
 // This page used to be the mortgage payment calculator as well. It is not any
 // more — the calculator moved to PAYMENT_PATH so it can be tuned for one query
@@ -13,6 +13,32 @@ import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
 // The rule that made the old arrangement necessary still holds in its new
 // form: there is exactly one page per tool, and this page is not one of them.
 // Do not add a calculator back to this page.
+//
+// ── August 11, 2026 — four changes, and none of them touch the copy ──────
+//
+// 1. The tool cards are monochrome. Each of the six used to carry its own
+//    accent, pale tint and border drawn from the data palette — blue for
+//    payment, teal for payoff, purple for amortization, orange for
+//    affordability. Six tinted chips in a row was the loudest thing on the
+//    site, and it spent the meaning of those hues before a reader reached a
+//    chart. The data palette is for data. Icons are ink strokes in a plain
+//    square; teal appears on hover and on the primary button, and nowhere
+//    else above the fold.
+//
+// 2. Two live tools, four listed. Four of six cards were dashed placeholders
+//    taking the same space as the working tools, so the page's dominant
+//    visual fact was absence. The built ones now get full-size cards; the
+//    unbuilt ones are a ruled list underneath, which is also more honest —
+//    a list reads as a roadmap, six cards read as a product with holes in it.
+//
+// 3. One dark band, per design guide §3.2. The trust section was a second
+//    full-width --ink-deep field, and two dark slabs with a light grid
+//    between them read as two websites stacked. It is now a white panel
+//    between two rules, which is the same emphasis without the second wall.
+//
+// 4. The glossary is de-boxed. Twelve identical bordered boxes is a lot of
+//    drawn structure for a definition list; it is two ruled columns now.
+//    Same twelve terms, same words.
 
 export const metadata: Metadata = {
   title: "Plain Loan Math — Mortgage Calculators With Nothing to Sell",
@@ -21,34 +47,33 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-type Tool = {
-  href?: string;
-  flag?: string;
-  a: string;
-  bg: string;
-  bd: string;
+type LiveTool = {
+  href: string;
   title: string;
   body: string;
   question: string;
   icon: React.ReactNode;
 };
 
-// Only tools with a live page carry an href. Project brief §3, defect 3 — the
-// site shipped nine links to routes that did not exist, and this grid is
-// exactly where a tenth would come from. An unbuilt tool renders as plain
-// text, not as a link to a 404.
-const TOOLS: Tool[] = [
+type PlannedTool = {
+  flag: string;
+  title: string;
+  question: string;
+};
+
+// Only tools with a live page appear as cards. Project brief §3, defect 3 —
+// the site shipped nine links to routes that did not exist, and this grid is
+// exactly where a tenth would come from. An unbuilt tool cannot be a card at
+// all now, which is a stronger guard than rendering it as plain text.
+const LIVE: LiveTool[] = [
   {
     href: PAYMENT_PATH,
-    a: "#2E7FD1",
-    bg: "#EAF2FA",
-    bd: "#C9DEF3",
     title: "Monthly payment",
     body: "Principal, interest, taxes and insurance — separated, not lumped into one number.",
     question: "“What will I actually pay?”",
     icon: (
       <>
-        <rect x="3" y="6" width="18" height="12" rx="2" />
+        <rect x="3" y="6" width="18" height="12" />
         <circle cx="12" cy="12" r="2.6" />
         <path d="M6.5 12h.01M17.5 12h.01" />
       </>
@@ -56,9 +81,6 @@ const TOOLS: Tool[] = [
   },
   {
     href: PAYOFF_PATH,
-    a: "#0D6E5F",
-    bg: "#E7F0EF",
-    bd: "#C0D9D5",
     title: "Payoff with extra payments",
     body: "Add anything extra each month and watch the interest disappear.",
     question: "“What if I pay $200 more?”",
@@ -70,56 +92,28 @@ const TOOLS: Tool[] = [
       </>
     ),
   },
+];
+
+const PLANNED: PlannedTool[] = [
   {
     flag: "Next",
-    a: "#8B6FB0",
-    bg: "#F3F1F7",
-    bd: "#E1DAEA",
     title: "Amortization schedule",
-    body: "Every month of the loan, downloadable as a spreadsheet.",
     question: "“Where is my money going?”",
-    icon: <path d="M4 6h16M4 12h16M4 18h11" />,
   },
   {
     flag: "Soon",
-    a: "#EF9A2E",
-    bg: "#FDF5EA",
-    bd: "#FBE5C9",
     title: "How much house you can afford",
-    body: "The gap between what you are approved for and what is comfortable.",
     question: "“What can I really afford?”",
-    icon: (
-      <>
-        <path d="M3 11l9-7 9 7" />
-        <path d="M5.5 10v10h13V10" />
-        <path d="M10 20v-5h4v5" />
-      </>
-    ),
   },
   {
     flag: "Soon",
-    a: "#C4788C",
-    bg: "#F9F2F4",
-    bd: "#F0DCE1",
     title: "Refinance break-even",
-    body: "The month the closing costs finish paying for themselves.",
     question: "“Is refinancing worth it?”",
-    icon: (
-      <>
-        <path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1" />
-        <path d="M20.5 4v4.5H16" />
-      </>
-    ),
   },
   {
     flag: "Soon",
-    a: "#0A574B",
-    bg: "#E6EEED",
-    bd: "#BFD3D0",
     title: "15-year vs 30-year",
-    body: "Both loans side by side, in dollars rather than adjectives.",
     question: "“Which term should I take?”",
-    icon: <path d="M6 20V11M12 20V4M18 20V15" />,
   },
 ];
 
@@ -159,6 +153,14 @@ const GLOSSARY = [
   ],
 ];
 
+const NEVER = [
+  "rate quote buttons",
+  "“get pre-approved” forms",
+  "lender affiliate links",
+  "accounts, and no email required",
+  "data sold, shared or handed to a lender",
+];
+
 // ── Schema — technical brief §10. Organization identity only: no Person
 // schema, no sameAs. The WebApplication schema moved to the calculator page
 // with the calculator; a hub is not an application. ─────────────────────────
@@ -178,35 +180,33 @@ const siteSchema = {
   publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
 };
 
-/** Design guide §4.3 — outlined icon on a pale tint, never a gradient chip. */
+/** Design guide §4.3, revised August 11 — outlined ink icon in a plain square.
+    No per-tool color, no pale tint, no gradient chip. The square is a hairline
+    in --line-strong and the strokes are ink; the only thing that moves on
+    hover is the card border, and it moves to the accent. */
 function IconTile({
-  a,
-  bg,
-  bd,
   children,
-  size = 42,
+  size = 44,
 }: {
-  a: string;
-  bg: string;
-  bd: string;
   children: React.ReactNode;
   size?: number;
 }) {
   return (
     <span
       aria-hidden="true"
-      className="inline-flex shrink-0 items-center justify-center border"
-      style={{ width: size, height: size, background: bg, borderColor: bd }}
+      className="inline-flex shrink-0 items-center justify-center border border-line-strong"
+      style={{ width: size, height: size }}
     >
       <svg
         viewBox="0 0 24 24"
         width={size * 0.5}
         height={size * 0.5}
         fill="none"
-        stroke={a}
+        stroke="currentColor"
         strokeWidth={1.8}
         strokeLinecap="square"
         strokeLinejoin="miter"
+        className="text-ink"
       >
         {children}
       </svg>
@@ -241,7 +241,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchema) }}
       />
 
-      {/* ── Banner ─────────────────────────────────────────────────
+      {/* ── Banner — the page's one dark field ─────────────────────
           items-stretch, not items-end. The old banner sank its right column
           to the bottom of a row sized by the H1, leaving a large empty region
           beside the headline — a §3.4 violation produced by the code written
@@ -282,13 +282,7 @@ export default function Home() {
             <div className="flex flex-col justify-center border-white/20 lg:border-l lg:pl-8">
               <p className="label text-white/60">What you will never find</p>
               <ul className="mt-3 space-y-2 text-[0.94rem] text-white/80">
-                {[
-                  "rate quote buttons",
-                  "“get pre-approved” forms",
-                  "lender affiliate links",
-                  "accounts, and no email required",
-                  "data sold, shared or handed to a lender",
-                ].map((item) => (
+                {NEVER.map((item) => (
                   <li key={item} className="flex gap-2">
                     <strong className="font-bold text-white">No</strong>
                     <span>{item}</span>
@@ -308,73 +302,81 @@ export default function Home() {
             intro="One tool per page, each answering a single question, each with the formula written out underneath it. Tools without a link are not built yet — they are listed so you can see where this is going."
           />
 
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {TOOLS.map((t) => {
-              const inner = (
-                <>
-                  {t.flag && (
-                    <span className="tag absolute right-3 top-3 bg-paper-2 text-muted">
-                      {t.flag}
-                    </span>
-                  )}
-                  <IconTile a={t.a} bg={t.bg} bd={t.bd}>
-                    {t.icon}
-                  </IconTile>
-                  <h3 className="mt-3.5 text-[1.05rem] font-extrabold tracking-[-.025em] text-ink">
+          {/* Two live tools, at full size. Two columns rather than three:
+              a 3-column grid sized for six cards left these two looking like
+              the remnants of something larger. */}
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {LIVE.map((t) => (
+              <li key={t.title}>
+                <Link
+                  href={t.href}
+                  className="flex h-full min-h-tap flex-col border border-line-strong bg-surface p-5 transition-colors duration-150 hover:border-accent"
+                >
+                  <IconTile>{t.icon}</IconTile>
+                  <h3 className="mt-3.5 text-[1.12rem] font-extrabold tracking-[-.025em] text-ink">
                     {t.title}
                   </h3>
-                  <p className="mt-1.5 flex-1 text-[0.91rem] leading-relaxed text-ink-2">
+                  <p className="mt-1.5 flex-1 text-[0.93rem] leading-relaxed text-ink-2">
                     {t.body}
                   </p>
                   <p className="mt-3 text-[0.88rem] italic text-muted">
                     {t.question}
                   </p>
-                </>
-              );
-
-              return (
-                <li key={t.title}>
-                  {t.href ? (
-                    <Link
-                      href={t.href}
-                      className="relative flex h-full min-h-tap flex-col border border-line-strong bg-surface p-5 transition-colors duration-150 hover:border-accent"
-                    >
-                      {inner}
-                    </Link>
-                  ) : (
-                    <div className="relative flex h-full flex-col border border-dashed border-line-strong bg-surface/60 p-5">
-                      {inner}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
+                </Link>
+              </li>
+            ))}
           </ul>
+
+          {/* The roadmap. A ruled list, not cards — see note 2 at the top.
+              Grid rather than flex so the question column lines up down the
+              list regardless of how long a title runs; the question drops off
+              below 640px rather than wrapping to three ragged lines. */}
+          <div className="mt-8">
+            <p className="label">Not built yet</p>
+            <ul className="mt-2.5 border-t border-line">
+              {PLANNED.map((t) => (
+                <li
+                  key={t.title}
+                  className="grid grid-cols-[3rem_minmax(0,1fr)] items-baseline gap-x-3.5 border-b border-line py-2.5 sm:grid-cols-[3rem_15rem_minmax(0,1fr)]"
+                >
+                  <span className="tag tag-status">{t.flag}</span>
+                  <span className="text-[0.95rem] font-bold text-ink">
+                    {t.title}
+                  </span>
+                  <span className="hidden text-[0.88rem] text-muted sm:block">
+                    {t.question}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
-      {/* ── The one dark band — design guide §3.2 ──────────────── */}
-      <section className="bg-ink-deep py-[clamp(2.2rem,5vw,3.6rem)] text-white">
+      {/* ── The trust section ──────────────────────────────────────
+          Was the site's second --ink-deep band. Now a white panel between two
+          rules: same weight in the page, one dark field instead of two. */}
+      <section className="bg-surface rule-t rule-b py-[clamp(2.2rem,5vw,3.6rem)]">
         <div className="mx-auto grid max-w-wrap gap-8 px-[var(--gutter)] lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] lg:items-start">
           <div>
-            <h2 className="max-w-[24ch] text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold leading-tight tracking-[-.03em]">
+            <h2 className="max-w-[24ch] text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold leading-tight tracking-[-.03em] text-ink">
               Why a calculator with no lender money is different
             </h2>
-            <p className="mt-3 max-w-lede leading-relaxed text-white/75">
+            <p className="mt-3 max-w-lede leading-relaxed text-ink-2">
               Most large mortgage sites disclose, in their own advertiser
               policies, that they earn money when a visitor is passed to a
               lender. That is not a secret and it is not a conspiracy. But it
               does shape which numbers a page emphasizes, and which it leaves
               out.
             </p>
-            <p className="mt-3 max-w-lede leading-relaxed text-white/75">
+            <p className="mt-3 max-w-lede leading-relaxed text-ink-2">
               This site carries no lender links, no quote buttons, and no
               affiliate relationships. It is funded by ads, which means we are
               paid the same whether or not you ever take out a loan. There is
               nothing here to submit, because there is nothing we want from
               you.
             </p>
-            <p className="mt-3 max-w-lede leading-relaxed text-white/75">
+            <p className="mt-3 max-w-lede leading-relaxed text-ink-2">
               Every calculation runs in your own browser. The figures you type
               are never sent to us and never stored anywhere, which is not a
               policy we chose to write — it is a consequence of the site having
@@ -383,13 +385,13 @@ export default function Home() {
           </div>
 
           {/* Design guide §3.4 — the right slot is always filled. */}
-          <div className="flex flex-col justify-center border-white/20 lg:border-l lg:pl-8">
-            <p className="label text-white/60">How to check us</p>
-            <ul className="mt-3 space-y-3 text-[0.94rem] text-white/80">
+          <div className="flex flex-col justify-center border-line lg:border-l-rule lg:pl-8">
+            <p className="label">How to check us</p>
+            <ul className="mt-3 space-y-3 text-[0.94rem] text-ink-2">
               <li>
                 <Link
                   href="/methodology/"
-                  className="font-bold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white"
+                  className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
                 >
                   Methodology
                 </Link>{" "}
@@ -398,7 +400,7 @@ export default function Home() {
               <li>
                 <Link
                   href="/corrections/"
-                  className="font-bold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white"
+                  className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
                 >
                   Corrections
                 </Link>{" "}
@@ -407,7 +409,7 @@ export default function Home() {
               <li>
                 <Link
                   href="/editorial-policy/"
-                  className="font-bold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white"
+                  className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
                 >
                   Editorial policy
                 </Link>{" "}
@@ -418,20 +420,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Glossary ───────────────────────────────────────────── */}
-      <section className="bg-paper py-[clamp(2.2rem,5vw,3.6rem)]">
+      {/* ── Glossary — ruled columns, no boxes ─────────────────── */}
+      <section className="py-[clamp(2.2rem,5vw,3.6rem)]">
         <div className="mx-auto max-w-wrap px-[var(--gutter)]">
           <SectionHead
             title="Mortgage words, in plain English"
             intro="If a term shows up anywhere on this site without an explanation, that is a mistake and we want to hear about it."
           />
-          <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <dl className="grid gap-x-12 lg:grid-cols-2">
             {GLOSSARY.map(([term, def]) => (
-              <div key={term} className="border border-line-strong bg-surface p-4">
+              <div
+                key={term}
+                className="grid items-baseline gap-x-3.5 border-b border-line py-2.5 sm:grid-cols-[8rem_minmax(0,1fr)]"
+              >
                 <dt className="text-[0.95rem] font-extrabold tracking-[-.02em] text-ink">
                   {term}
                 </dt>
-                <dd className="mt-1 text-[0.9rem] leading-relaxed text-ink-2">
+                {/* mt-1 below 640px only. The two-column grid collapses to a
+                    single column there, and gap-x sets no row gap, so without
+                    this the definition sits flush against its term. */}
+                <dd className="mt-1 text-[0.9rem] leading-relaxed text-ink-2 sm:mt-0">
                   {def}
                 </dd>
               </div>
@@ -441,7 +449,7 @@ export default function Home() {
       </section>
 
       {/* ── Review meta ────────────────────────────────────────── */}
-      <section className="py-[clamp(1.6rem,3.5vw,2.4rem)]">
+      <section className="pb-[clamp(1.6rem,3.5vw,2.4rem)]">
         <div className="mx-auto max-w-wrap px-[var(--gutter)]">
           <p className="text-[0.85rem] text-muted">
             Last reviewed{" "}

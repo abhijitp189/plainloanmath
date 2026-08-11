@@ -9,6 +9,10 @@ import type { Config } from "tailwindcss";
 // RULE: change one, change the other. If these two files disagree the site
 // quietly develops two slightly different palettes and nobody notices for
 // weeks. This is design guide open item #1.
+//
+// AUGUST 11, 2026 — the palette pass. Warm ground, warm ink, brass promoted
+// to a role. The reasoning is written out in globals.css; this file is the
+// mirror, so it carries the values and not the argument.
 const config: Config = {
   content: [
     "./app/**/*.{ts,tsx}",
@@ -19,28 +23,36 @@ const config: Config = {
     extend: {
       colors: {
         // core — design guide §1.1
-        ink: "#0E1A24",
-        "ink-2": "#1C2E3D",
-        paper: "#F4F6F8",
+        ink: "#171A1D",
+        "ink-2": "#3A4249",
+        paper: "#F2EEE6",
         surface: "#FFFFFF",
         accent: "#0D6E5F",
         "accent-dk": "#0A574B",
-        "accent-soft": "#E6F2EF",
+        "accent-soft": "#E4EFEB",
         brass: "#9C6A12",
-        "brass-soft": "#FBF3E2",
-        before: "#8A98A5",
-        muted: "#5B6B79",
-        line: "#DFE5EA",
+        "brass-soft": "#F6EEDC",
+        before: "#98917F",
+        muted: "#5A6066",
+        line: "#E0D9CB",
 
         // utility — design guide §1.2
-        "paper-2": "#EAEFF3",
-        "line-strong": "#C2CED8",
-        "ink-deep": "#08302A",
-        "gold-dark": "#F3C560",
+        "paper-2": "#E7E1D4",
+        "line-strong": "#C9C0AE",
+        "ink-deep": "#101A18",
+
+        // A brass tint for brass on the dark band. Kept under its old name so
+        // existing references resolve; it is no longer a separate gold.
+        "gold-dark": "#C88F2A",
+
+        // Retained so existing references resolve, but no longer part of the
+        // system — these were the homepage category tints. Do not reach for
+        // them on a new page.
         mint: "#EFF6F4",
         "indigo-soft": "#EAF0F7",
 
-        // the data palette — design guide §1.4
+        // the data palette — design guide §1.4. Data only, as of August 11:
+        // never navigation, cards or icons.
         "c-pi": "#0D6E5F",
         "c-pi-2": "#17A188",
         "c-tax": "#2E7FD1",
