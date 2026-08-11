@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LAST_REVIEWED, SITE } from "@/lib/constants";
 import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
+import { SectionHead } from "@/components/PageChrome";
 
 // The hub, from August 10, 2026. Repaletted August 11.
 //
@@ -214,21 +215,6 @@ function IconTile({
   );
 }
 
-/** Design guide §3.3 — heading left, intro beside it, rule underneath.
-    The heading column was widened from 1fr to 1.25fr: at the old ratio a
-    normal-length section heading wrapped to two lines with empty space beside
-    it, which is what made the page read as over-divided. */
-function SectionHead({ title, intro }: { title: string; intro: string }) {
-  return (
-    <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
-      <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold tracking-[-.03em] text-ink">
-        {title}
-      </h2>
-      <p className="text-[0.95rem] leading-relaxed text-muted">{intro}</p>
-    </div>
-  );
-}
-
 export default function Home() {
   return (
     <main>
@@ -427,18 +413,30 @@ export default function Home() {
             title="Mortgage words, in plain English"
             intro="If a term shows up anywhere on this site without an explanation, that is a mistake and we want to hear about it."
           />
-          <dl className="grid gap-x-12 lg:grid-cols-2">
+          {/* CSS columns, not a two-column grid.
+
+              A grid couples the two columns into rows, so a one-line term on
+              the left sat in a row sized by a two-line definition on the
+              right, and its rule was pushed down leaving a band of dead
+              space. Twelve entries of uneven length made that happen six
+              times. Column flow decouples them: each entry is as tall as its
+              own definition and its rule sits directly underneath it.
+
+              break-inside-avoid stops an entry splitting across the column
+              break. Reading order becomes down-then-across, which is how
+              people read a glossary anyway. */}
+          <dl className="gap-x-12 lg:columns-2">
             {GLOSSARY.map(([term, def]) => (
               <div
                 key={term}
-                className="grid items-baseline gap-x-3.5 border-b border-line py-2.5 sm:grid-cols-[8rem_minmax(0,1fr)]"
+                className="grid break-inside-avoid items-baseline gap-x-3.5 border-b border-line py-3 sm:grid-cols-[7.5rem_minmax(0,1fr)]"
               >
-                <dt className="text-[0.95rem] font-extrabold tracking-[-.02em] text-ink">
+                <dt className="text-[0.95rem] font-bold tracking-[-.01em] text-ink">
                   {term}
                 </dt>
-                {/* mt-1 below 640px only. The two-column grid collapses to a
-                    single column there, and gap-x sets no row gap, so without
-                    this the definition sits flush against its term. */}
+                {/* mt-1 below 640px only. The inner grid collapses to a single
+                    column there, and gap-x sets no row gap, so without this
+                    the definition sits flush against its term. */}
                 <dd className="mt-1 text-[0.9rem] leading-relaxed text-ink-2 sm:mt-0">
                   {def}
                 </dd>

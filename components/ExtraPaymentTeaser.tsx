@@ -5,6 +5,7 @@ import Link from "next/link";
 import { comparePayoff, formatUSD, formatDuration } from "@/lib/mortgage";
 import { useCalcSnapshot } from "@/components/CalcState";
 import { PAYOFF_PATH, payoffHref } from "@/lib/routes";
+import { SectionHead } from "@/components/PageChrome";
 
 // The bridge between the two calculators.
 //
@@ -34,16 +35,10 @@ export default function ExtraPaymentTeaser() {
   return (
     <section className="py-[clamp(2.2rem,5vw,3.6rem)]">
       <div className="mx-auto max-w-wrap px-[var(--gutter)]">
-        <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
-          <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold tracking-[-.03em] text-ink">
-            What if you paid a little extra?
-          </h2>
-          <p className="text-[0.95rem] leading-relaxed text-muted">
-            Same loan as above. Anything you add on top of the required payment
-            goes straight to the balance, which is why a small amount moves the
-            payoff date so much further than people expect.
-          </p>
-        </div>
+        <SectionHead
+          title="What if you paid a little extra?"
+          intro="Same loan as above. Anything you add on top of the required payment goes straight to the balance, which is why a small amount moves the payoff date so much further than people expect."
+        />
 
         <div className="panel p-5 sm:p-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-10">
           <div>

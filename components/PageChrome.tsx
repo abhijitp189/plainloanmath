@@ -76,6 +76,42 @@ export function PageHeader({
   );
 }
 
+/** The section head — heading left, intro beside it, 2px rule underneath.
+    Design guide §3.3.
+
+    ONE COPY, as of August 11. This markup existed four times — app/page.tsx,
+    the payment calculator page, PriceTable and ExtraPaymentTeaser — which is
+    four places for the same alignment bug to live. All four now call this.
+
+    items-start, not items-end. Bottom-aligning a one-line heading against a
+    three-line paragraph puts the paragraph's first line well above the top of
+    the heading, and the two blocks read as unrelated. Worse, "bottom" for a
+    paragraph is the foot of its last line box, which sits a few pixels below
+    the last visible baseline because of half-leading — so the two columns
+    never actually looked flush even when they were. Aligning the tops gives
+    the reader one line to start from, which is the direction they read. */
+export function SectionHead({
+  title,
+  intro,
+}: {
+  title: string;
+  /** ReactNode, not string — PriceTable's intro carries live figures. */
+  intro: React.ReactNode;
+}) {
+  return (
+    <div className="mb-6 grid items-start gap-x-12 gap-y-2 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
+      <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-bold tracking-[-.015em] text-ink">
+        {title}
+      </h2>
+      {/* max-w-[46ch] keeps the intro from running to four ragged lines on a
+          wide screen, which is what made the right column look top-heavy. */}
+      <p className="max-w-[46ch] text-[0.95rem] leading-relaxed text-muted md:pt-[0.3rem]">
+        {intro}
+      </p>
+    </div>
+  );
+}
+
 /** Body copy for a text page. Design guide §2.3 — measure capped at 68ch. */
 export function Prose({ children }: { children: React.ReactNode }) {
   return (

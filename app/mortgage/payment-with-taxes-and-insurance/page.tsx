@@ -5,7 +5,7 @@ import PriceTable from "@/components/PriceTable";
 import ExtraPaymentTeaser from "@/components/ExtraPaymentTeaser";
 import { CalcProvider } from "@/components/CalcState";
 import Disclaimer from "@/components/Disclaimer";
-import { breadcrumbSchema } from "@/components/PageChrome";
+import { breadcrumbSchema, SectionHead } from "@/components/PageChrome";
 import { monthlyPayment, formatUSD } from "@/lib/mortgage";
 import { LAST_REVIEWED, SITE, PMI_SOURCE, EXAMPLE } from "@/lib/constants";
 import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
@@ -149,18 +149,6 @@ const faqSchema = {
     acceptedAnswer: { "@type": "Answer", text: f.a },
   })),
 };
-
-/** Design guide §3.3 — heading left, intro beside it, rule underneath. */
-function SectionHead({ title, intro }: { title: string; intro: string }) {
-  return (
-    <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
-      <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold tracking-[-.03em] text-ink">
-        {title}
-      </h2>
-      <p className="text-[0.95rem] leading-relaxed text-muted">{intro}</p>
-    </div>
-  );
-}
 
 const SIBLINGS = [
   { href: PAYOFF_PATH, label: "Payoff with extra payments" },

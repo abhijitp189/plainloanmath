@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ReactDOM from "react-dom";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -16,11 +17,32 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+// Archivo, self-hosted from /public/fonts. Preloaded because the @font-face
+// rules sit inside the stylesheet, so the browser would otherwise only
+// discover the files after the CSS has parsed — late enough to show a visible
+// swap on a slow connection.
+//
+// ReactDOM.preload rather than a raw <link>. React hoists rel="preload" links
+// into the head on its own AND leaves the original where it was written, so a
+// hand-written tag renders twice no matter where it is placed — verified in
+// the built HTML both ways. This emits exactly one.
+//
+// crossOrigin is required on font preloads even same-origin. Without it the
+// preloaded file is not matched to the font request and gets fetched twice.
+const FONT_PRELOAD = {
+  as: "font",
+  type: "font/woff2",
+  crossOrigin: "anonymous",
+} as const;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  ReactDOM.preload("/fonts/archivo-latin-400-normal.woff2", FONT_PRELOAD);
+  ReactDOM.preload("/fonts/archivo-latin-700-normal.woff2", FONT_PRELOAD);
+
   return (
     <html lang="en">
       <head>
@@ -40,6 +62,7 @@ gtag('config', '${GA_MEASUREMENT_ID}');`,
         />
       </head>
       <body className="flex min-h-screen flex-col bg-surface font-sans text-ink antialiased">
+
         {/* Print header — design guide §9. Hidden on screen. The browser's own
             print chrome supplies the page title, the URL and today's date, so
             none of those are rendered here: a date baked in at build time is

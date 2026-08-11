@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { monthlyPayment, formatUSD } from "@/lib/mortgage";
 import { useCalcSnapshot } from "@/components/CalcState";
+import { SectionHead } from "@/components/PageChrome";
 
 // The live price table, on the payment calculator page. Principal and interest
 // only. Every figure recomputes from whatever the visitor typed into the
@@ -44,27 +45,27 @@ export default function PriceTable() {
   return (
     <section className="bg-paper py-[clamp(2.2rem,5vw,3.6rem)]">
       <div className="mx-auto max-w-wrap px-[var(--gutter)]">
-        <div className="mb-6 grid items-end gap-y-2 gap-x-12 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
-          <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-extrabold tracking-[-.03em] text-ink">
-            How much is a mortgage on a house?
-          </h2>
-          <p className="text-[0.95rem] leading-relaxed text-muted">
-            Calculated at{" "}
-            <strong className="num font-semibold text-ink">
-              {tidyRate(ratePct)}
-            </strong>{" "}
-            over{" "}
-            <strong className="font-semibold text-ink">
-              {Math.round(termYears)} years
-            </strong>{" "}
-            with{" "}
-            <strong className="num font-semibold text-ink">
-              {Math.round(downPct)}%
-            </strong>{" "}
-            down &mdash; the figures you entered above. Principal and interest
-            only; taxes and insurance sit on top of these numbers.
-          </p>
-        </div>
+        <SectionHead
+          title="How much is a mortgage on a house?"
+          intro={
+            <>
+              Calculated at{" "}
+              <strong className="num font-semibold text-ink">
+                {tidyRate(ratePct)}
+              </strong>{" "}
+              over{" "}
+              <strong className="font-semibold text-ink">
+                {Math.round(termYears)} years
+              </strong>{" "}
+              with{" "}
+              <strong className="num font-semibold text-ink">
+                {Math.round(downPct)}%
+              </strong>{" "}
+              down &mdash; the figures you entered above. Principal and interest
+              only; taxes and insurance sit on top of these numbers.
+            </>
+          }
+        />
 
         {/* Design guide §4.5 — horizontal scroll on phones rather than a
             squeezed table. */}

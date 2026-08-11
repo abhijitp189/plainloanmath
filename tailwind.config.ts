@@ -62,7 +62,12 @@ const config: Config = {
         "c-interest": "#4E748F",
       },
       fontFamily: {
+        // Mirrors --sans in globals.css. Archivo is self-hosted from
+        // /public/fonts and declared there; this file only names it. Two
+        // weights ship, 400 and 700 — see the globals.css header for why the
+        // "no web fonts" rule was reversed on August 11.
         sans: [
+          "Archivo",
           "system-ui",
           "-apple-system",
           "Segoe UI",
@@ -79,6 +84,22 @@ const config: Config = {
           "Liberation Mono",
           "monospace",
         ],
+      },
+      fontWeight: {
+        // Only 400 and 700 ship (see globals.css). The whole scale is
+        // collapsed onto them rather than left to the browser's font-matching
+        // rules, for the same reason borderRadius is forced to zero below: so
+        // a `font-semibold` on a future page cannot resolve to something the
+        // site does not have. The browser was already resolving 600 and 800 to
+        // 700 with no synthesis — this just makes that visible in the config
+        // instead of implicit. Adding a third weight file means changing this
+        // block, which is the right place to have to think about it.
+        normal: "400",
+        medium: "400",
+        semibold: "700",
+        bold: "700",
+        extrabold: "700",
+        black: "700",
       },
       borderRadius: {
         // Modernist, August 10 2026 — square corners are the system's whole
