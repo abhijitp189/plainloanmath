@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
+import { PAYOFF_PATH, PAYMENT_PATH, ROUTES } from "@/lib/routes";
 import { SITE } from "@/lib/constants";
 
 // Light footer, deliberately. Design guide §3.2: the dark band is spent once
@@ -21,24 +21,24 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
     {
       heading: "How this works",
       links: [
-        { href: "/methodology/", label: "Methodology" },
-        { href: "/corrections/", label: "Corrections" },
-        { href: "/editorial-policy/", label: "Editorial policy" },
+        { href: ROUTES.methodology, label: "Methodology" },
+        { href: ROUTES.corrections, label: "Corrections" },
+        { href: ROUTES.editorialPolicy, label: "Editorial policy" },
       ],
     },
     {
       heading: "Site",
       links: [
-        { href: "/about/", label: "About" },
-        { href: "/contact/", label: "Contact" },
+        { href: ROUTES.about, label: "About" },
+        { href: ROUTES.contact, label: "Contact" },
       ],
     },
     {
       heading: "Legal",
       links: [
-        { href: "/disclaimer/", label: "Disclaimer" },
-        { href: "/privacy/", label: "Privacy" },
-        { href: "/terms/", label: "Terms" },
+        { href: ROUTES.disclaimer, label: "Disclaimer" },
+        { href: ROUTES.privacy, label: "Privacy" },
+        { href: ROUTES.terms, label: "Terms" },
       ],
     },
   ];

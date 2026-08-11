@@ -27,8 +27,8 @@ export const PAYOFF_PATH = "/mortgage/payoff-with-extra-payments/";
  * actually winnable — a payment calculator that includes taxes and insurance,
  * which is the gap the tool genuinely fills.
  *
- * Nothing is indexed and there is no sitemap yet, so this is still one line to
- * change. After indexing it is a 301 and a ranking dip.
+ * Changing it is one line here and one line in the sitemap it now feeds.
+ * After indexing it is a 301 and a ranking dip.
  */
 export const PAYMENT_PATH = "/mortgage/payment-with-taxes-and-insurance/";
 
@@ -56,3 +56,53 @@ export function payoffHref(p: PayoffParams): string {
   });
   return `${PAYOFF_PATH}?${q.toString()}`;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The route registry.
+//
+// Every page on the site appears here exactly once. Three things read it:
+// the header, the footer, and `app/sitemap.ts`. Adding a page is one entry
+// here plus wherever it should be linked from — the sitemap picks it up on
+// its own, because it iterates this object rather than keeping its own list.
+//
+// `app/sitemap.ts` also asserts, at build time, that every `app/**/page.tsx`
+// has an entry below. Ship a page and forget this file and the BUILD FAILS
+// with the path it wants. A failed build deploys nothing, so the live site is
+// unaffected — technical brief §1.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const ROUTES = {
+  home: "/",
+  payment: PAYMENT_PATH,
+  payoff: PAYOFF_PATH,
+  methodology: "/methodology/",
+  corrections: "/corrections/",
+  editorialPolicy: "/editorial-policy/",
+  about: "/about/",
+  contact: "/contact/",
+  disclaimer: "/disclaimer/",
+  privacy: "/privacy/",
+  terms: "/terms/",
+} as const;
+
+export type RouteKey = keyof typeof ROUTES;
+
+/**
+ * Pages whose last significant edit differs from the site-wide review date in
+ * `lib/constants.ts`. Anything absent uses `LAST_REVIEWED`.
+ *
+ * This exists because Google only uses <lastmod> when it is "consistently and
+ * verifiably accurate" — verified August 11, 2026 against
+ * https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap
+ * A date that moves on every deploy is neither, so the sitemap carries the
+ * editorial review date instead of the build date. When one page is rewritten
+ * without a full site review, put its date here.
+ */
+export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {};
+
+/**
+ * Routes deliberately kept out of the sitemap. Empty today, and it should
+ * stay that way — a page worth building is a page worth listing. It exists so
+ * that excluding one is a recorded decision rather than a quiet omission.
+ */
+export const SITEMAP_EXCLUDE: readonly RouteKey[] = [];

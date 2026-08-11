@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
+import { PAYOFF_PATH, PAYMENT_PATH, ROUTES } from "@/lib/routes";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // The menu bar.
@@ -81,9 +81,9 @@ const CALCULATORS: Item[] = [
 ];
 
 const SECTIONS: Item[] = [
-  { href: "/methodology/", label: "Methodology", icon: ICON.methodology },
-  { href: "/about/", label: "About", icon: ICON.about },
-  { href: "/contact/", label: "Contact", icon: ICON.contact },
+  { href: ROUTES.methodology, label: "Methodology", icon: ICON.methodology },
+  { href: ROUTES.about, label: "About", icon: ICON.about },
+  { href: ROUTES.contact, label: "Contact", icon: ICON.contact },
 ];
 
 function RowIcon({ children }: { children: React.ReactNode }) {
