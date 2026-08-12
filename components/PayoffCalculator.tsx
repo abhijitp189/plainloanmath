@@ -335,81 +335,109 @@ export default function PayoffCalculator() {
             More ways to pay extra
           </summary>
 
-          <div className="mt-4 grid gap-5 sm:grid-cols-2">
-            <Field
-              id="start-year"
-              label="Start the extra in year"
-              value={startYear}
-              onChange={setStartYear}
-              hint="1 means starting with the next payment"
-            />
-            <Field
-              id="annual-extra"
-              label="Extra once a year"
-              value={annualExtra}
-              onChange={setAnnualExtra}
-              prefix="$"
-              hint="A bonus or tax refund you get every year"
-            />
-            <div>
-              <label
-                htmlFor="annual-month"
-                className="block text-[0.83rem] font-semibold text-ink-2"
-              >
-                Which month it lands in
-              </label>
-              <select
-                id="annual-month"
-                value={annualMonth}
-                onChange={(e) => setAnnualMonth(e.target.value)}
-                className="mt-1.5 min-h-[46px] w-full border border-line-strong bg-surface px-3 text-[0.98rem] text-ink outline-none focus:border-accent"
-              >
-                {MONTHS.map((m, i) => (
-                  <option key={m} value={String(i + 1)}>
-                    {m}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <Field
-              id="lump-sum"
-              label="One-time lump sum"
-              value={lumpSum}
-              onChange={setLumpSum}
-              prefix="$"
-              hint="An inheritance, a bonus, the sale of something"
-            />
-            <Field
-              id="lump-year"
-              label="Lump sum arrives in year"
-              value={lumpYear}
-              onChange={setLumpYear}
-            />
-            <div>
-              <p className="label mb-2">Pay every two weeks?</p>
-              <div className="seg">
-                <label className="seg-opt">
-                  <input
-                    type="radio"
-                    name="biweekly"
-                    checked={!biweekly}
-                    onChange={() => setBiweekly(false)}
-                  />
-                  Monthly
-                </label>
-                <label className="seg-opt">
-                  <input
-                    type="radio"
-                    name="biweekly"
-                    checked={biweekly}
-                    onChange={() => setBiweekly(true)}
-                  />
-                  Biweekly
-                </label>
+          {/* GROUPED, NOT A FLAT GRID. This was one six-cell grid filling in
+              row-major order, which put "Which month it lands in" directly
+              beneath "Start the extra in year" while its actual partner,
+              "Extra once a year", sat in the other column. Every field was
+              labeled correctly and the pairing still read wrong, because a
+              two-column grid pairs by ROW and the reader pairs by COLUMN.
+              Caught on August 12 from a screenshot, not from any computed
+              check — project brief §0.6. Each way of paying extra is now its
+              own block with its own heading. */}
+          <div className="mt-4 space-y-6">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field
+                id="start-year"
+                label="Start the extra in year"
+                value={startYear}
+                onChange={setStartYear}
+                hint="1 means starting with the next payment"
+              />
+              <div>
+                {/* "Pay every two weeks?" is a yes/no question and these are
+                    not yes/no answers. The heading names the choice the
+                    options actually offer. */}
+                <p className="label mb-2">How often you pay</p>
+                <div className="seg">
+                  <label className="seg-opt">
+                    <input
+                      type="radio"
+                      name="biweekly"
+                      checked={!biweekly}
+                      onChange={() => setBiweekly(false)}
+                    />
+                    Monthly
+                  </label>
+                  <label className="seg-opt">
+                    <input
+                      type="radio"
+                      name="biweekly"
+                      checked={biweekly}
+                      onChange={() => setBiweekly(true)}
+                    />
+                    Biweekly
+                  </label>
+                </div>
+                <p className="mt-1 text-[0.78rem] text-muted">
+                  Biweekly is 26 half-payments a year, which is 13 monthly
+                  payments
+                </p>
               </div>
-              <p className="mt-1 text-[0.78rem] text-muted">
-                26 half-payments a year, which is 13 monthly payments
-              </p>
+            </div>
+
+            <div className="border-t border-line pt-5">
+              <p className="label mb-3">Extra once a year</p>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field
+                  id="annual-extra"
+                  label="Amount"
+                  value={annualExtra}
+                  onChange={setAnnualExtra}
+                  prefix="$"
+                  hint="A bonus or tax refund you get every year"
+                />
+                <div>
+                  <label
+                    htmlFor="annual-month"
+                    className="block text-[0.83rem] font-semibold text-ink-2"
+                  >
+                    Which month it lands in
+                  </label>
+                  <select
+                    id="annual-month"
+                    value={annualMonth}
+                    onChange={(e) => setAnnualMonth(e.target.value)}
+                    className="mt-1.5 min-h-[46px] w-full border border-line-strong bg-surface px-3 text-[0.98rem] text-ink outline-none focus:border-accent"
+                  >
+                    {MONTHS.map((m, i) => (
+                      <option key={m} value={String(i + 1)}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-line pt-5">
+              <p className="label mb-3">A one-time lump sum</p>
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field
+                  id="lump-sum"
+                  label="Amount"
+                  value={lumpSum}
+                  onChange={setLumpSum}
+                  prefix="$"
+                  hint="An inheritance, a bonus, the sale of something"
+                />
+                <Field
+                  id="lump-year"
+                  label="Arrives in year"
+                  value={lumpYear}
+                  onChange={setLumpYear}
+                  hint="1 means within the next twelve months"
+                />
+              </div>
             </div>
           </div>
         </details>

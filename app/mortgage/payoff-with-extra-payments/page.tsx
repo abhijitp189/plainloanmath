@@ -181,6 +181,36 @@ const SIBLINGS = [
   { href: ROUTES.editorialPolicy, label: "How this site is written" },
 ];
 
+/**
+ * Two-column editorial body.
+ *
+ * Design guide §3.4: a block either has content on both sides or spans the
+ * full width — never a column of text on the left with a void beside it. The
+ * payment calculator page has always used `lg:grid-cols-2` for its editorial
+ * and this page shipped a single 68ch column inside a 1200px container, so
+ * every paragraph below the calculator sat against the left edge with roughly
+ * half the page empty. Reported from a screenshot on August 12; invisible to
+ * every computed check, which is §0.6 again.
+ *
+ * `lg:items-start` so a shorter second column ends where its content ends
+ * rather than stretching, and the measure inside each column still caps at
+ * `max-w-prose` because 68ch is a reading decision, not a layout one.
+ */
+function EditorialCols({
+  left,
+  right,
+}: {
+  left: React.ReactNode;
+  right: React.ReactNode;
+}) {
+  return (
+    <div className="grid gap-x-12 gap-y-8 lg:grid-cols-2 lg:items-start">
+      <div className="max-w-prose space-y-4 text-ink-2">{left}</div>
+      <div className="max-w-prose space-y-4 text-ink-2">{right}</div>
+    </div>
+  );
+}
+
 export default function MortgagePayoffPage() {
   return (
     <main>
@@ -269,7 +299,8 @@ export default function MortgagePayoffPage() {
             intro="The saving is not the money you pay in. It is all the interest that never gets charged on it."
           />
 
-          <div className="max-w-prose space-y-4 text-ink-2">
+          <EditorialCols
+            left={<>
             <p>
               Every month, interest is charged on whatever you still owe. Your
               scheduled payment covers that interest first, and only what is
@@ -315,7 +346,9 @@ export default function MortgagePayoffPage() {
               both.
             </p>
 
-            <h3 className="!mt-8 text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
+            </>}
+            right={<>
+            <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
               The formula
             </h3>
             <p>The scheduled monthly payment on a fixed-rate loan is:</p>
@@ -350,7 +383,8 @@ export default function MortgagePayoffPage() {
               once without — and reports the difference. The final month pays
               only what is actually owed rather than a full installment.
             </p>
-          </div>
+            </>}
+          />
         </section>
 
         {/* ── The four strategies ─────────────────────────────────────── */}
@@ -431,7 +465,8 @@ export default function MortgagePayoffPage() {
             </table>
           </div>
 
-          <div className="mt-8 max-w-prose space-y-4 text-ink-2">
+          <EditorialCols
+            left={<>
             <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
               Biweekly payments, honestly
             </h3>
@@ -465,7 +500,9 @@ export default function MortgagePayoffPage() {
               servicer&rsquo;s payment form.
             </p>
 
-            <h3 className="!mt-8 text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
+            </>}
+            right={<>
+            <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
               Lump sums, and what a recast actually does
             </h3>
             <p>
@@ -493,7 +530,8 @@ export default function MortgagePayoffPage() {
               thirty-year term — a reset amortization schedule that puts you
               back at the front of the interest curve.
             </p>
-          </div>
+            </>}
+          />
         </section>
 
         {/* ── Before you start ────────────────────────────────────────── */}
@@ -503,7 +541,8 @@ export default function MortgagePayoffPage() {
             intro="Two things worth checking, and one worth thinking about. All three are cheap now and expensive later."
           />
 
-          <div className="max-w-prose space-y-4 text-ink-2">
+          <EditorialCols
+            left={<>
             <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
               Make sure the money reaches the principal
             </h3>
@@ -551,7 +590,9 @@ export default function MortgagePayoffPage() {
               to trigger anything.
             </p>
 
-            <h3 className="!mt-8 text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
+            </>}
+            right={<>
+            <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
               When paying extra is the wrong move
             </h3>
             <p>
@@ -570,7 +611,8 @@ export default function MortgagePayoffPage() {
               don&rsquo;t get one. That comparison deserves its own tool and its
               own page rather than a paragraph here, and it is on the way.
             </p>
-          </div>
+            </>}
+          />
         </section>
 
         {/* ── Limits ──────────────────────────────────────────────────── */}
@@ -580,7 +622,8 @@ export default function MortgagePayoffPage() {
             intro="Stated plainly, because a calculator that hides its assumptions is worth less than one that admits them."
           />
 
-          <div className="max-w-prose space-y-4 text-ink-2">
+          <EditorialCols
+            left={<>
             <p>
               <strong className="font-semibold text-ink">
                 These figures are principal and interest only.
@@ -613,6 +656,8 @@ export default function MortgagePayoffPage() {
               applied, and would overstate the saving. Where this errs, it errs
               conservatively.
             </p>
+            </>}
+            right={<>
             <p>
               <strong className="font-semibold text-ink">
                 It assumes every payment is made on time
@@ -631,7 +676,8 @@ export default function MortgagePayoffPage() {
               same as one avoided next month, and no mortgage interest deduction
               is applied.
             </p>
-          </div>
+            </>}
+          />
         </section>
 
         {/* ── FAQ ─────────────────────────────────────────────────────── */}
@@ -641,26 +687,32 @@ export default function MortgagePayoffPage() {
             intro="The ones that come up most, answered in the order they usually come up."
           />
 
-          <div className="max-w-prose divide-y divide-line border-y border-line">
-            {/* Native <details>, and the same open/close affordance the
-                payment calculator's FAQ uses — design guide §7. A question
-                with no visible control does not read as expandable, and
-                matching the other calculator matters more than a new idea. */}
-            {FAQ.map((item) => (
-              <details key={item.q} className="group py-1">
-                <summary className="flex min-h-tap cursor-pointer list-none items-center justify-between gap-3 py-3 text-[0.98rem] font-bold text-ink marker:content-none">
-                  {item.q}
-                  <span
-                    aria-hidden="true"
-                    className="shrink-0 text-muted transition-transform duration-150 group-open:rotate-45"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="max-w-prose pb-3 text-[0.92rem] leading-relaxed text-ink-2">
-                  {item.a}
-                </p>
-              </details>
+          {/* Two columns, the same shape the payment calculator's FAQ uses.
+              A single 68ch column of questions inside a 1200px container is
+              the dead-right-column defect again — design guide §3.4. */}
+          <div className="grid gap-x-12 md:grid-cols-2 md:items-start">
+            {[FAQ.slice(0, 4), FAQ.slice(4)].map((column, i) => (
+              <div
+                key={i}
+                className="divide-y divide-line border-t border-line last:border-b md:border-b"
+              >
+                {column.map((item) => (
+                  <details key={item.q} className="group py-1">
+                    <summary className="flex min-h-tap cursor-pointer list-none items-center justify-between gap-3 py-3 text-[0.98rem] font-bold text-ink marker:content-none">
+                      {item.q}
+                      <span
+                        aria-hidden="true"
+                        className="shrink-0 text-muted transition-transform duration-150 group-open:rotate-45"
+                      >
+                        +
+                      </span>
+                    </summary>
+                    <p className="max-w-prose pb-3 text-[0.92rem] leading-relaxed text-ink-2">
+                      {item.a}
+                    </p>
+                  </details>
+                ))}
+              </div>
             ))}
           </div>
         </section>
@@ -668,7 +720,7 @@ export default function MortgagePayoffPage() {
         {/* ── Sources ─────────────────────────────────────────────────── */}
         <section className="mt-14">
           <h2 className="label">Sources</h2>
-          <ul className="mt-3 max-w-prose space-y-2 text-[0.88rem] text-ink-2">
+          <ul className="mt-3 grid gap-3 text-[0.88rem] text-ink-2 md:grid-cols-3">
             <li>
               <a
                 href={CFPB_SOURCES.payingDown.url}
