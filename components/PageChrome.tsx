@@ -76,20 +76,32 @@ export function PageHeader({
   );
 }
 
-/** The section head — heading left, intro beside it, 2px rule underneath.
-    Design guide §3.3.
+/** The section head — heading, then its intro beneath it, 2px rule under both.
+    Design guide §3.3, REVISED August 12, 2026.
 
-    ONE COPY, as of August 11. This markup existed four times — app/page.tsx,
-    the payment calculator page, PriceTable and ExtraPaymentTeaser — which is
-    four places for the same alignment bug to live. All four now call this.
+    It used to be two columns: heading left, intro in a second column beside
+    it, tops aligned. On a real screen that reads as two unrelated things
+    rather than as a pair. A 32px heading and a 15px paragraph starting on the
+    same top edge have no shared line to sit on — the paragraph floats level
+    with the heading's ascenders, roughly half a line above where the eye
+    expects a deck to start, and the gap between the two columns is wide enough
+    that nothing connects them. Reported from a screenshot; the previous
+    `items-start` fix corrected a worse version of the same problem and did not
+    go far enough.
 
-    items-start, not items-end. Bottom-aligning a one-line heading against a
-    three-line paragraph puts the paragraph's first line well above the top of
-    the heading, and the two blocks read as unrelated. Worse, "bottom" for a
-    paragraph is the foot of its last line box, which sits a few pixels below
-    the last visible baseline because of half-leading — so the two columns
-    never actually looked flush even when they were. Aligning the tops gives
-    the reader one line to start from, which is the direction they read. */
+    Stacking removes the whole class of defect. There is no cross-column
+    alignment left to get wrong at any width, the intro reads as a standfirst
+    because it sits where a standfirst sits, and the pair is a single block
+    that the 2px rule then closes.
+
+    The lost benefit was that the two-column head filled the width. The rule
+    underneath already does that, and §3.4's real target is a headline with a
+    void beside it, which this no longer is — the block spans full width.
+
+    This is a design guide change made deliberately and recorded here rather
+    than a component quietly disagreeing with the document. §3.3 needs updating
+    to match, and so does the "no `max-width` on section headings" note in
+    §2.5, which still holds: the cap below is on the INTRO, not the heading. */
 export function SectionHead({
   title,
   intro,
@@ -99,13 +111,13 @@ export function SectionHead({
   intro: React.ReactNode;
 }) {
   return (
-    <div className="mb-6 grid items-start gap-x-12 gap-y-2 border-b-rule border-line-strong pb-4 md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
-      <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-bold tracking-[-.015em] text-ink">
+    <div className="mb-7 border-b-rule border-line-strong pb-4">
+      <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-bold leading-[1.15] tracking-[-.015em] text-ink">
         {title}
       </h2>
-      {/* max-w-[46ch] keeps the intro from running to four ragged lines on a
-          wide screen, which is what made the right column look top-heavy. */}
-      <p className="max-w-[46ch] text-[0.95rem] leading-relaxed text-muted md:pt-[0.3rem]">
+      {/* 62ch on the intro only. A deck that runs the full 1200px is a
+          different defect from the one above, not a fix for it. */}
+      <p className="mt-2.5 max-w-[62ch] text-[1rem] leading-relaxed text-ink-2">
         {intro}
       </p>
     </div>

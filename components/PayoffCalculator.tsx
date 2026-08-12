@@ -15,7 +15,6 @@ import {
 import { EXAMPLE } from "@/lib/constants";
 import ResultActions from "@/components/ResultActions";
 import LoanLifeStrip from "@/components/LoanLifeStrip";
-import TotalPaidBars from "@/components/TotalPaidBars";
 import { scheduleToCsv } from "@/lib/csv";
 import { encodeParams, readNum, syncAddressBar } from "@/lib/share";
 
@@ -265,87 +264,126 @@ export default function PayoffCalculator() {
   const advancedOn =
     num(lumpSum) > 0 || num(annualExtra) > 0 || biweekly || startMonth > 1;
 
+  // Donut segments — the whole ring is what the loan costs with NO extra
+  // payments, split into what you borrowed, the interest you would still pay
+  // under your plan, and the interest the plan deletes. The three add back to
+  // the baseline total paid exactly, which is what makes the brass arc mean
+  // something: it is the slice of the ring you are removing.
+  const donut = result
+    ? [
+        {
+          key: "principal",
+          label: "What you borrowed",
+          value: principal,
+          color: "var(--c-pi)",
+        },
+        {
+          key: "interest",
+          label: "Interest you would still pay",
+          value: result.accelerated.totalInterest,
+          color: "var(--c-interest)",
+        },
+        {
+          key: "saved",
+          label: "Interest you avoid",
+          value: result.interestSaved,
+          color: "var(--brass)",
+        },
+      ].filter((seg) => seg.value > 0)
+    : [];
+
+  const donutTotal = result ? result.baseline.totalPaid : 0;
+
   return (
     <div className="mt-8">
-      <div className="panel p-5 sm:p-6">
-        <p className="label text-accent">Your loan</p>
-        <p className="mt-2 text-[0.86rem] leading-relaxed text-muted">
-          Already partway through? Enter what you owe today and the years you
-          have left, not the original figures.
-        </p>
+      {/* Inputs left, results right — the same shape as the payment
+          calculator. This shipped as one stacked column, which meant changing
+          an input and reading the answer were at opposite ends of a scroll:
+          on a phone that is unavoidable, on a laptop it was self-inflicted.
+          `.calc` also sets an explicit text color, which is the white-on-white
+          guard (design guide §4.2). */}
+      <div className="calc panel lg:grid lg:grid-cols-[minmax(320px,390px)_1fr]">
+        {/* ── Inputs ─────────────────────────────────────────────── */}
+        <div className="border-b-rule border-line-strong p-5 sm:p-6 lg:border-b-0 lg:border-r-rule">
+          <p className="label text-accent">Your loan</p>
+          <p className="mt-2 text-[0.84rem] leading-relaxed text-muted">
+            Already partway through? Enter what you owe today and the years you
+            have left, not the original figures.
+          </p>
 
-        <div className="mt-3.5 grid gap-5 sm:grid-cols-2">
-          <Field
-            id="amount"
-            label="Loan amount or current balance"
-            value={amount}
-            onChange={setAmount}
-            prefix="$"
-          />
-          <Field
-            id="rate"
-            label="Interest rate"
-            value={rate}
-            onChange={setRate}
-            suffix="%"
-          />
-          <Field
-            id="years"
-            label="Years remaining"
-            value={years}
-            onChange={setYears}
-            suffix="years"
-          />
-          <Field
-            id="extra"
-            label="Extra payment each month"
-            value={extra}
-            onChange={setExtra}
-            prefix="$"
-            hint="On top of the scheduled payment"
-          />
-        </div>
-
-        {/* Presets under the extra-payment field. Most phone visitors will
-            never type in it. */}
-        <div className="mt-4">
-          <p className="label mb-2">Or pick one</p>
-          <div className="seg">
-            {EXTRA_PRESETS.map((p) => (
-              <label key={p} className="seg-opt">
-                <input
-                  type="radio"
-                  name="extra-preset"
-                  checked={extraNow === p}
-                  onChange={() => setExtra(String(p))}
-                />
-                {p === 0 ? "Nothing" : <span className="num">${p}</span>}
-              </label>
-            ))}
+          <div className="mt-3.5 space-y-3.5">
+            <Field
+              id="amount"
+              label="Loan amount or current balance"
+              value={amount}
+              onChange={setAmount}
+              prefix="$"
+            />
+            <div className="grid grid-cols-2 gap-2.5">
+              <Field
+                id="rate"
+                label="Interest rate"
+                value={rate}
+                onChange={setRate}
+                suffix="%"
+              />
+              <Field
+                id="years"
+                label="Years left"
+                value={years}
+                onChange={setYears}
+                suffix="yr"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* The other three shapes, folded away. A visitor who wants "what if I
-            pay $200 more" should not have to scroll past a lump-sum field to
-            reach the answer — but the fields have to be in the HTML source, not
-            injected on open, and <details> is what prints open (design guide
-            §9) and works without JavaScript. */}
-        <details className="mt-5 border-t border-line pt-4" open={advancedOn}>
-          <summary className="min-h-tap cursor-pointer list-none text-sm font-semibold text-accent underline underline-offset-4 hover:text-accent-dk">
-            More ways to pay extra
-          </summary>
+          <p className="label mt-7">Your extra payments</p>
 
-          {/* GROUPED, NOT A FLAT GRID. This was one six-cell grid filling in
-              row-major order, which put "Which month it lands in" directly
-              beneath "Start the extra in year" while its actual partner,
-              "Extra once a year", sat in the other column. Every field was
-              labeled correctly and the pairing still read wrong, because a
-              two-column grid pairs by ROW and the reader pairs by COLUMN.
-              Caught on August 12 from a screenshot, not from any computed
-              check — project brief §0.6. Each way of paying extra is now its
-              own block with its own heading. */}
-          <div className="mt-4 space-y-6">
-            <div className="grid gap-5 sm:grid-cols-2">
+          <div className="mt-3 space-y-3.5">
+            <Field
+              id="extra"
+              label="Extra each month"
+              value={extra}
+              onChange={setExtra}
+              prefix="$"
+              hint="On top of the scheduled payment"
+            />
+
+            <div>
+              <p className="label mb-2">Or pick one</p>
+              <div className="seg">
+                {EXTRA_PRESETS.map((p) => (
+                  <label key={p} className="seg-opt">
+                    <input
+                      type="radio"
+                      name="extra-preset"
+                      checked={extraNow === p}
+                      onChange={() => setExtra(String(p))}
+                    />
+                    {p === 0 ? "Nothing" : <span className="num">${p}</span>}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* The other three shapes, folded away. Someone asking "what if I pay
+              $200 more" should not scroll past a lump-sum field to reach the
+              answer — but the fields are in the static HTML rather than mounted
+              on open, and <details> is what prints open (design guide §9) and
+              works with no JavaScript. */}
+          <details className="mt-5 border-t border-line pt-4" open={advancedOn}>
+            <summary className="min-h-tap cursor-pointer list-none py-1 text-sm font-semibold text-accent underline underline-offset-4 marker:content-none hover:text-accent-dk">
+              More ways to pay extra
+            </summary>
+
+            {/* GROUPED, NOT A FLAT GRID. This was one six-cell grid filling in
+                row-major order, which put "Which month it lands in" directly
+                beneath "Start the extra in year" while its actual partner sat
+                in the other column. Every field was labeled correctly and the
+                pairing still read wrong, because a grid pairs by ROW and a
+                reader pairs by COLUMN. */}
+            <div className="mt-4 space-y-5">
               <Field
                 id="start-year"
                 label="Start the extra in year"
@@ -353,10 +391,10 @@ export default function PayoffCalculator() {
                 onChange={setStartYear}
                 hint="1 means starting with the next payment"
               />
+
               <div>
                 {/* "Pay every two weeks?" is a yes/no question and these are
-                    not yes/no answers. The heading names the choice the
-                    options actually offer. */}
+                    not yes/no answers. The heading names the actual choice. */}
                 <p className="label mb-2">How often you pay</p>
                 <div className="seg">
                   <label className="seg-opt">
@@ -378,98 +416,237 @@ export default function PayoffCalculator() {
                     Biweekly
                   </label>
                 </div>
-                <p className="mt-1 text-[0.78rem] text-muted">
+                <p className="mt-1.5 text-[0.78rem] leading-relaxed text-muted">
                   Biweekly is 26 half-payments a year, which is 13 monthly
                   payments
                 </p>
               </div>
-            </div>
 
-            <div className="border-t border-line pt-5">
-              <p className="label mb-3">Extra once a year</p>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Field
-                  id="annual-extra"
-                  label="Amount"
-                  value={annualExtra}
-                  onChange={setAnnualExtra}
-                  prefix="$"
-                  hint="A bonus or tax refund you get every year"
-                />
-                <div>
-                  <label
-                    htmlFor="annual-month"
-                    className="block text-[0.83rem] font-semibold text-ink-2"
-                  >
-                    Which month it lands in
-                  </label>
-                  <select
-                    id="annual-month"
-                    value={annualMonth}
-                    onChange={(e) => setAnnualMonth(e.target.value)}
-                    className="mt-1.5 min-h-[46px] w-full border border-line-strong bg-surface px-3 text-[0.98rem] text-ink outline-none focus:border-accent"
-                  >
-                    {MONTHS.map((m, i) => (
-                      <option key={m} value={String(i + 1)}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
+              <div className="border-t border-line pt-4">
+                <p className="label mb-2.5">Extra once a year</p>
+                <div className="space-y-3">
+                  <Field
+                    id="annual-extra"
+                    label="Amount"
+                    value={annualExtra}
+                    onChange={setAnnualExtra}
+                    prefix="$"
+                    hint="A bonus or tax refund you get every year"
+                  />
+                  <div>
+                    <label
+                      htmlFor="annual-month"
+                      className="block text-[0.83rem] font-semibold text-ink-2"
+                    >
+                      Which month it lands in
+                    </label>
+                    <select
+                      id="annual-month"
+                      value={annualMonth}
+                      onChange={(e) => setAnnualMonth(e.target.value)}
+                      className="mt-1.5 min-h-[46px] w-full border border-line-strong bg-surface px-3 text-[0.98rem] text-ink outline-none focus:border-accent"
+                    >
+                      {MONTHS.map((m, i) => (
+                        <option key={m} value={String(i + 1)}>
+                          {m}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-line pt-4">
+                <p className="label mb-2.5">A one-time lump sum</p>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <Field
+                    id="lump-sum"
+                    label="Amount"
+                    value={lumpSum}
+                    onChange={setLumpSum}
+                    prefix="$"
+                  />
+                  <Field
+                    id="lump-year"
+                    label="Arrives in year"
+                    value={lumpYear}
+                    onChange={setLumpYear}
+                  />
                 </div>
               </div>
             </div>
+          </details>
+        </div>
 
-            <div className="border-t border-line pt-5">
-              <p className="label mb-3">A one-time lump sum</p>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Field
-                  id="lump-sum"
-                  label="Amount"
-                  value={lumpSum}
-                  onChange={setLumpSum}
-                  prefix="$"
-                  hint="An inheritance, a bonus, the sale of something"
-                />
-                <Field
-                  id="lump-year"
-                  label="Arrives in year"
-                  value={lumpYear}
-                  onChange={setLumpYear}
-                  hint="1 means within the next twelve months"
-                />
-              </div>
+        {/* ── Results ────────────────────────────────────────────── */}
+        <div className="p-5 sm:p-6">
+          {impossible ? (
+            <div className="min-h-tab">
+              <p className="label">Check the figures</p>
+              <p className="mt-3 max-w-[46ch] border-l-[3px] border-brass bg-brass-soft px-5 py-4 text-sm leading-relaxed text-ink-2">
+                At that rate and term the scheduled payment would not even cover
+                the monthly interest, so the balance would never fall.
+              </p>
             </div>
-          </div>
-        </details>
-      </div>
+          ) : !result ? (
+            <div className="min-h-tab">
+              <p className="label">Interest you would save</p>
+              <p className="mt-3 text-[0.92rem] text-muted">
+                Enter a balance, a rate and a term to see the result.
+              </p>
+            </div>
+          ) : (
+            <div className="min-h-tab">
+              <p className="label">Interest you would save</p>
 
-      {impossible && (
-        <p className="mt-5 border-l-[3px] border-brass bg-brass-soft px-5 py-4 text-sm text-ink-2">
-          At that rate and term the scheduled payment would not even cover the
-          monthly interest, so the balance would never fall. Check the figures.
-        </p>
-      )}
+              {/* Brass, and it is the page's one loud figure — design guide
+                  §1.3. --brass on --surface is 4.68:1, which clears the 4.5
+                  floor, and this is large text besides. */}
+              <p className="figure-xl mt-1 text-brass">
+                {formatUSD(result.interestSaved)}
+              </p>
+
+              <p className="mt-1.5 max-w-[46ch] text-[0.9rem] leading-relaxed text-muted">
+                {result.monthsSaved > 0 ? (
+                  <>
+                    and you would be done in{" "}
+                    <span className="num text-ink-2">
+                      {formatDuration(result.accelerated.months)}
+                    </span>{" "}
+                    instead of{" "}
+                    <span className="num text-ink-2">
+                      {formatDuration(result.baseline.months)}
+                    </span>{" "}
+                    — {formatDuration(result.monthsSaved)} sooner
+                  </>
+                ) : (
+                  <>
+                    Add an extra payment on the left and this figure starts
+                    moving.
+                  </>
+                )}
+              </p>
+
+              {/* Ruled rows rather than a bordered table: this is a statement
+                  of account and should read like one, the same way the payment
+                  calculator's breakdown does. */}
+              <table className="mt-5 w-full border-collapse text-[0.9rem]">
+                <caption className="sr-only">
+                  The same loan with and without your extra payments
+                </caption>
+                <thead>
+                  <tr className="border-b border-line text-left">
+                    <th scope="col" className="py-2 font-normal"></th>
+                    <th scope="col" className="label py-2 text-right">
+                      As scheduled
+                    </th>
+                    <th
+                      scope="col"
+                      className="label py-2 text-right text-accent"
+                    >
+                      With extra
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* The scheduled payment does NOT change when you pay extra.
+                      That is the single commonest misunderstanding about this
+                      subject, so the row says so rather than hiding it behind
+                      a matching pair of identical numbers. */}
+                  <Row
+                    label="Monthly payment"
+                    before={formatUSD(result.baseline.monthlyPayment)}
+                    after={
+                      plan.extraMonthly > 0
+                        ? formatUSD(
+                            result.accelerated.monthlyPayment +
+                              plan.extraMonthly,
+                          )
+                        : "Unchanged"
+                    }
+                  />
+                  <Row
+                    label="Time to pay off"
+                    before={formatDuration(result.baseline.months)}
+                    after={formatDuration(result.accelerated.months)}
+                  />
+                  <Row
+                    label="Total interest"
+                    before={formatUSD(result.baseline.totalInterest)}
+                    after={formatUSD(result.accelerated.totalInterest)}
+                  />
+                  <Row
+                    label="Total paid"
+                    before={formatUSD(result.baseline.totalPaid)}
+                    after={formatUSD(result.accelerated.totalPaid)}
+                  />
+                  {crossBefore !== null && crossAfter !== null && (
+                    <Row
+                      label="Principal first beats interest"
+                      before={`Month ${crossBefore}`}
+                      after={`Month ${crossAfter}`}
+                    />
+                  )}
+                </tbody>
+              </table>
+
+              {/* Legend in HTML above the chart, never inside the SVG —
+                  design guide §5.1. */}
+              <div className="mt-6">
+                <p className="label">Everything this loan costs you</p>
+                <ul className="mt-2.5 border-t border-line">
+                  {donut.map((seg) => (
+                    <li
+                      key={seg.key}
+                      className="flex items-baseline gap-2.5 border-b border-line py-2.5 text-[0.9rem]"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-[0.35rem] h-2.5 w-2.5 shrink-0"
+                        style={{
+                          background: seg.color,
+                          printColorAdjust: "exact",
+                          WebkitPrintColorAdjust: "exact",
+                        }}
+                      />
+                      <span className="flex-1 text-ink-2">{seg.label}</span>
+                      <span className="num font-semibold text-ink">
+                        {formatUSD(seg.value)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-5 flex justify-center">
+                  <PayoffDonut segments={donut} total={donutTotal} />
+                </div>
+              </div>
+
+              <ResultActions
+                csvFilename="plain-loan-math-payoff-schedule.csv"
+                note="The CSV is every payment, not just the years below, and it includes every extra payment above."
+                buildCsv={() =>
+                  scheduleToCsv(result.accelerated.schedule, {
+                    tool: "Payoff with extra payments",
+                    loanAmount: principal,
+                    annualRatePct: annualRate,
+                    termMonths,
+                    extraMonthly: plan.extraMonthly,
+                    planNote: describePlan(plan, basePayment),
+                  })
+                }
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
       {result && (
         <>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <Headline
-              label="You would pay it off"
-              value={formatDuration(result.monthsSaved)}
-              caption="earlier"
-            />
-            {/* Design guide §1.3 — brass, and only on the savings figure. */}
-            <Headline
-              label="You would save"
-              value={formatUSD(result.interestSaved)}
-              caption="in interest"
-              brass
-            />
-          </div>
-
+          {/* ── The strip ──────────────────────────────────────────── */}
           <div className="panel mt-6 p-5 sm:p-6">
             <p className="label">The life of your loan, month by month</p>
-            <p className="mt-2 max-w-[62ch] text-[0.9rem] leading-relaxed text-ink-2">
+            <p className="mt-2 max-w-[68ch] text-[0.9rem] leading-relaxed text-ink-2">
               Each mark is one payment. The slate part is the interest it
               covers, the teal part is the debt it clears. Watch the teal grow.
             </p>
@@ -481,101 +658,13 @@ export default function PayoffCalculator() {
             />
           </div>
 
-          <div className="panel mt-6 p-5 sm:p-6">
-            <table className="w-full border-collapse text-sm">
-              <caption className="sr-only">
-                Comparison of the loan with and without extra payments
-              </caption>
-              <thead>
-                <tr className="border-b-rule border-line-strong text-left">
-                  <th scope="col" className="py-2.5 font-medium text-muted"></th>
-                  <th scope="col" className="label py-2.5 text-right">
-                    Scheduled
-                  </th>
-                  <th
-                    scope="col"
-                    className="label py-2.5 text-right text-accent"
-                  >
-                    With extra
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* The scheduled payment does NOT change when you pay extra.
-                    That is the single most common misunderstanding about this
-                    whole subject, so the row says it rather than hiding it in
-                    a matching pair of identical numbers. */}
-                <Row
-                  label="Monthly payment"
-                  before={formatUSD(result.baseline.monthlyPayment)}
-                  after={
-                    plan.extraMonthly > 0
-                      ? formatUSD(
-                          result.accelerated.monthlyPayment + plan.extraMonthly,
-                        )
-                      : "Unchanged"
-                  }
-                />
-                <Row
-                  label="Time to pay off"
-                  before={formatDuration(result.baseline.months)}
-                  after={formatDuration(result.accelerated.months)}
-                />
-                <Row
-                  label="Total interest"
-                  before={formatUSD(result.baseline.totalInterest)}
-                  after={formatUSD(result.accelerated.totalInterest)}
-                />
-                <Row
-                  label="Total paid"
-                  before={formatUSD(result.baseline.totalPaid)}
-                  after={formatUSD(result.accelerated.totalPaid)}
-                />
-                {crossBefore !== null && crossAfter !== null && (
-                  <Row
-                    label="Principal first beats interest"
-                    before={`Month ${crossBefore}`}
-                    after={`Month ${crossAfter}`}
-                  />
-                )}
-              </tbody>
-            </table>
-
-            <TotalPaidBars
-              baselinePrincipal={
-                result.baseline.totalPaid - result.baseline.totalInterest
-              }
-              baselineInterest={result.baseline.totalInterest}
-              acceleratedPrincipal={
-                result.accelerated.totalPaid - result.accelerated.totalInterest
-              }
-              acceleratedInterest={result.accelerated.totalInterest}
-            />
-
-            <ResultActions
-              csvFilename="plain-loan-math-payoff-schedule.csv"
-              note="The CSV is every payment, not just the years shown below, and it includes every extra payment above."
-              buildCsv={() =>
-                scheduleToCsv(result.accelerated.schedule, {
-                  tool: "Payoff with extra payments",
-                  loanAmount: principal,
-                  annualRatePct: annualRate,
-                  termMonths,
-                  extraMonthly: plan.extraMonthly,
-                  planNote: describePlan(plan, basePayment),
-                })
-              }
-            />
-          </div>
-
-          {/* The tipping point. Bankrate states this as generic trivia — "year
-              18 or 19 on a 30-year loan" — without computing it for the loan in
-              front of the reader. It is one line of code and it is a different
-              number for every rate. */}
-          {crossBefore !== null && crossAfter !== null && (
-            <div className="mt-6 border-l-[3px] border-line-strong bg-paper px-5 py-4">
-              <p className="label">The tipping point</p>
-              <p className="mt-2 max-w-[68ch] text-[0.93rem] leading-relaxed text-ink-2">
+          {/* ── What the figures mean ──────────────────────────────
+              A grid, not a stack. These were three full-width callouts
+              separated by whitespace, which read as three unrelated boxes
+              dropped on the page rather than as a set. */}
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {crossBefore !== null && crossAfter !== null && (
+              <Insight title="The tipping point">
                 On the scheduled payments alone, more of your payment goes to
                 principal than to interest starting at{" "}
                 <strong className="font-semibold text-ink">
@@ -593,20 +682,13 @@ export default function PayoffCalculator() {
                     faster.
                   </>
                 ) : (
-                  " Add an extra payment above and watch that date move."
+                  " Add an extra payment and watch that date move."
                 )}
-              </p>
-            </div>
-          )}
+              </Insight>
+            )}
 
-          {/* What waiting costs. Almost every competitor answers "what do I
-              save if I start now". Nobody answers "what does it cost me to
-              start next year", which is the question that actually changes
-              behavior. */}
-          {delayed && result.interestSaved - delayed.interestSaved > 1 && (
-            <div className="mt-4 border-l-[3px] border-line-strong bg-paper px-5 py-4">
-              <p className="label">If you start a year from now instead</p>
-              <p className="mt-2 max-w-[68ch] text-[0.93rem] leading-relaxed text-ink-2">
+            {delayed && result.interestSaved - delayed.interestSaved > 1 && (
+              <Insight title="If you start a year from now instead">
                 The same plan, begun twelve months later, saves{" "}
                 <span className="num">{formatUSD(delayed.interestSaved)}</span>{" "}
                 rather than{" "}
@@ -616,18 +698,15 @@ export default function PayoffCalculator() {
                   {formatUSD(result.interestSaved - delayed.interestSaved)}
                 </strong>
                 , and finishes{" "}
-                {formatDuration(result.monthsSaved - delayed.monthsSaved)} later.
-              </p>
-            </div>
-          )}
+                {formatDuration(result.monthsSaved - delayed.monthsSaved)}{" "}
+                later.
+              </Insight>
+            )}
 
-          {/* Biweekly, checked against the free version of the same idea. */}
-          {biweeklyVsMonthly && (
-            <div className="mt-4 border-l-[3px] border-line-strong bg-paper px-5 py-4">
-              <p className="label">Biweekly, checked</p>
-              <p className="mt-2 max-w-[68ch] text-[0.93rem] leading-relaxed text-ink-2">
+            {biweeklyVsMonthly && (
+              <Insight title="Biweekly, checked">
                 Paying every two weeks puts in 13 monthly payments a year. You
-                can get the same 13 payments by adding{" "}
+                can get the same 13 by adding{" "}
                 <span className="num">{formatUSD(basePayment / 12)}</span> to
                 each monthly payment yourself — and that version pays off in{" "}
                 <span className="num">
@@ -636,13 +715,13 @@ export default function PayoffCalculator() {
                 against{" "}
                 <span className="num">
                   {formatDuration(result.accelerated.months)}
-                </span>{" "}
-                for the biweekly schedule, because the money reaches the
-                principal as it arrives instead of waiting for a whole payment
-                to accumulate.{" "}
+                </span>
+                , because the money reaches the principal as it arrives instead
+                of waiting for a whole payment to accumulate.
                 {biweeklyVsMonthly.totalInterest <
                 result.accelerated.totalInterest ? (
                   <>
+                    {" "}
                     That is{" "}
                     <span className="num">
                       {formatUSD(
@@ -653,27 +732,38 @@ export default function PayoffCalculator() {
                     less interest, for no fee.
                   </>
                 ) : null}
-              </p>
-            </div>
-          )}
+              </Insight>
+            )}
+          </div>
 
-          <button
-            type="button"
-            onClick={() => setShowSchedule((s) => !s)}
-            className="no-print mt-6 min-h-tap text-sm font-semibold text-accent underline underline-offset-4 hover:text-accent-dk"
-          >
-            {showSchedule ? "Hide" : "Show"} the year-by-year balance
-          </button>
+          {/* ── The schedule ───────────────────────────────────────
+              A <details> inside a panel, not a bare link floating between two
+              callouts. The old version was an underlined button with nothing
+              around it, so it read as something that had landed on the page by
+              accident. <details> also prints open (design guide §9), which the
+              button did not. */}
+          <details className="panel mt-6 px-5 sm:px-6">
+            <summary className="group flex min-h-tap cursor-pointer list-none items-center justify-between gap-3 py-4 text-[0.98rem] font-bold text-ink marker:content-none">
+              Show the year-by-year balance
+              <span
+                aria-hidden="true"
+                className="shrink-0 text-muted transition-transform duration-150 group-open:rotate-45"
+              >
+                +
+              </span>
+            </summary>
 
-          {showSchedule && (
-            <div className="tablewrap mt-4 overflow-x-auto" data-print-full>
-              <table className="w-full border-collapse text-sm">
-                <caption className="label mb-2 text-left">
+            <div
+              className="tablewrap -mx-5 overflow-x-auto pb-5 sm:-mx-6"
+              data-print-full
+            >
+              <table className="w-full min-w-[30rem] border-collapse text-sm">
+                <caption className="label px-5 pb-2 text-left sm:px-6">
                   Totals for each year
                 </caption>
                 <thead>
-                  <tr className="border-b-rule border-line-strong bg-paper-2 text-left">
-                    <th scope="col" className="label px-3 py-2.5">
+                  <tr className="border-y border-line-strong bg-paper-2 text-left">
+                    <th scope="col" className="label px-5 py-2.5 sm:px-6">
                       Year
                     </th>
                     <th scope="col" className="label px-3 py-2.5 text-right">
@@ -682,7 +772,10 @@ export default function PayoffCalculator() {
                     <th scope="col" className="label px-3 py-2.5 text-right">
                       Principal paid
                     </th>
-                    <th scope="col" className="label px-3 py-2.5 text-right">
+                    <th
+                      scope="col"
+                      className="label px-5 py-2.5 text-right sm:px-6"
+                    >
                       Balance
                     </th>
                   </tr>
@@ -690,14 +783,16 @@ export default function PayoffCalculator() {
                 <tbody>
                   {yearly(result.accelerated.schedule).map((y) => (
                     <tr key={y.year} className="border-b border-line">
-                      <td className="num px-3 py-2 text-ink-2">{y.year}</td>
+                      <td className="num px-5 py-2 text-ink-2 sm:px-6">
+                        {y.year}
+                      </td>
                       <td className="num px-3 py-2 text-right text-ink-2">
                         {formatUSD(y.interest)}
                       </td>
                       <td className="num px-3 py-2 text-right text-ink-2">
                         {formatUSD(y.principal)}
                       </td>
-                      <td className="num px-3 py-2 text-right font-semibold text-ink">
+                      <td className="num px-5 py-2 text-right font-semibold text-ink sm:px-6">
                         {formatUSD(y.balance)}
                       </td>
                     </tr>
@@ -705,10 +800,121 @@ export default function PayoffCalculator() {
                 </tbody>
               </table>
             </div>
-          )}
+          </details>
         </>
       )}
     </div>
+  );
+}
+
+/** One of the three read-this-next blocks under the calculator. */
+function Insight({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="h-full border-l-[3px] border-line-strong bg-surface px-5 py-4">
+      <p className="label">{title}</p>
+      <p className="mt-2 text-[0.92rem] leading-relaxed text-ink-2">
+        {children}
+      </p>
+    </div>
+  );
+}
+
+/* ── Donut ─────────────────────────────────────────────────────────
+   Design guide §5.3: r=68, stroke-width 26, stacked circles rotated -90°,
+   each segment shortened by 3px so a white separator falls between them.
+   Hand-written SVG — no charting library, ever.
+
+   The ring is what the loan costs with NO extra payments, so the brass arc is
+   literally the part of the circle the extra payments delete. Center figure
+   scales with its own length: "$793,884" is two characters longer than the
+   payment calculator's "$2,807" and overruns the hole at a fixed 21px. */
+function PayoffDonut({
+  segments,
+  total,
+}: {
+  segments: { key: string; label: string; value: number; color: string }[];
+  total: number;
+}) {
+  const R = 68;
+  const CIRC = 2 * Math.PI * R;
+  const GAP = 3;
+
+  const text = formatUSD(total);
+  // The hole is 110 user units across (2 × (68 − 13)). A mono digit runs about
+  // 0.6em, so 21px only clears 8 characters and "$1,284,120" on a large loan
+  // would print over the ring. Stepped rather than continuous so the figure
+  // does not resize on every keystroke.
+  const fontSize =
+    text.length > 10 ? 14 : text.length > 9 ? 15 : text.length > 8 ? 17 : 21;
+
+  let offset = 0;
+
+  return (
+    <svg
+      viewBox="0 0 180 180"
+      width="100%"
+      style={{ maxWidth: 210 }}
+      preserveAspectRatio="xMidYMid meet"
+      role="img"
+      aria-label={`Of ${formatUSD(total)} this loan would cost with no extra payments, ${formatUSD(
+        segments.find((s) => s.key === "saved")?.value ?? 0,
+      )} is interest your extra payments avoid`}
+    >
+      <g transform="rotate(-90 90 90)">
+        <circle
+          cx="90"
+          cy="90"
+          r={R}
+          fill="none"
+          stroke="var(--paper-2)"
+          strokeWidth="26"
+        />
+        {total > 0 &&
+          segments.map((s) => {
+            const len = Math.max((s.value / total) * CIRC - GAP, 0);
+            const el = (
+              <circle
+                key={s.key}
+                cx="90"
+                cy="90"
+                r={R}
+                fill="none"
+                stroke={s.color}
+                strokeWidth="26"
+                strokeDasharray={`${len} ${CIRC - len}`}
+                strokeDashoffset={-offset}
+                style={{
+                  printColorAdjust: "exact",
+                  WebkitPrintColorAdjust: "exact",
+                }}
+              />
+            );
+            offset += (s.value / total) * CIRC;
+            return el;
+          })}
+      </g>
+
+      <text
+        x="90"
+        y="86"
+        textAnchor="middle"
+        className="num"
+        fontSize={fontSize}
+        fontWeight="700"
+        fill="var(--ink)"
+      >
+        {text}
+      </text>
+      <text x="90" y="104" textAnchor="middle" fontSize="13" fill="var(--muted)">
+        without extra
+      </text>
+    </svg>
   );
 }
 
@@ -740,36 +946,6 @@ function describePlan(plan: PayoffPlan, scheduledPayment: number): string {
   if (parts.length === 0) return "no extra payment";
   const prefix = plan.startMonth > 1 ? `from month ${plan.startMonth}: ` : "";
   return prefix + parts.join("; ");
-}
-
-function Headline({
-  label,
-  value,
-  caption,
-  brass = false,
-}: {
-  label: string;
-  value: string;
-  caption: string;
-  brass?: boolean;
-}) {
-  return (
-    <div
-      className={`border-l-[3px] p-5 ${
-        brass ? "border-brass bg-brass-soft" : "border-accent bg-accent-soft"
-      }`}
-    >
-      <p className="label">{label}</p>
-      <p
-        className={`num mt-1.5 text-[clamp(1.6rem,5vw,2.1rem)] font-bold leading-none tracking-[-.03em] ${
-          brass ? "text-brass" : "text-ink"
-        }`}
-      >
-        {value}
-      </p>
-      <p className="mt-1.5 text-sm text-ink-2">{caption}</p>
-    </div>
-  );
 }
 
 function Row({
