@@ -98,7 +98,15 @@ export type RouteKey = keyof typeof ROUTES;
  * editorial review date instead of the build date. When one page is rewritten
  * without a full site review, put its date here.
  */
-export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {};
+export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
+  // Rebuilt August 12, 2026: the plan engine (lump sums, yearly extras,
+  // biweekly, delayed starts), the loan-life strip, the tipping point, and
+  // roughly 1,600 words of editorial with CFPB and Regulation Z citations.
+  // The rest of the site was not reviewed that day, which is exactly the case
+  // this map exists for — LAST_REVIEWED still says August 8 and still speaks
+  // for every other page.
+  payoff: "2026-08-12",
+};
 
 /**
  * Routes deliberately kept out of the sitemap. Empty today, and it should

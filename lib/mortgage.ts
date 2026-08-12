@@ -132,6 +132,212 @@ export function comparePayoff(
   };
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Payoff plans
+//
+// `amortize` above handles one shape of extra payment: the same amount, every
+// month, from the first payment. That is the commonest case and it is what the
+// payoff calculator shipped with, but it is not how most people actually pay
+// extra, and every competing calculator checked on August 12, 2026 offers more
+// than we did:
+//
+//   calculator.net           monthly extra, yearly extra, one-time, biweekly
+//   mortgagecalculator.org   monthly extra, opening lump sum, mid-term start
+//   omnicalculator.com       monthly extra, lump sum, one payment a year
+//
+// A plan below is a set of extra payments with dates attached. Everything is
+// expressed in absolute month numbers so the schedule loop stays a single pass
+// with no special cases, and so `delayPlan` can shift a whole plan by twelve
+// months without knowing what is in it.
+//
+// NOTE ON BIWEEKLY. Twenty-six half-payments a year is thirteen monthly
+// payments a year, which is twelve scheduled payments plus one extra. It is
+// modeled here as one extra full payment applied every twelfth month, because
+// that is what a US servicer running a biweekly program actually does: the
+// half-payments are held and applied when a full payment has accumulated.
+// Modeling it as one twelfth of a payment added every month would credit the
+// principal sooner than the money is really applied and would overstate the
+// saving. The difference is small and the page states which way it errs.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type PayoffPlan = {
+  /** Added to every scheduled payment from `startMonth` onward. */
+  extraMonthly: number;
+  /** Added once a year, in `annualExtraMonth` of each year. */
+  annualExtra: number;
+  /** 1–12. Which month of each year the annual extra lands in. */
+  annualExtraMonth: number;
+  /** A single one-off payment. */
+  lumpSum: number;
+  /** 1-based absolute month the lump sum lands in. */
+  lumpSumMonth: number;
+  /** 26 half-payments a year — see the note above. */
+  biweekly: boolean;
+  /** Nothing in this plan applies before this month. 1 means "from the start". */
+  startMonth: number;
+};
+
+export const NO_PLAN: PayoffPlan = {
+  extraMonthly: 0,
+  annualExtra: 0,
+  annualExtraMonth: 1,
+  lumpSum: 0,
+  lumpSumMonth: 1,
+  biweekly: false,
+  startMonth: 1,
+};
+
+/** True when the plan would put no extra money against the loan at all. */
+export function planIsEmpty(plan: PayoffPlan): boolean {
+  return (
+    plan.extraMonthly <= 0 &&
+    plan.annualExtra <= 0 &&
+    plan.lumpSum <= 0 &&
+    !plan.biweekly
+  );
+}
+
+/**
+ * The same plan, started `months` later.
+ *
+ * This is what powers the "what it costs to wait" figure. Shifting the plan
+ * rather than re-deriving it means the delayed run is provably the same plan —
+ * there is no second place for the two to drift apart.
+ */
+export function delayPlan(plan: PayoffPlan, months: number): PayoffPlan {
+  return {
+    ...plan,
+    startMonth: plan.startMonth + months,
+    lumpSumMonth: plan.lumpSumMonth + months,
+  };
+}
+
+/** The extra principal this plan puts in during `month`, before clamping. */
+function extraForMonth(
+  plan: PayoffPlan,
+  month: number,
+  scheduledPayment: number,
+): number {
+  if (month < plan.startMonth) return 0;
+
+  let extra = 0;
+
+  if (plan.extraMonthly > 0) extra += plan.extraMonthly;
+
+  // ((month - 1) % 12) + 1 maps month 12 to 12 rather than to 0, which a bare
+  // modulo does not. Getting this wrong moves every annual payment by a month.
+  if (plan.annualExtra > 0 && ((month - 1) % 12) + 1 === plan.annualExtraMonth) {
+    extra += plan.annualExtra;
+  }
+
+  if (plan.lumpSum > 0 && month === plan.lumpSumMonth) extra += plan.lumpSum;
+
+  if (plan.biweekly && month % 12 === 0) extra += scheduledPayment;
+
+  return extra;
+}
+
+/**
+ * Runs the loan under a plan. Same conventions as `amortize`: interest accrues
+ * monthly on the opening balance, the scheduled payment covers it first, and
+ * the final month pays only what is owed.
+ */
+export function amortizePlan(
+  principal: number,
+  annualRatePct: number,
+  termMonths: number,
+  plan: PayoffPlan,
+  maxMonths = 1200,
+): PayoffResult {
+  const payment = monthlyPayment(principal, annualRatePct, termMonths);
+  const r = annualRatePct / 100 / 12;
+
+  let balance = principal;
+  let totalInterest = 0;
+  let totalPaid = 0;
+  const schedule: PayoffRow[] = [];
+
+  for (let month = 1; month <= maxMonths && balance > 0.005; month++) {
+    const interest = balance * r;
+    const scheduledPrincipal = Math.min(payment - interest, balance);
+
+    // Never pay more than is owed, however large the plan is.
+    const extra = Math.max(
+      Math.min(
+        extraForMonth(plan, month, payment),
+        balance - Math.max(scheduledPrincipal, 0),
+      ),
+      0,
+    );
+
+    // Payment does not cover interest and no extra is arriving — the loan can
+    // never amortize, so stop rather than loop to maxMonths.
+    if (scheduledPrincipal + extra <= 0) break;
+
+    balance -= scheduledPrincipal + extra;
+    totalInterest += interest;
+    totalPaid += interest + scheduledPrincipal + extra;
+
+    schedule.push({
+      month,
+      interest,
+      principal: scheduledPrincipal,
+      extra,
+      balance: Math.max(balance, 0),
+    });
+  }
+
+  return {
+    monthlyPayment: payment,
+    months: schedule.length,
+    totalInterest,
+    totalPaid,
+    schedule,
+  };
+}
+
+/** The loan with and without the plan, plus the difference. */
+export function comparePlan(
+  principal: number,
+  annualRatePct: number,
+  termMonths: number,
+  plan: PayoffPlan,
+): Comparison {
+  const baseline = amortizePlan(
+    principal,
+    annualRatePct,
+    termMonths,
+    NO_PLAN,
+  );
+  const accelerated = amortizePlan(principal, annualRatePct, termMonths, plan);
+
+  return {
+    baseline,
+    accelerated,
+    monthsSaved: baseline.months - accelerated.months,
+    interestSaved: baseline.totalInterest - accelerated.totalInterest,
+  };
+}
+
+/**
+ * The first month in which the scheduled payment puts more toward principal
+ * than toward interest — the "tipping point".
+ *
+ * Deliberately measured on the SCHEDULED payment only, with `extra` excluded.
+ * The question a reader is asking is "when does my payment finally start
+ * working for me", and counting the extra would answer a different question:
+ * any month with a large enough extra would trivially qualify. Extra payments
+ * still move this date earlier, because they shrink the balance and therefore
+ * the interest charged on it — which is the finding worth showing.
+ *
+ * Returns null when the loan never gets there, which happens only on a loan
+ * that does not amortize.
+ */
+export function crossoverMonth(schedule: PayoffRow[]): number | null {
+  const row = schedule.find((r) => r.principal > r.interest);
+  return row ? row.month : null;
+}
+
 /** Whole dollars. Cent precision implies accuracy this cannot have. */
 export function formatUSD(value: number): string {
   return new Intl.NumberFormat("en-US", {

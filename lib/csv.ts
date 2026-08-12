@@ -31,6 +31,18 @@ export type ScheduleMeta = {
   annualRatePct: number;
   termMonths: number;
   extraMonthly: number;
+  /**
+   * A plain-English description of the whole extra-payment plan, when there is
+   * more to it than one monthly amount — a lump sum, a yearly extra, a
+   * biweekly schedule, a delayed start.
+   *
+   * Optional, and it supersedes `extraMonthly` in the preamble when present.
+   * Added August 12, 2026 with the payoff plan rebuild: a downloaded schedule
+   * whose preamble says "plus $250 extra each month" when the run also
+   * included a $10,000 lump sum is worse than no preamble at all, because it
+   * looks authoritative and is wrong.
+   */
+  planNote?: string;
 };
 
 /**
@@ -54,9 +66,11 @@ export function scheduleToCsv(
     row([`Plain Loan Math — ${meta.tool}`]),
     row([
       `Loan ${money(meta.loanAmount)} at ${meta.annualRatePct}% over ${years} years` +
-        (meta.extraMonthly > 0
-          ? `, plus ${money(meta.extraMonthly)} extra each month`
-          : ", no extra payment"),
+        (meta.planNote
+          ? `, ${meta.planNote}`
+          : meta.extraMonthly > 0
+            ? `, plus ${money(meta.extraMonthly)} extra each month`
+            : ", no extra payment"),
     ]),
     row([
       "Estimates only. Not financial advice, and not a loan offer. plainloanmath.com",

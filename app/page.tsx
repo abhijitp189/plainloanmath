@@ -237,7 +237,7 @@ export default function Home() {
         <div className="relative mx-auto max-w-wrap px-[var(--gutter)] pb-12 pt-[clamp(1.6rem,4vw,2.6rem)]">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.72fr)] lg:items-stretch">
             <div>
-              <p className="tag inline-flex items-center gap-2 bg-white/12 text-white/90">
+              <p className="tag inline-flex items-center gap-2 bg-white/10 text-white/90">
                 <span className="h-1.5 w-1.5 bg-[var(--gold-dark)]" />
                 No lender pays us
               </p>

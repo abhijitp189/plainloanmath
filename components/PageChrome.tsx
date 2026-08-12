@@ -41,7 +41,7 @@ export function PageHeader({
 
         <div className="mt-[1.05rem] grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.72fr)] lg:items-stretch">
           <div>
-            <p className="tag inline-flex items-center gap-2 bg-white/12 text-white/90">
+            <p className="tag inline-flex items-center gap-2 bg-white/10 text-white/90">
               {eyebrow}
             </p>
             <h1 className="mt-3 text-[clamp(1.9rem,5vw,2.8rem)] font-extrabold leading-[1.08] tracking-[-.03em]">

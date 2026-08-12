@@ -191,6 +191,16 @@ h4 {
    reader's fingers as they type, and proportional digits make the whole line
    shift on every keystroke. Tabular mono is the right call for a calculator
    even where it is the wrong call for a poster. */
+/* Safari draws its own disclosure triangle on <summary> through a proprietary
+   pseudo-element, and `list-style: none` — which is what Tailwind's list-none
+   sets — does not remove it in versions before 17. Both FAQ blocks and the
+   calculator's "More ways to pay extra" panel supply their own affordance, so
+   the default marker is a second, differently-styled control sitting beside
+   the real one. Added August 12, 2026. */
+summary::-webkit-details-marker {
+  display: none;
+}
+
 .num {
   font-family: var(--mono);
   font-variant-numeric: tabular-nums;

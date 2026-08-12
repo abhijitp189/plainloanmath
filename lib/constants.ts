@@ -48,6 +48,67 @@ export const PMI_SOURCE = {
 } as const;
 
 /**
+ * Federal limits on mortgage prepayment penalties.
+ *
+ * Like the PMI thresholds above, these are federal law rather than market
+ * data, so they do not expire the way a rate does. They live here because the
+ * payoff page states them and the citation belongs next to the number.
+ *
+ * Regulation Z, 12 C.F.R. § 1026.43(g), implementing the Dodd-Frank amendments
+ * to TILA at 15 U.S.C. § 1639c. A prepayment penalty on a covered transaction
+ * is permitted ONLY where the loan is a qualified mortgage, has a rate that
+ * cannot increase after consummation, and is not a higher-priced mortgage
+ * loan — § 1026.43(g)(1). Where it is permitted, § 1026.43(g)(2) caps it:
+ *
+ *   - it may not apply at all after three years from consummation
+ *   - it may not exceed 2% of the balance prepaid in the first two years
+ *   - it may not exceed 1% of the balance prepaid in the third year
+ *
+ * A widely repeated version of this gives the first year as 3%. That is wrong;
+ * the regulation states 2% for the whole of the first two years. Read from
+ * eCFR on August 12, 2026 and corroborated against Cornell LII and the Federal
+ * Reserve's Consumer Compliance Outlook:
+ *   https://www.ecfr.gov/current/title-12/chapter-X/part-1026/subpart-E/section-1026.43
+ *   https://www.law.cornell.edu/cfr/text/12/1026.43
+ *
+ * mentionedOn: /mortgage/payoff-with-extra-payments/
+ */
+export const PREPAYMENT_PENALTY = {
+  /** Maximum penalty, as a percent of the balance prepaid, in years 1–2. */
+  maxPctFirstTwoYears: 2,
+  /** Maximum penalty, as a percent of the balance prepaid, in year 3. */
+  maxPctThirdYear: 1,
+  /** No penalty may apply after this many years from consummation. */
+  maxYears: 3,
+} as const;
+
+export const PREPAYMENT_SOURCE = {
+  label: "Regulation Z, 12 C.F.R. § 1026.43(g)",
+  url: "https://www.ecfr.gov/current/title-12/chapter-X/part-1026/subpart-E/section-1026.43",
+  verified: "2026-08-12",
+} as const;
+
+/**
+ * CFPB consumer guidance cited on the payoff page. Read August 12, 2026.
+ *
+ * The prepayment answer is the source for the statement that penalties do not
+ * normally attach to extra principal paid in small amounts. The amortization
+ * answer is the source for the front-loading explanation.
+ */
+export const CFPB_SOURCES = {
+  prepaymentPenalty: {
+    label: "CFPB — What is a prepayment penalty?",
+    url: "https://www.consumerfinance.gov/ask-cfpb/what-is-a-prepayment-penalty-en-1957/",
+    verified: "2026-08-12",
+  },
+  payingDown: {
+    label: "CFPB — How does paying down a mortgage work?",
+    url: "https://www.consumerfinance.gov/ask-cfpb/how-does-paying-down-a-mortgage-work-en-1943/",
+    verified: "2026-08-12",
+  },
+} as const;
+
+/**
  * The recurring worked example used across the whole site.
  *
  * Project brief §9: one example everywhere, so figures stay comparable page to
