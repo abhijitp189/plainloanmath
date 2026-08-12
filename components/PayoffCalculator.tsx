@@ -15,6 +15,8 @@ import {
 import { EXAMPLE } from "@/lib/constants";
 import ResultActions from "@/components/ResultActions";
 import LoanLifeStrip from "@/components/LoanLifeStrip";
+import CalcField, { CalcSelect } from "@/components/CalcField";
+import Donut, { DonutLegend } from "@/components/Donut";
 import { scheduleToCsv } from "@/lib/csv";
 import { encodeParams, readNum, syncAddressBar } from "@/lib/share";
 
@@ -60,47 +62,6 @@ const URL_DEFAULTS = {
   yearlymo: 12,
   bw: 0,
 };
-
-type FieldProps = {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  prefix?: string;
-  suffix?: string;
-  hint?: string;
-  id: string;
-};
-
-function Field({ label, value, onChange, prefix, suffix, hint, id }: FieldProps) {
-  return (
-    <div>
-      <label htmlFor={id} className="block text-[0.83rem] font-semibold text-ink-2">
-        {label}
-      </label>
-      <div className="mt-1.5 flex items-center border border-line-strong bg-surface focus-within:border-accent">
-        {prefix && (
-          <span className="num pl-3 text-sm text-muted" aria-hidden="true">
-            {prefix}
-          </span>
-        )}
-        <input
-          id={id}
-          type="text"
-          inputMode="decimal"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="num min-h-[46px] w-full bg-transparent px-3 py-2.5 text-[0.98rem] text-ink outline-none"
-        />
-        {suffix && (
-          <span className="pr-3 text-sm text-muted" aria-hidden="true">
-            {suffix}
-          </span>
-        )}
-      </div>
-      {hint && <p className="mt-1 text-[0.78rem] text-muted">{hint}</p>}
-    </div>
-  );
-}
 
 /** Strips commas and currency symbols so pasted figures still parse. */
 function num(value: string): number {
@@ -312,7 +273,7 @@ export default function PayoffCalculator() {
           </p>
 
           <div className="mt-3.5 space-y-3.5">
-            <Field
+            <CalcField
               id="amount"
               label="Loan amount or current balance"
               value={amount}
@@ -320,14 +281,14 @@ export default function PayoffCalculator() {
               prefix="$"
             />
             <div className="grid grid-cols-2 gap-2.5">
-              <Field
+              <CalcField
                 id="rate"
                 label="Interest rate"
                 value={rate}
                 onChange={setRate}
                 suffix="%"
               />
-              <Field
+              <CalcField
                 id="years"
                 label="Years left"
                 value={years}
@@ -340,7 +301,7 @@ export default function PayoffCalculator() {
           <p className="label mt-7">Your extra payments</p>
 
           <div className="mt-3 space-y-3.5">
-            <Field
+            <CalcField
               id="extra"
               label="Extra each month"
               value={extra}
@@ -384,7 +345,7 @@ export default function PayoffCalculator() {
                 pairing still read wrong, because a grid pairs by ROW and a
                 reader pairs by COLUMN. */}
             <div className="mt-4 space-y-5">
-              <Field
+              <CalcField
                 id="start-year"
                 label="Start the extra in year"
                 value={startYear}
@@ -425,7 +386,7 @@ export default function PayoffCalculator() {
               <div className="border-t border-line pt-4">
                 <p className="label mb-2.5">Extra once a year</p>
                 <div className="space-y-3">
-                  <Field
+                  <CalcField
                     id="annual-extra"
                     label="Amount"
                     value={annualExtra}
@@ -433,40 +394,30 @@ export default function PayoffCalculator() {
                     prefix="$"
                     hint="A bonus or tax refund you get every year"
                   />
-                  <div>
-                    <label
-                      htmlFor="annual-month"
-                      className="block text-[0.83rem] font-semibold text-ink-2"
-                    >
-                      Which month it lands in
-                    </label>
-                    <select
-                      id="annual-month"
-                      value={annualMonth}
-                      onChange={(e) => setAnnualMonth(e.target.value)}
-                      className="mt-1.5 min-h-[46px] w-full border border-line-strong bg-surface px-3 text-[0.98rem] text-ink outline-none focus:border-accent"
-                    >
-                      {MONTHS.map((m, i) => (
-                        <option key={m} value={String(i + 1)}>
-                          {m}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <CalcSelect
+                    id="annual-month"
+                    label="Which month it lands in"
+                    value={annualMonth}
+                    onChange={setAnnualMonth}
+                    options={MONTHS.map((m, i) => ({
+                      value: String(i + 1),
+                      label: m,
+                    }))}
+                  />
                 </div>
               </div>
 
               <div className="border-t border-line pt-4">
                 <p className="label mb-2.5">A one-time lump sum</p>
                 <div className="grid grid-cols-2 gap-2.5">
-                  <Field
+                  <CalcField
                     id="lump-sum"
                     label="Amount"
                     value={lumpSum}
                     onChange={setLumpSum}
                     prefix="$"
                   />
-                  <Field
+                  <CalcField
                     id="lump-year"
                     label="Arrives in year"
                     value={lumpYear}
@@ -594,31 +545,22 @@ export default function PayoffCalculator() {
                   design guide §5.1. */}
               <div className="mt-6">
                 <p className="label">Everything this loan costs you</p>
-                <ul className="mt-2.5 border-t border-line">
-                  {donut.map((seg) => (
-                    <li
-                      key={seg.key}
-                      className="flex items-baseline gap-2.5 border-b border-line py-2.5 text-[0.9rem]"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="mt-[0.35rem] h-2.5 w-2.5 shrink-0"
-                        style={{
-                          background: seg.color,
-                          printColorAdjust: "exact",
-                          WebkitPrintColorAdjust: "exact",
-                        }}
-                      />
-                      <span className="flex-1 text-ink-2">{seg.label}</span>
-                      <span className="num font-semibold text-ink">
-                        {formatUSD(seg.value)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-2.5">
+                  <DonutLegend segments={donut} formatValue={formatUSD} />
+                </div>
 
                 <div className="mt-5 flex justify-center">
-                  <PayoffDonut segments={donut} total={donutTotal} />
+                  <Donut
+                    segments={donut}
+                    total={donutTotal}
+                    centerLabel="without extra"
+                    formatValue={formatUSD}
+                    ariaLabel={`Of ${formatUSD(
+                      donutTotal,
+                    )} this loan would cost with no extra payments, ${formatUSD(
+                      result.interestSaved,
+                    )} is interest your extra payments avoid`}
+                  />
                 </div>
               </div>
 
@@ -825,99 +767,6 @@ function Insight({
   );
 }
 
-/* ── Donut ─────────────────────────────────────────────────────────
-   Design guide §5.3: r=68, stroke-width 26, stacked circles rotated -90°,
-   each segment shortened by 3px so a white separator falls between them.
-   Hand-written SVG — no charting library, ever.
-
-   The ring is what the loan costs with NO extra payments, so the brass arc is
-   literally the part of the circle the extra payments delete. Center figure
-   scales with its own length: "$793,884" is two characters longer than the
-   payment calculator's "$2,807" and overruns the hole at a fixed 21px. */
-function PayoffDonut({
-  segments,
-  total,
-}: {
-  segments: { key: string; label: string; value: number; color: string }[];
-  total: number;
-}) {
-  const R = 68;
-  const CIRC = 2 * Math.PI * R;
-  const GAP = 3;
-
-  const text = formatUSD(total);
-  // The hole is 110 user units across (2 × (68 − 13)). A mono digit runs about
-  // 0.6em, so 21px only clears 8 characters and "$1,284,120" on a large loan
-  // would print over the ring. Stepped rather than continuous so the figure
-  // does not resize on every keystroke.
-  const fontSize =
-    text.length > 10 ? 14 : text.length > 9 ? 15 : text.length > 8 ? 17 : 21;
-
-  let offset = 0;
-
-  return (
-    <svg
-      viewBox="0 0 180 180"
-      width="100%"
-      style={{ maxWidth: 210 }}
-      preserveAspectRatio="xMidYMid meet"
-      role="img"
-      aria-label={`Of ${formatUSD(total)} this loan would cost with no extra payments, ${formatUSD(
-        segments.find((s) => s.key === "saved")?.value ?? 0,
-      )} is interest your extra payments avoid`}
-    >
-      <g transform="rotate(-90 90 90)">
-        <circle
-          cx="90"
-          cy="90"
-          r={R}
-          fill="none"
-          stroke="var(--paper-2)"
-          strokeWidth="26"
-        />
-        {total > 0 &&
-          segments.map((s) => {
-            const len = Math.max((s.value / total) * CIRC - GAP, 0);
-            const el = (
-              <circle
-                key={s.key}
-                cx="90"
-                cy="90"
-                r={R}
-                fill="none"
-                stroke={s.color}
-                strokeWidth="26"
-                strokeDasharray={`${len} ${CIRC - len}`}
-                strokeDashoffset={-offset}
-                style={{
-                  printColorAdjust: "exact",
-                  WebkitPrintColorAdjust: "exact",
-                }}
-              />
-            );
-            offset += (s.value / total) * CIRC;
-            return el;
-          })}
-      </g>
-
-      <text
-        x="90"
-        y="86"
-        textAnchor="middle"
-        className="num"
-        fontSize={fontSize}
-        fontWeight="700"
-        fill="var(--ink)"
-      >
-        {text}
-      </text>
-      <text x="90" y="104" textAnchor="middle" fontSize="13" fill="var(--muted)">
-        without extra
-      </text>
-    </svg>
-  );
-}
-
 /** A one-line plain-English record of the plan, for the CSV preamble. */
 function describePlan(plan: PayoffPlan, scheduledPayment: number): string {
   const parts: string[] = [];
@@ -948,6 +797,7 @@ function describePlan(plan: PayoffPlan, scheduledPayment: number): string {
   return prefix + parts.join("; ");
 }
 
+/** One line of the before-and-after comparison. */
 function Row({
   label,
   before,

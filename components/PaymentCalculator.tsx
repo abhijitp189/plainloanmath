@@ -11,6 +11,8 @@ import {
 import { PMI, EXAMPLE, FIELD_DEFAULTS } from "@/lib/constants";
 import { usePublishCalc } from "@/components/CalcState";
 import ResultActions from "@/components/ResultActions";
+import CalcField from "@/components/CalcField";
+import Donut, { DonutLegend } from "@/components/Donut";
 import { breakdownToCsv } from "@/lib/csv";
 import { encodeParams, readNum, syncAddressBar } from "@/lib/share";
 
@@ -267,7 +269,7 @@ export default function PaymentCalculator() {
         <p className="label text-accent">Your loan</p>
 
         <div className="mt-3.5 space-y-3.5">
-          <Field
+          <CalcField
             id="home-price"
             label="Home price"
             prefix="$"
@@ -277,7 +279,7 @@ export default function PaymentCalculator() {
           />
 
           <div className="grid grid-cols-[1fr_7.5rem] gap-2.5">
-            <Field
+            <CalcField
               id="down-amount"
               label="Down payment"
               prefix="$"
@@ -285,7 +287,7 @@ export default function PaymentCalculator() {
               onChange={onDownAmtChange}
               onBlur={() => setDownAmt(group(downAmt))}
             />
-            <Field
+            <CalcField
               id="down-percent"
               label="of price"
               suffix="%"
@@ -294,7 +296,7 @@ export default function PaymentCalculator() {
             />
           </div>
 
-          <Field
+          <CalcField
             id="rate"
             label="Interest rate"
             suffix="%"
@@ -333,7 +335,7 @@ export default function PaymentCalculator() {
             </div>
             {!TERMS.includes(termNow) && (
               <div className="mt-2.5">
-                <Field
+                <CalcField
                   id="term"
                   label="Term in years"
                   suffix="yrs"
@@ -353,14 +355,14 @@ export default function PaymentCalculator() {
 
         <div className="mt-3 space-y-3.5">
           <div className="grid grid-cols-2 gap-2.5">
-            <Field
+            <CalcField
               id="tax"
               label="Property tax"
               suffix="%/yr"
               value={taxPct}
               onChange={setTaxPct}
             />
-            <Field
+            <CalcField
               id="insurance"
               label="Insurance"
               suffix="%/yr"
@@ -369,7 +371,7 @@ export default function PaymentCalculator() {
             />
           </div>
           <div className="grid grid-cols-2 gap-2.5">
-            <Field
+            <CalcField
               id="pmi"
               label="Mortgage insurance"
               suffix="%/yr"
@@ -378,7 +380,7 @@ export default function PaymentCalculator() {
               disabled={!pmi.applies}
               hint={pmi.applies ? undefined : "Not charged at 20% down"}
             />
-            <Field
+            <CalcField
               id="hoa"
               label="HOA dues"
               prefix="$"
@@ -410,27 +412,18 @@ export default function PaymentCalculator() {
             rather than a bulleted list: this is a statement of account and it
             should read like one. */}
         <div className="mt-5 min-h-tab">
-          <ul className="border-t border-line">
-            {segments.map((s) => (
-              <li
-                key={s.key}
-                className="flex items-baseline gap-2.5 border-b border-line py-2.5 text-[0.92rem]"
-              >
-                <span
-                  aria-hidden="true"
-                  className="mt-[0.35rem] h-2.5 w-2.5 shrink-0"
-                  style={{ background: s.color }}
-                />
-                <span className="flex-1 text-ink-2">{s.label}</span>
-                <span className="num font-semibold text-ink">
-                  {formatUSD(s.value)}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <DonutLegend segments={segments} formatValue={formatUSD} />
 
           <div className="mt-5 flex justify-center">
-            <Donut segments={segments} total={piti.total} />
+            <Donut
+              segments={segments}
+              total={piti.total}
+              centerLabel="per month"
+              formatValue={formatUSD}
+              ariaLabel={`Principal and interest is ${formatUSD(
+                segments[0]?.value ?? 0,
+              )} of a ${formatUSD(piti.total)} monthly payment`}
+            />
           </div>
         </div>
 
@@ -500,138 +493,4 @@ export default function PaymentCalculator() {
   );
 }
 
-/* ── Donut ─────────────────────────────────────────────────────────
-   Design guide §5.3: r=68, stroke-width 26, stacked circles rotated -90°,
-   each segment shortened by 3px so a white separator falls between them.
-   Hand-written SVG — no charting library, ever. */
-function Donut({ segments, total }: { segments: Segment[]; total: number }) {
-  const R = 68;
-  const CIRC = 2 * Math.PI * R;
-  const GAP = 3;
 
-  let offset = 0;
-
-  return (
-    <svg
-      viewBox="0 0 180 180"
-      width="100%"
-      style={{ maxWidth: 200 }}
-      preserveAspectRatio="xMidYMid meet"
-      role="img"
-      aria-label={`Principal and interest is ${formatUSD(
-        segments[0]?.value ?? 0,
-      )} of a ${formatUSD(total)} monthly payment`}
-    >
-      <g transform="rotate(-90 90 90)">
-        <circle
-          cx="90"
-          cy="90"
-          r={R}
-          fill="none"
-          stroke="var(--paper-2)"
-          strokeWidth="26"
-        />
-        {total > 0 &&
-          segments.map((s) => {
-            const len = Math.max((s.value / total) * CIRC - GAP, 0);
-            const dash = `${len} ${CIRC - len}`;
-            const el = (
-              <circle
-                key={s.key}
-                cx="90"
-                cy="90"
-                r={R}
-                fill="none"
-                stroke={s.color}
-                strokeWidth="26"
-                strokeDasharray={dash}
-                strokeDashoffset={-offset}
-              />
-            );
-            offset += (s.value / total) * CIRC;
-            return el;
-          })}
-      </g>
-
-      <text
-        x="90"
-        y="86"
-        textAnchor="middle"
-        className="num"
-        fontSize="21"
-        fontWeight="700"
-        fill="var(--ink)"
-      >
-        {formatUSD(total)}
-      </text>
-      <text x="90" y="104" textAnchor="middle" fontSize="13" fill="var(--muted)">
-        per month
-      </text>
-    </svg>
-  );
-}
-
-/* ── Input ─────────────────────────────────────────────────────── */
-function Field({
-  id,
-  label,
-  value,
-  onChange,
-  onBlur,
-  prefix,
-  suffix,
-  hint,
-  disabled,
-}: {
-  id: string;
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  onBlur?: () => void;
-  prefix?: string;
-  suffix?: string;
-  hint?: string;
-  disabled?: boolean;
-}) {
-  return (
-    <div>
-      <label
-        htmlFor={id}
-        className="block text-[0.83rem] font-semibold text-ink-2"
-      >
-        {label}
-      </label>
-      <div className="relative mt-1.5">
-        {prefix && (
-          <span
-            aria-hidden="true"
-            className="num pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[0.95rem] text-muted"
-          >
-            {prefix}
-          </span>
-        )}
-        <input
-          id={id}
-          type="text"
-          inputMode="decimal"
-          value={value}
-          disabled={disabled}
-          onChange={(e) => onChange(e.target.value)}
-          onBlur={onBlur}
-          className={`num min-h-[46px] w-full border border-line-strong bg-surface py-2 text-[0.98rem] text-ink transition-colors duration-150 focus:border-accent focus:outline-none disabled:bg-paper disabled:text-muted ${
-            prefix ? "pl-7" : "pl-3"
-          } ${suffix ? "pr-12" : "pr-3"}`}
-        />
-        {suffix && (
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[0.85rem] text-muted"
-          >
-            {suffix}
-          </span>
-        )}
-      </div>
-      {hint && <p className="mt-1 text-[0.78rem] text-muted">{hint}</p>}
-    </div>
-  );
-}

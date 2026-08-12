@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import PaymentCalculator from "@/components/PaymentCalculator";
 import PriceTable from "@/components/PriceTable";
 import ExtraPaymentTeaser from "@/components/ExtraPaymentTeaser";
 import { CalcProvider } from "@/components/CalcState";
 import Disclaimer from "@/components/Disclaimer";
 import { breadcrumbSchema, SectionHead } from "@/components/PageChrome";
+import {
+  Band,
+  CalcFooter,
+  CalcStripe,
+  FaqBlock,
+  faqSchema,
+  type Faq,
+} from "@/components/CalcChrome";
 import { monthlyPayment, formatUSD } from "@/lib/mortgage";
 import { LAST_REVIEWED, SITE, PMI_SOURCE, EXAMPLE } from "@/lib/constants";
 import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
@@ -85,7 +92,7 @@ const COSTS = [
   },
 ];
 
-const FAQS = [
+const FAQS: Faq[] = [
   {
     q: "What is included in a monthly mortgage payment?",
     a: "Four things on most loans, which is why lenders call it PITI: principal, interest, property taxes and homeowners insurance. Mortgage insurance is added when you put down less than 20%, and HOA dues apply on some properties but are usually paid directly to the association rather than through the lender. Only the first two are the mortgage. The rest are bills your lender collects on someone else's behalf.",
@@ -140,16 +147,6 @@ const appSchema = {
   publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
 };
 
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQS.map((f) => ({
-    "@type": "Question",
-    name: f.q,
-    acceptedAnswer: { "@type": "Answer", text: f.a },
-  })),
-};
-
 const SIBLINGS = [
   { href: PAYOFF_PATH, label: "Payoff with extra payments" },
   { href: "/methodology/", label: "Methodology" },
@@ -166,7 +163,7 @@ export default function MortgagePaymentCalculatorPage() {
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(FAQS)) }}
         />
         <script
           type="application/ld+json"
@@ -180,74 +177,24 @@ export default function MortgagePaymentCalculatorPage() {
         {/* ── Stripe ─────────────────────────────────────────────────
             The eyebrow does the job the old homepage could not: it says what
             this is before anyone has to work it out from the fields. */}
-        <section className="banner">
-          <div className="relative mx-auto max-w-wrap px-[var(--gutter)] pb-11 pt-[clamp(1.1rem,2.8vw,1.7rem)]">
-            <nav aria-label="Breadcrumb" className="text-[0.85rem] text-white/70">
-              <ol className="flex flex-wrap items-center gap-1.5">
-                <li>
-                  <Link href="/" className="underline-offset-2 hover:underline">
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden="true">›</li>
-                <li aria-current="page" className="text-white/85">
-                  Mortgage payment calculator
-                </li>
-              </ol>
-            </nav>
-
-            {/* items-stretch, not items-end. With items-end the right column
-                sank to the bottom of a row sized by the H1 and left a large
-                empty region beside the headline — a §3.4 violation produced by
-                the code meant to satisfy §3.4. */}
-            <div className="mt-[1.05rem] grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.72fr)] lg:items-stretch">
-              <div>
-                <p className="tag inline-flex items-center gap-2 bg-white/10 text-white/90">
-                  <span className="h-1.5 w-1.5 bg-[var(--gold-dark)]" />
-                  Mortgage calculator
-                </p>
-                <h1 className="mt-3 text-[clamp(1.85rem,4.6vw,2.7rem)] font-extrabold leading-[1.08] tracking-[-.035em]">
-                  Mortgage payment calculator, with taxes and insurance
-                </h1>
-                <p className="mt-3 max-w-[62ch] text-[1.02rem] leading-relaxed text-white/80">
-                  Most calculators show you principal and interest and stop
-                  there. This one separates every part of the bill — the loan,
-                  the county, the insurer, and the mortgage insurance that only
-                  protects the lender — so you can see which pieces an interest
-                  rate can actually change.
-                </p>
-              </div>
-
-              <div className="flex flex-col justify-center border-white/20 lg:border-l lg:pl-8">
-                <p className="label text-white/60">What this does</p>
-                <ul className="mt-3 space-y-2 text-[0.9rem] text-white/80">
-                  {[
-                    "Updates as you type — nothing to submit",
-                    "Splits PITI, PMI and HOA dues apart",
-                    "Tells you when mortgage insurance ends",
-                    "Shareable link, CSV and PDF",
-                  ].map((p) => (
-                    <li key={p} className="flex items-start gap-2.5">
-                      <span
-                        aria-hidden="true"
-                        className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 bg-[var(--gold-dark)]"
-                      />
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <PaymentCalculator />
-            </div>
-          </div>
-        </section>
+        <CalcStripe
+          eyebrow="Mortgage calculator"
+          breadcrumb="Mortgage payment calculator"
+          title="Mortgage payment calculator, with taxes and insurance"
+          lede="Most calculators show you principal and interest and stop there. This one separates every part of the bill — the loan, the county, the insurer, and the mortgage insurance that only protects the lender — so you can see which pieces an interest rate can actually change."
+          asideTitle="What this does"
+          asidePoints={[
+            "Updates as you type — nothing to submit",
+            "Splits PITI, PMI and HOA dues apart",
+            "Tells you when mortgage insurance ends",
+            "Shareable link, CSV and PDF",
+          ]}
+        >
+          <PaymentCalculator />
+        </CalcStripe>
 
         {/* ── What the payment is made of ────────────────────────── */}
-        <section className="bg-paper py-[clamp(2.2rem,5vw,3.6rem)]">
-          <div className="mx-auto max-w-wrap px-[var(--gutter)]">
+        <Band tone="paper">
             <SectionHead
               title="Where each dollar actually goes"
               intro="Only the first of these is money you are paying to borrow. The rest pass through the lender to somebody else, which is why the interest rate has no effect on them at all."
@@ -269,8 +216,7 @@ export default function MortgagePaymentCalculatorPage() {
                 </li>
               ))}
             </ul>
-          </div>
-        </section>
+        </Band>
 
         {/* ── Live price table ───────────────────────────────────── */}
         <PriceTable />
@@ -279,8 +225,7 @@ export default function MortgagePaymentCalculatorPage() {
         <ExtraPaymentTeaser />
 
         {/* ── How it's calculated ────────────────────────────────── */}
-        <section className="bg-paper py-[clamp(2.2rem,5vw,3.6rem)]">
-          <div className="mx-auto max-w-wrap px-[var(--gutter)]">
+        <Band tone="paper">
             <SectionHead
               title="How the payment is calculated"
               intro="No part of this is proprietary. It is one formula, and you can check our arithmetic against it."
@@ -385,73 +330,21 @@ export default function MortgagePaymentCalculatorPage() {
                 </p>
               </div>
             </div>
-          </div>
-        </section>
+        </Band>
 
         {/* ── FAQ ────────────────────────────────────────────────── */}
-        <section className="py-[clamp(2.2rem,5vw,3.6rem)]">
-          <div className="mx-auto max-w-wrap px-[var(--gutter)]">
+        <Band tone="surface">
             <SectionHead
               title="Questions people actually ask"
               intro="Short answers. Longer ones are linked where a full page exists."
             />
-            {/* Native <details> — design guide §7. Works without JavaScript
-                and prints open. */}
-            <div className="grid gap-x-10 md:grid-cols-2 md:items-start">
-              {[FAQS.slice(0, 5), FAQS.slice(5)].map((column, i) => (
-                <div key={i}>
-                  {column.map((f) => (
-                    <details
-                      key={f.q}
-                      className="group border-b border-line py-1"
-                    >
-                      <summary className="flex min-h-tap cursor-pointer list-none items-center justify-between gap-3 py-2 text-[0.98rem] font-bold text-ink">
-                        {f.q}
-                        <span
-                          aria-hidden="true"
-                          className="shrink-0 text-muted transition-transform duration-150 group-open:rotate-45"
-                        >
-                          +
-                        </span>
-                      </summary>
-                      <p className="max-w-prose pb-3 text-[0.92rem] leading-relaxed text-ink-2">
-                        {f.a}
-                      </p>
-                    </details>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+            <FaqBlock items={FAQS} />
+        </Band>
 
-        {/* ── Related tools — design guide §8.4, three to four siblings ─ */}
-        <section className="bg-paper py-[clamp(2.2rem,5vw,3.6rem)]">
-          <div className="mx-auto max-w-wrap px-[var(--gutter)]">
-            <p className="label">Keep going</p>
-            <ul className="mt-3 flex flex-wrap gap-2.5">
-              {SIBLINGS.map((s) => (
-                <li key={s.href}>
-                  <Link href={s.href} className="btn btn-secondary">
-                    {s.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mx-auto max-w-prose">
-              <Disclaimer />
-            </div>
-
-            <p className="mt-8 border-t-rule border-line-strong pt-5 text-[0.85rem] text-muted">
-              Last reviewed{" "}
-              <time className="num" dateTime={LAST_REVIEWED}>
-                {LAST_REVIEWED}
-              </time>
-              . Estimates only — not financial advice, and not a loan offer.
-            </p>
-          </div>
-        </section>
+        {/* ── Keep going ──────────────────────────────────────────── */}
+        <Band tone="paper">
+          <CalcFooter siblings={SIBLINGS} reviewed={LAST_REVIEWED} />
+        </Band>
       </main>
     </CalcProvider>
   );

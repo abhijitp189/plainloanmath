@@ -9,8 +9,18 @@ import {
   CFPB_SOURCES,
 } from "@/lib/constants";
 import PayoffCalculator from "@/components/PayoffCalculator";
-import Disclaimer from "@/components/Disclaimer";
 import { breadcrumbSchema, SectionHead } from "@/components/PageChrome";
+import {
+  Band,
+  CalcFooter,
+  CalcStripe,
+  EditorialCols,
+  FaqBlock,
+  faqSchema,
+  Sources,
+  Sub,
+  type Faq,
+} from "@/components/CalcChrome";
 import { PAYOFF_PATH, PAYMENT_PATH, ROUTES, ROUTE_REVIEWED } from "@/lib/routes";
 import {
   amortizePlan,
@@ -118,7 +128,7 @@ const EXAMPLE_LABEL = `${formatUSD(P)} at ${R}% over ${EXAMPLE.termYears} years`
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-const FAQ: { q: string; a: string }[] = [
+const FAQ: Faq[] = [
   {
     q: "Does paying extra lower my monthly payment?",
     a: "No. Your scheduled payment is fixed for the life of a fixed-rate loan, and paying extra does not change it — it shortens the loan instead. The only way to lower the required payment on the same loan is a recast, where the servicer re-amortizes your reduced balance over the remaining term. Recasting lowers the payment but keeps the original payoff date, so it saves less interest than simply paying extra does.",
@@ -153,16 +163,6 @@ const FAQ: { q: string; a: string }[] = [
   },
 ];
 
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQ.map((f) => ({
-    "@type": "Question",
-    name: f.q,
-    acceptedAnswer: { "@type": "Answer", text: f.a },
-  })),
-};
-
 const appSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -181,36 +181,6 @@ const SIBLINGS = [
   { href: ROUTES.editorialPolicy, label: "How this site is written" },
 ];
 
-/**
- * Two-column editorial body.
- *
- * Design guide §3.4: a block either has content on both sides or spans the
- * full width — never a column of text on the left with a void beside it. The
- * payment calculator page has always used `lg:grid-cols-2` for its editorial
- * and this page shipped a single 68ch column inside a 1200px container, so
- * every paragraph below the calculator sat against the left edge with roughly
- * half the page empty. Reported from a screenshot on August 12; invisible to
- * every computed check, which is §0.6 again.
- *
- * `lg:items-start` so a shorter second column ends where its content ends
- * rather than stretching, and the measure inside each column still caps at
- * `max-w-prose` because 68ch is a reading decision, not a layout one.
- */
-function EditorialCols({
-  left,
-  right,
-}: {
-  left: React.ReactNode;
-  right: React.ReactNode;
-}) {
-  return (
-    <div className="grid gap-x-12 gap-y-8 lg:grid-cols-2 lg:items-start">
-      <div className="max-w-prose space-y-4 text-ink-2">{left}</div>
-      <div className="max-w-prose space-y-4 text-ink-2">{right}</div>
-    </div>
-  );
-}
-
 export default function MortgagePayoffPage() {
   return (
     <main>
@@ -220,7 +190,7 @@ export default function MortgagePayoffPage() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(FAQ)) }}
       />
       <script
         type="application/ld+json"
@@ -231,69 +201,24 @@ export default function MortgagePayoffPage() {
         }}
       />
 
-      {/* Same stripe as the payment calculator. Design guide §8.4 — every page
-          opens with a banner or stripe, right slot filled. */}
-      <section className="banner">
-        <div className="relative mx-auto max-w-wrap px-[var(--gutter)] pb-11 pt-[clamp(1.1rem,2.8vw,1.7rem)]">
-          <nav aria-label="Breadcrumb" className="text-[0.85rem] text-white/70">
-            <ol className="flex flex-wrap items-center gap-1.5">
-              <li>
-                <Link href={ROUTES.home} className="underline-offset-2 hover:underline">
-                  Home
-                </Link>
-              </li>
-              <li aria-hidden="true">&rsaquo;</li>
-              <li aria-current="page" className="text-white/85">
-                Payoff with extra payments
-              </li>
-            </ol>
-          </nav>
-
-          <div className="mt-[1.05rem] grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.72fr)] lg:items-stretch">
-            <div>
-              <p className="tag inline-flex items-center gap-2 bg-white/10 text-white/90">
-                <span className="h-1.5 w-1.5 bg-[var(--gold-dark)]" />
-                Payoff calculator
-              </p>
-              <h1 className="mt-3 text-[clamp(1.85rem,4.6vw,2.7rem)] font-extrabold leading-[1.08] tracking-[-.035em]">
-                Mortgage payoff calculator with extra payments
-              </h1>
-              <p className="mt-3 max-w-[62ch] text-[1.02rem] leading-relaxed text-white/80">
-                Add a little each month, one payment a year, a lump sum, or a
-                biweekly schedule. See the payoff date move and the interest you
-                never hand over.
-              </p>
-            </div>
-
-            <div className="flex flex-col justify-center border-white/20 lg:border-l lg:pl-8">
-              <p className="label text-white/60">Related</p>
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {[
-                  { href: PAYMENT_PATH, label: "Monthly payment" },
-                  { href: ROUTES.methodology, label: "Methodology" },
-                ].map((s) => (
-                  <li key={s.href}>
-                    <Link
-                      href={s.href}
-                      className="inline-flex min-h-tap items-center border border-white/25 bg-white/10 px-3.5 text-[0.88rem] text-white/90 transition-colors duration-150 hover:bg-white/20"
-                    >
-                      {s.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div className="mx-auto max-w-wrap px-[var(--gutter)] py-12">
+      <CalcStripe
+        eyebrow="Payoff calculator"
+        breadcrumb="Payoff with extra payments"
+        title="Mortgage payoff calculator with extra payments"
+        lede="Add a little each month, one payment a year, a lump sum, or a biweekly schedule. See the payoff date move and the interest you never hand over."
+        asideTitle="What this does"
+        asidePoints={[
+          "Updates as you type — nothing to submit",
+          "Monthly, yearly, lump sum or biweekly",
+          "Shows the month your payment starts working for you",
+          "Shareable link, CSV and PDF",
+        ]}
+      >
         <PayoffCalculator />
-
-        <Disclaimer />
+      </CalcStripe>
 
         {/* ── How it works ────────────────────────────────────────────── */}
-        <section className="mt-14">
+        <Band tone="paper">
           <SectionHead
             title="Why a small extra payment does so much"
             intro="The saving is not the money you pay in. It is all the interest that never gets charged on it."
@@ -321,9 +246,7 @@ export default function MortgagePayoffPage() {
               saves almost nothing.
             </p>
 
-            <h3 className="!mt-8 text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
-              The tipping point, and why nobody tells you yours
-            </h3>
+            <Sub>The tipping point, and why nobody tells you yours</Sub>
             <p>
               There is a month in every loan where the split finally reverses
               and more of your payment goes to principal than to interest. It is
@@ -348,9 +271,7 @@ export default function MortgagePayoffPage() {
 
             </>}
             right={<>
-            <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
-              The formula
-            </h3>
+            <Sub>The formula</Sub>
             <p>The scheduled monthly payment on a fixed-rate loan is:</p>
             <div className="border border-line bg-surface px-5 py-4 font-mono text-sm text-ink">
               M = P &times; r(1 + r)<sup>n</sup> &divide; ((1 + r)<sup>n</sup>{" "}
@@ -385,10 +306,10 @@ export default function MortgagePayoffPage() {
             </p>
             </>}
           />
-        </section>
+        </Band>
 
         {/* ── The four strategies ─────────────────────────────────────── */}
-        <section className="mt-14">
+        <Band tone="surface">
           <SectionHead
             title="Four ways to pay extra, and what each is worth"
             intro={
@@ -467,9 +388,7 @@ export default function MortgagePayoffPage() {
 
           <EditorialCols
             left={<>
-            <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
-              Biweekly payments, honestly
-            </h3>
+            <Sub>Biweekly payments, honestly</Sub>
             <p>
               Biweekly is sold as a trick. It is not one. Paying half your
               mortgage every two weeks means 26 half-payments a year, and 26
@@ -502,9 +421,7 @@ export default function MortgagePayoffPage() {
 
             </>}
             right={<>
-            <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
-              Lump sums, and what a recast actually does
-            </h3>
+            <Sub>Lump sums, and what a recast actually does</Sub>
             <p>
               A one-off payment — an inheritance, a bonus, the proceeds of a
               sale — behaves the same way as a monthly extra, just concentrated.
@@ -532,10 +449,10 @@ export default function MortgagePayoffPage() {
             </p>
             </>}
           />
-        </section>
+        </Band>
 
         {/* ── Before you start ────────────────────────────────────────── */}
-        <section className="mt-14">
+        <Band tone="paper">
           <SectionHead
             title="Before you send the first extra payment"
             intro="Two things worth checking, and one worth thinking about. All three are cheap now and expensive later."
@@ -543,9 +460,7 @@ export default function MortgagePayoffPage() {
 
           <EditorialCols
             left={<>
-            <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
-              Make sure the money reaches the principal
-            </h3>
+            <Sub>Make sure the money reaches the principal</Sub>
             <p>
               This is the one that quietly wastes people&rsquo;s money. Some
               servicers treat extra money as a payment made early: they hold it
@@ -562,9 +477,7 @@ export default function MortgagePayoffPage() {
               the money went to the wrong place and it is worth a phone call.
             </p>
 
-            <h3 className="!mt-8 text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
-              Check for a prepayment penalty
-            </h3>
+            <Sub>Check for a prepayment penalty</Sub>
             <p>
               Most borrowers do not have one. The CFPB&rsquo;s guidance is that
               a prepayment penalty typically applies only when the whole balance
@@ -592,9 +505,7 @@ export default function MortgagePayoffPage() {
 
             </>}
             right={<>
-            <h3 className="text-[1.1rem] font-extrabold tracking-[-.02em] text-ink">
-              When paying extra is the wrong move
-            </h3>
+            <Sub>When paying extra is the wrong move</Sub>
             <p>
               Money put into a mortgage returns your interest rate, guaranteed —
               which is a genuinely good return, and also an illiquid one. You
@@ -613,10 +524,10 @@ export default function MortgagePayoffPage() {
             </p>
             </>}
           />
-        </section>
+        </Band>
 
         {/* ── Limits ──────────────────────────────────────────────────── */}
-        <section className="mt-14">
+        <Band tone="surface">
           <SectionHead
             title="What this calculator leaves out"
             intro="Stated plainly, because a calculator that hides its assumptions is worth less than one that admits them."
@@ -678,114 +589,37 @@ export default function MortgagePayoffPage() {
             </p>
             </>}
           />
-        </section>
+        </Band>
 
         {/* ── FAQ ─────────────────────────────────────────────────────── */}
-        <section className="mt-14">
+        <Band tone="paper">
           <SectionHead
             title="Questions people ask"
             intro="The ones that come up most, answered in the order they usually come up."
           />
 
-          {/* Two columns, the same shape the payment calculator's FAQ uses.
-              A single 68ch column of questions inside a 1200px container is
-              the dead-right-column defect again — design guide §3.4. */}
-          <div className="grid gap-x-12 md:grid-cols-2 md:items-start">
-            {[FAQ.slice(0, 4), FAQ.slice(4)].map((column, i) => (
-              <div
-                key={i}
-                className="divide-y divide-line border-t border-line last:border-b md:border-b"
-              >
-                {column.map((item) => (
-                  <details key={item.q} className="group py-1">
-                    <summary className="flex min-h-tap cursor-pointer list-none items-center justify-between gap-3 py-3 text-[0.98rem] font-bold text-ink marker:content-none">
-                      {item.q}
-                      <span
-                        aria-hidden="true"
-                        className="shrink-0 text-muted transition-transform duration-150 group-open:rotate-45"
-                      >
-                        +
-                      </span>
-                    </summary>
-                    <p className="max-w-prose pb-3 text-[0.92rem] leading-relaxed text-ink-2">
-                      {item.a}
-                    </p>
-                  </details>
-                ))}
-              </div>
-            ))}
-          </div>
-        </section>
+          <FaqBlock items={FAQ} />
+        </Band>
 
-        {/* ── Sources ─────────────────────────────────────────────────── */}
-        <section className="mt-14">
-          <h2 className="label">Sources</h2>
-          <ul className="mt-3 grid gap-3 text-[0.88rem] text-ink-2 md:grid-cols-3">
-            <li>
-              <a
-                href={CFPB_SOURCES.payingDown.url}
-                className="text-accent-dk underline decoration-line-strong underline-offset-2"
-              >
-                {CFPB_SOURCES.payingDown.label}
-              </a>{" "}
-              <span className="text-muted">
-                — read <span className="num">{CFPB_SOURCES.payingDown.verified}</span>
-              </span>
-            </li>
-            <li>
-              <a
-                href={CFPB_SOURCES.prepaymentPenalty.url}
-                className="text-accent-dk underline decoration-line-strong underline-offset-2"
-              >
-                {CFPB_SOURCES.prepaymentPenalty.label}
-              </a>{" "}
-              <span className="text-muted">
-                — read{" "}
-                <span className="num">
-                  {CFPB_SOURCES.prepaymentPenalty.verified}
-                </span>
-              </span>
-            </li>
-            <li>
-              <a
-                href={PREPAYMENT_SOURCE.url}
-                className="text-accent-dk underline decoration-line-strong underline-offset-2"
-              >
-                {PREPAYMENT_SOURCE.label} — limits on prepayment penalties
-              </a>{" "}
-              <span className="text-muted">
-                — read <span className="num">{PREPAYMENT_SOURCE.verified}</span>
-              </span>
-            </li>
-          </ul>
-        </section>
+        {/* ── Sources ─────────────────────────────────────────────── */}
+        <Band tone="surface">
+          <Sources
+            items={[
+              CFPB_SOURCES.payingDown,
+              CFPB_SOURCES.prepaymentPenalty,
+              {
+                label: `${PREPAYMENT_SOURCE.label} — limits on prepayment penalties`,
+                url: PREPAYMENT_SOURCE.url,
+                verified: PREPAYMENT_SOURCE.verified,
+              },
+            ]}
+          />
+        </Band>
 
-        {/* ── Related ─────────────────────────────────────────────────── */}
-        <section className="mt-14 border-t-rule border-line-strong pt-8">
-          <h2 className="label">Related</h2>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-            {SIBLINGS.map((s) => (
-              <li key={s.href}>
-                <Link href={s.href} className="btn btn-secondary">
-                  {s.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <p className="mt-10 text-[0.85rem] text-muted">
-          Last reviewed{" "}
-          <time className="num" dateTime={REVIEWED}>
-            {REVIEWED}
-          </time>
-          . Questions or corrections:{" "}
-          <Link href={ROUTES.contact} className="text-accent-dk underline decoration-line-strong underline-offset-2">
-            contact us
-          </Link>
-          .
-        </p>
-      </div>
+        {/* ── Keep going ──────────────────────────────────────────── */}
+        <Band tone="paper">
+          <CalcFooter siblings={SIBLINGS} reviewed={REVIEWED} />
+        </Band>
     </main>
   );
 }
