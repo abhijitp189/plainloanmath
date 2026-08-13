@@ -211,6 +211,47 @@ export const CALCULATOR_KEYS = [
 ] as const satisfies readonly RouteKey[];
 
 /**
+ * The route keys that have a calculator page. Derived from CALCULATOR_KEYS so
+ * the two cannot disagree — add a calculator to that array and this type, the
+ * icon map (components/CalcIcons.tsx) and the stripe registry below all demand
+ * the new entry at compile time.
+ */
+export type CalculatorKey = (typeof CALCULATOR_KEYS)[number];
+
+/**
+ * The stripe identity for each calculator: the eyebrow tag above the H1, and
+ * the breadcrumb leaf label.
+ *
+ * The H1, the lede and the aside points are page-local editorial and stay on
+ * the page. These two are identity labels, and the breadcrumb one is read in
+ * two places that must agree — the visible breadcrumb in `CalcStripe` and the
+ * `BreadcrumbList` schema (`calcBreadcrumbSchema` in components/CalcChrome.tsx).
+ * Before this, each page typed the breadcrumb string twice and the eyebrow
+ * once; the two breadcrumbs were kept in sync by hand, which is exactly the
+ * arrangement §0.13 calls a defect waiting to happen — a schema describing a
+ * different trail from the page is a Search Console problem nobody would see.
+ *
+ * Keyed over CalculatorKey, so a new calculator cannot ship without both.
+ */
+export const CALC_STRIPE: Record<
+  CalculatorKey,
+  { eyebrow: string; breadcrumb: string }
+> = {
+  payment: {
+    eyebrow: "Mortgage calculator",
+    breadcrumb: "Mortgage payment calculator",
+  },
+  payoff: {
+    eyebrow: "Payoff calculator",
+    breadcrumb: "Payoff with extra payments",
+  },
+  payoffVsInvest: {
+    eyebrow: "Pay off or invest",
+    breadcrumb: "Pay off or invest",
+  },
+};
+
+/**
  * The label the header, footer and hub show for a route. Prefers `navLabel`,
  * falls back to the related-links `label`, then to the route key, so a nav
  * surface can never render an empty string. This is the one place those

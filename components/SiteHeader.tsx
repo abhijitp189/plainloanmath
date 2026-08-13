@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROUTES, CALCULATOR_KEYS, navLabel } from "@/lib/routes";
+import { CALC_ICON } from "@/components/CalcIcons";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // The menu bar.
@@ -36,28 +37,12 @@ import { ROUTES, CALCULATOR_KEYS, navLabel } from "@/lib/routes";
 
 type Item = { href: string; label: string; icon: React.ReactNode };
 
-const ICON = {
-  payment: (
-    <>
-      <rect x="3" y="6" width="18" height="12" rx="0" />
-      <circle cx="12" cy="12" r="2.6" />
-      <path d="M6.5 12h.01M17.5 12h.01" />
-    </>
-  ),
-  payoffVsInvest: (
-    <>
-      <path d="M12 4v16" />
-      <path d="M4 8h6M14 8h6" />
-      <path d="M7 8l-3 5h6zM17 8l-3 5h6z" />
-    </>
-  ),
-  payoff: (
-    <>
-      <path d="M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z" />
-      <path d="M4 7v5c0 1.7 3.6 3 8 3s8-1.3 8-3V7" />
-      <path d="M4 12v5c0 1.7 3.6 3 8 3s8-1.3 8-3v-5" />
-    </>
-  ),
+// The section icons, which live only in the header — About, Contact and the
+// Methodology link. The calculator icons used to sit here too, but they also
+// appear on the hub tool grid, so they moved to components/CalcIcons.tsx
+// (CALC_ICON) once the second copy started to drift (§0.13). These three have
+// exactly one home and stay put.
+const SECTION_ICON = {
   methodology: (
     <>
       <path d="M4 5h16v14H4z" />
@@ -78,22 +63,28 @@ const ICON = {
   ),
 };
 
-// This file owns only the ICONS and their presentation. The set of calculators,
-// their order and their labels all come from lib/routes.ts — CALCULATOR_KEYS for
-// the order and navLabel() for the text — so the header, the footer and the hub
-// read one source and cannot drift (§0.13). Adding a calculator is one entry in
-// CALCULATOR_KEYS plus an icon here, on the day its page ships (project brief §3,
-// defect 3 — the site once shipped nine links to routes that did not exist).
+// The set of calculators, their order and their labels all come from
+// lib/routes.ts — CALCULATOR_KEYS for the order, navLabel() for the text — and
+// their icons from CALC_ICON, which the hub reads too. So the header, the
+// footer and the hub share one source for every part of a calculator's
+// identity and cannot drift (§0.13). Adding a calculator is one entry in
+// CALCULATOR_KEYS and one in CALC_ICON, on the day its page ships (project
+// brief §3, defect 3 — the site once shipped nine links to routes that did not
+// exist).
 const CALCULATORS: Item[] = CALCULATOR_KEYS.map((key) => ({
   href: ROUTES[key],
   label: navLabel(key),
-  icon: ICON[key],
+  icon: CALC_ICON[key],
 }));
 
 const SECTIONS: Item[] = [
-  { href: ROUTES.methodology, label: "Methodology", icon: ICON.methodology },
-  { href: ROUTES.about, label: "About", icon: ICON.about },
-  { href: ROUTES.contact, label: "Contact", icon: ICON.contact },
+  {
+    href: ROUTES.methodology,
+    label: "Methodology",
+    icon: SECTION_ICON.methodology,
+  },
+  { href: ROUTES.about, label: "About", icon: SECTION_ICON.about },
+  { href: ROUTES.contact, label: "Contact", icon: SECTION_ICON.contact },
 ];
 
 function RowIcon({ children }: { children: React.ReactNode }) {

@@ -9,9 +9,10 @@ import {
   CFPB_SOURCES,
 } from "@/lib/constants";
 import PayoffCalculator from "@/components/PayoffCalculator";
-import { breadcrumbSchema, SectionHead } from "@/components/PageChrome";
+import { SectionHead } from "@/components/PageChrome";
 import {
   Band,
+  calcBreadcrumbSchema,
   CalcFooter,
   CalcStripe,
   EditorialCols,
@@ -202,15 +203,12 @@ export default function MortgagePayoffPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbSchema("Payoff with extra payments", PAYOFF_PATH),
-          ),
+          __html: JSON.stringify(calcBreadcrumbSchema("payoff")),
         }}
       />
 
       <CalcStripe
-        eyebrow="Payoff calculator"
-        breadcrumb="Payoff with extra payments"
+        route="payoff"
         title="Mortgage payoff calculator with extra payments"
         lede="Add a little each month, one payment a year, a lump sum, or a biweekly schedule. See the payoff date move and the interest you never hand over."
         asideTitle="What this does"

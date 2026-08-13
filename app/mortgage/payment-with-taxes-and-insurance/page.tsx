@@ -4,9 +4,10 @@ import PriceTable from "@/components/PriceTable";
 import ExtraPaymentTeaser from "@/components/ExtraPaymentTeaser";
 import { CalcProvider } from "@/components/CalcState";
 import Disclaimer from "@/components/Disclaimer";
-import { breadcrumbSchema, SectionHead } from "@/components/PageChrome";
+import { SectionHead } from "@/components/PageChrome";
 import {
   Band,
+  calcBreadcrumbSchema,
   CalcFooter,
   CalcStripe,
   FaqBlock,
@@ -173,9 +174,7 @@ export default function MortgagePaymentCalculatorPage() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(
-              breadcrumbSchema("Mortgage payment calculator", PAYMENT_PATH),
-            ),
+            __html: JSON.stringify(calcBreadcrumbSchema("payment")),
           }}
         />
 
@@ -183,8 +182,7 @@ export default function MortgagePaymentCalculatorPage() {
             The eyebrow does the job the old homepage could not: it says what
             this is before anyone has to work it out from the fields. */}
         <CalcStripe
-          eyebrow="Mortgage calculator"
-          breadcrumb="Mortgage payment calculator"
+          route="payment"
           title="Mortgage payment calculator, with taxes and insurance"
           lede="Most calculators show you principal and interest and stop there. This one separates every part of the bill — the loan, the county, the insurer, and the mortgage insurance that only protects the lender — so you can see which pieces an interest rate can actually change."
           asideTitle="What this does"

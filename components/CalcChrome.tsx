@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Disclaimer from "@/components/Disclaimer";
-import { ROUTES } from "@/lib/routes";
+import { breadcrumbSchema } from "@/components/PageChrome";
+import { ROUTES, CALC_STRIPE, type CalculatorKey } from "@/lib/routes";
 
 /**
  * The page furniture every calculator page shares.
@@ -42,18 +43,21 @@ import { ROUTES } from "@/lib/routes";
  * dead-column defect produced by the code written to prevent it.
  */
 export function CalcStripe({
-  eyebrow,
-  breadcrumb,
+  route,
   title,
   lede,
   asideTitle,
   asidePoints,
   children,
 }: {
-  /** The tag above the H1. Names the tool in one line — design guide §8.2. */
-  eyebrow: string;
-  /** The current page's breadcrumb label. */
-  breadcrumb: string;
+  /**
+   * The calculator this stripe belongs to. The eyebrow tag (design guide §8.2)
+   * and the breadcrumb leaf both come from CALC_STRIPE[route] in lib/routes.ts,
+   * so they are declared once and the breadcrumb here cannot disagree with the
+   * one in the page's BreadcrumbList schema — pass the same key to
+   * `calcBreadcrumbSchema` (§0.13).
+   */
+  route: CalculatorKey;
   title: string;
   lede: string;
   asideTitle: string;
@@ -62,6 +66,8 @@ export function CalcStripe({
   /** The calculator. */
   children: React.ReactNode;
 }) {
+  const { eyebrow, breadcrumb } = CALC_STRIPE[route];
+
   return (
     <section className="banner">
       <div className="relative mx-auto max-w-wrap px-[var(--gutter)] pb-11 pt-[clamp(1.1rem,2.8vw,1.7rem)]">
@@ -119,6 +125,19 @@ export function CalcStripe({
       </div>
     </section>
   );
+}
+
+/**
+ * The `BreadcrumbList` schema for a calculator page.
+ *
+ * A thin wrapper over the generic `breadcrumbSchema` (components/PageChrome.tsx,
+ * used by every text page too) that reads the leaf label from the same
+ * CALC_STRIPE registry `CalcStripe` reads, so the structured data and the
+ * visible breadcrumb are guaranteed to describe the same trail. Pass the same
+ * route key to both.
+ */
+export function calcBreadcrumbSchema(route: CalculatorKey) {
+  return breadcrumbSchema(CALC_STRIPE[route].breadcrumb, ROUTES[route]);
 }
 
 /* ── Bands ───────────────────────────────────────────────────────── */

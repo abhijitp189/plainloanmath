@@ -8,9 +8,10 @@ import {
   RETURN_SOURCE,
 } from "@/lib/constants";
 import PayoffVsInvestCalculator from "@/components/PayoffVsInvestCalculator";
-import { breadcrumbSchema, SectionHead } from "@/components/PageChrome";
+import { SectionHead } from "@/components/PageChrome";
 import {
   Band,
+  calcBreadcrumbSchema,
   CalcFooter,
   CalcStripe,
   EditorialCols,
@@ -140,15 +141,12 @@ export default function PayoffVsInvestPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbSchema("Pay off or invest", PAYOFF_VS_INVEST_PATH),
-          ),
+          __html: JSON.stringify(calcBreadcrumbSchema("payoffVsInvest")),
         }}
       />
 
       <CalcStripe
-        eyebrow="Pay off or invest"
-        breadcrumb="Pay off or invest"
+        route="payoffVsInvest"
         title="Pay off your mortgage, or invest the money instead"
         lede="Put the same amount either way and see where each one ends. The tool computes the exact return at which the two come out level for your loan, and it will not tell you which to choose."
         asideTitle="What this does"
