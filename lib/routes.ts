@@ -32,6 +32,16 @@ export const PAYOFF_PATH = "/mortgage/payoff-with-extra-payments/";
  */
 export const PAYMENT_PATH = "/mortgage/payment-with-taxes-and-insurance/";
 
+/**
+ * Pay off the mortgage, or invest the same money instead.
+ *
+ * Added August 13, 2026. Short slug under the loan-type silo: two levels, no
+ * stop words, and it does not repeat "mortgage" inside the path. The two older
+ * calculators run five and six words because those were argued for before the
+ * length rule existed; they are indexed and they stay.
+ */
+export const PAYOFF_VS_INVEST_PATH = "/mortgage/payoff-vs-invest/";
+
 export type PayoffParams = {
   loanAmount: number;
   ratePct: number;
@@ -75,6 +85,7 @@ export const ROUTES = {
   home: "/",
   payment: PAYMENT_PATH,
   payoff: PAYOFF_PATH,
+  payoffVsInvest: PAYOFF_VS_INVEST_PATH,
   methodology: "/methodology/",
   corrections: "/corrections/",
   editorialPolicy: "/editorial-policy/",
@@ -106,6 +117,8 @@ export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
   // this map exists for — LAST_REVIEWED still says August 8 and still speaks
   // for every other page.
   payoff: "2026-08-12",
+  // Built August 13, 2026. The rest of the site was not reviewed that day.
+  payoffVsInvest: "2026-08-13",
 };
 
 /**
@@ -114,3 +127,81 @@ export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
  * that excluding one is a recorded decision rather than a quiet omission.
  */
 export const SITEMAP_EXCLUDE: readonly RouteKey[] = [];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Related links, generated rather than typed.
+//
+// Sibling lists chosen by hand are a maintenance debt: at ten calculators that
+// is ten lists to revisit every time anything is added. Each route carries
+// topic tags instead, and `relatedRoutes()` derives the block, so a new
+// calculator appears on its relatives the moment it enters this file.
+//
+// SILO-AWARE FROM THE START, with one silo. Same-silo pages outrank cross-silo
+// ones, so a mortgage page fills its slots with mortgage pages when enough
+// exist and reaches across only when it cannot. Retrofitting this later would
+// mean revisiting every page the helper already feeds; building it now costs
+// one field. Cross-silo links worth making deliberately stay contextual body
+// links written by hand, not automatic slots.
+//
+// DETERMINISTIC ORDER. Ties break on the route key, so the built HTML does not
+// shuffle between builds and a diff stays readable.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type RouteMeta = {
+  label: string;
+  /** The loan type, or null for non-loan pages. */
+  silo: "mortgage" | null;
+  topics: readonly string[];
+};
+
+export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
+  payment: {
+    label: "Monthly payment calculator",
+    silo: "mortgage",
+    topics: ["payment", "escrow", "pmi", "affordability"],
+  },
+  payoff: {
+    label: "Extra payment calculator",
+    silo: "mortgage",
+    topics: ["payoff", "extra-payments", "interest", "amortization"],
+  },
+  payoffVsInvest: {
+    label: "Pay off or invest",
+    silo: "mortgage",
+    topics: ["payoff", "extra-payments", "investing", "interest"],
+  },
+  methodology: {
+    label: "How we calculate",
+    silo: null,
+    topics: ["amortization", "interest", "payment"],
+  },
+};
+
+/**
+ * The most closely related live routes, excluding the page itself.
+ *
+ * Score is one point per shared topic, plus two for being in the same silo, so
+ * a same-silo page with one shared topic still outranks a cross-silo page with
+ * two. Routes with no shared topic at all are never returned: an unrelated
+ * link is worse than a short list.
+ */
+export function relatedRoutes(
+  from: RouteKey,
+  limit = 4,
+): { href: string; label: string }[] {
+  const self = ROUTE_META[from];
+  if (!self) return [];
+
+  return (Object.keys(ROUTE_META) as RouteKey[])
+    .filter((key) => key !== from)
+    .map((key) => {
+      const meta = ROUTE_META[key]!;
+      const shared = meta.topics.filter((t) => self.topics.includes(t)).length;
+      const sameSilo = self.silo !== null && meta.silo === self.silo ? 2 : 0;
+      return { key, meta, score: shared === 0 ? 0 : shared + sameSilo };
+    })
+    .filter((r) => r.score > 0)
+    .sort((a, b) => b.score - a.score || a.key.localeCompare(b.key))
+    .slice(0, limit)
+    .map((r) => ({ href: ROUTES[r.key], label: r.meta.label }));
+}

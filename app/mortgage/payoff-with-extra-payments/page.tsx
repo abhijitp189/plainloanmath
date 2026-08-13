@@ -21,7 +21,13 @@ import {
   Sub,
   type Faq,
 } from "@/components/CalcChrome";
-import { PAYOFF_PATH, PAYMENT_PATH, ROUTES, ROUTE_REVIEWED } from "@/lib/routes";
+import {
+  PAYOFF_PATH,
+  PAYOFF_VS_INVEST_PATH,
+  PAYMENT_PATH,
+  ROUTES,
+  ROUTE_REVIEWED,
+} from "@/lib/routes";
 import {
   amortizePlan,
   comparePlan,
@@ -176,6 +182,7 @@ const appSchema = {
 
 const SIBLINGS = [
   { href: PAYMENT_PATH, label: "What your full monthly payment is made of" },
+  { href: PAYOFF_VS_INVEST_PATH, label: "Pay off, or invest the same money" },
   { href: ROUTES.methodology, label: "How every figure here is calculated" },
   { href: ROUTES.corrections, label: "Corrections policy" },
   { href: ROUTES.editorialPolicy, label: "How this site is written" },

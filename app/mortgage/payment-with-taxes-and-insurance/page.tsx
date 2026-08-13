@@ -15,7 +15,11 @@ import {
 } from "@/components/CalcChrome";
 import { monthlyPayment, formatUSD } from "@/lib/mortgage";
 import { LAST_REVIEWED, SITE, PMI_SOURCE, EXAMPLE } from "@/lib/constants";
-import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
+import {
+  PAYOFF_PATH,
+  PAYOFF_VS_INVEST_PATH,
+  PAYMENT_PATH,
+} from "@/lib/routes";
 
 // The monthly payment calculator, on its own page from August 10, 2026.
 //
@@ -149,6 +153,7 @@ const appSchema = {
 
 const SIBLINGS = [
   { href: PAYOFF_PATH, label: "Payoff with extra payments" },
+  { href: PAYOFF_VS_INVEST_PATH, label: "Pay off, or invest the same money" },
   { href: "/methodology/", label: "Methodology" },
   { href: "/", label: "All calculators" },
 ];

@@ -3,7 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PAYOFF_PATH, PAYMENT_PATH, ROUTES } from "@/lib/routes";
+import {
+  PAYOFF_PATH,
+  PAYOFF_VS_INVEST_PATH,
+  PAYMENT_PATH,
+  ROUTES,
+} from "@/lib/routes";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // The menu bar.
@@ -44,6 +49,13 @@ const ICON = {
       <path d="M6.5 12h.01M17.5 12h.01" />
     </>
   ),
+  payoffVsInvest: (
+    <>
+      <path d="M12 4v16" />
+      <path d="M4 8h6M14 8h6" />
+      <path d="M7 8l-3 5h6zM17 8l-3 5h6z" />
+    </>
+  ),
   payoff: (
     <>
       <path d="M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z" />
@@ -78,6 +90,11 @@ const ICON = {
 const CALCULATORS: Item[] = [
   { href: PAYMENT_PATH, label: "Monthly payment", icon: ICON.payment },
   { href: PAYOFF_PATH, label: "Payoff with extra payments", icon: ICON.payoff },
+  {
+    href: PAYOFF_VS_INVEST_PATH,
+    label: "Pay off or invest",
+    icon: ICON.payoffVsInvest,
+  },
 ];
 
 const SECTIONS: Item[] = [

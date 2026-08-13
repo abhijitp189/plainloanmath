@@ -151,6 +151,49 @@ export const FIELD_DEFAULTS = {
   monthlyHoa: 0,
 } as const;
 
+/**
+ * Long-run NOMINAL compound annual returns, 1928-2025.
+ *
+ * These prefill the "pay off or invest" comparison. They are HISTORY, not a
+ * forecast, and the page says so in the sentence beside the control. Nobody
+ * can cite a future rate of return to a statute the way a PMI threshold can be
+ * cited, which is why this is a required reader input with a starting value
+ * rather than a fixed assumption baked into the math (project brief §18).
+ *
+ * COMPUTED, NOT COPIED. Each figure was calculated from the annual return
+ * series in the source below, read August 13, 2026. The blend is computed from
+ * the annual series with yearly rebalancing — averaging the two headline rates
+ * instead gives 7.8%, which is wrong, because a rebalanced portfolio does not
+ * earn the weighted average of two compound rates.
+ *
+ * NOMINAL, deliberately. The mortgage rate a reader types is nominal. Mixing a
+ * real return against a nominal mortgage rate would corrupt the comparison far
+ * worse than any rounding. Inflation is named in "what this leaves out".
+ *
+ * A CONFLICT IN THE SOURCE, recorded rather than resolved (§0.3). Every year
+ * from 1928 to 2024 reconciles exactly against the table's own cumulative
+ * column. 2025 does not: the stated 10-year Treasury return of 7.80% implies
+ * 8.29% from that column's own movement ($7,159.45 to $7,752.88). Both
+ * readings were tested and both give 4.5 / 8.3 / 10.0 at one decimal, so the
+ * figures below are unaffected. Re-check at the next annual update.
+ */
+export const RETURN_TIERS = [
+  { key: "treasury", label: "10-year Treasuries", pct: 4.5 },
+  { key: "blend", label: "60/40 stocks and Treasuries", pct: 8.3 },
+  { key: "stocks", label: "S&P 500", pct: 10.0 },
+] as const;
+
+/** The starting value: the middle tier. Overwritable, and not a prediction. */
+export const RETURN_DEFAULT_PCT = 8.3;
+
+export const RETURN_SOURCE = {
+  label: "NYU Stern: historical returns on stocks, bonds and bills",
+  url: "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histretSP.html",
+  /** The source's own last-updated stamp. */
+  effective: "2026-01-05",
+  verified: "2026-08-13",
+} as const;
+
 /** Last full editorial review, shown on the page and matching the schema. */
 export const LAST_REVIEWED = "2026-08-08";
 

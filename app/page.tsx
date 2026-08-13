@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LAST_REVIEWED, SITE } from "@/lib/constants";
-import { PAYOFF_PATH, PAYMENT_PATH } from "@/lib/routes";
+import {
+  PAYOFF_PATH,
+  PAYOFF_VS_INVEST_PATH,
+  PAYMENT_PATH,
+} from "@/lib/routes";
 import { SectionHead } from "@/components/PageChrome";
 
 // The hub, from August 10, 2026. Repaletted August 11.
@@ -90,6 +94,19 @@ const LIVE: LiveTool[] = [
         <path d="M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z" />
         <path d="M4 7v5c0 1.7 3.6 3 8 3s8-1.3 8-3V7" />
         <path d="M4 12v5c0 1.7 3.6 3 8 3s8-1.3 8-3v-5" />
+      </>
+    ),
+  },
+  {
+    href: PAYOFF_VS_INVEST_PATH,
+    title: "Pay off or invest",
+    body: "Put the same money either way and see where each one ends, plus the return that decides it.",
+    question: "“Which is worth more in the end?”",
+    icon: (
+      <>
+        <path d="M12 4v16" />
+        <path d="M4 8h6M14 8h6" />
+        <path d="M7 8l-3 5h6zM17 8l-3 5h6z" />
       </>
     ),
   },
