@@ -5,6 +5,7 @@ import {
   PAYOFF_PATH,
   PAYOFF_VS_INVEST_PATH,
   PAYMENT_PATH,
+  navLabel,
 } from "@/lib/routes";
 import { SectionHead } from "@/components/PageChrome";
 
@@ -73,7 +74,7 @@ type PlannedTool = {
 const LIVE: LiveTool[] = [
   {
     href: PAYMENT_PATH,
-    title: "Monthly payment",
+    title: navLabel("payment"),
     body: "Principal, interest, taxes and insurance — separated, not lumped into one number.",
     question: "“What will I actually pay?”",
     icon: (
@@ -86,7 +87,7 @@ const LIVE: LiveTool[] = [
   },
   {
     href: PAYOFF_PATH,
-    title: "Payoff with extra payments",
+    title: navLabel("payoff"),
     body: "Add anything extra each month and watch the interest disappear.",
     question: "“What if I pay $200 more?”",
     icon: (
@@ -99,7 +100,7 @@ const LIVE: LiveTool[] = [
   },
   {
     href: PAYOFF_VS_INVEST_PATH,
-    title: "Pay off or invest",
+    title: navLabel("payoffVsInvest"),
     body: "Put the same money either way and see where each one ends, plus the return that decides it.",
     question: "“Which is worth more in the end?”",
     icon: (

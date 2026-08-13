@@ -148,7 +148,18 @@ export const SITEMAP_EXCLUDE: readonly RouteKey[] = [];
 // ─────────────────────────────────────────────────────────────────────────────
 
 type RouteMeta = {
+  /** The related-links label — appears in the "Related calculators" block. */
   label: string;
+  /**
+   * The header / footer / hub label, when it should be tighter than `label`.
+   * The nav wants "Monthly payment"; the related block wants "Monthly payment
+   * calculator". Both live here so a rename is one edit, not four (§0.13).
+   * Before this, the header, the footer and the hub each carried their own
+   * copy — and they had already drifted: the header said "Payoff with extra
+   * payments" while this file said "Extra payment calculator" for one tool,
+   * and the footer was missing the "Pay off or invest" calculator entirely.
+   */
+  navLabel?: string;
   /** The loan type, or null for non-loan pages. */
   silo: "mortgage" | null;
   topics: readonly string[];
@@ -157,16 +168,19 @@ type RouteMeta = {
 export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
   payment: {
     label: "Monthly payment calculator",
+    navLabel: "Monthly payment",
     silo: "mortgage",
     topics: ["payment", "escrow", "pmi", "affordability"],
   },
   payoff: {
     label: "Extra payment calculator",
+    navLabel: "Payoff with extra payments",
     silo: "mortgage",
     topics: ["payoff", "extra-payments", "interest", "amortization"],
   },
   payoffVsInvest: {
     label: "Pay off or invest",
+    navLabel: "Pay off or invest",
     silo: "mortgage",
     topics: ["payoff", "extra-payments", "investing", "interest"],
   },
@@ -176,6 +190,37 @@ export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
     topics: ["amortization", "interest", "payment"],
   },
 };
+
+/**
+ * The live calculators, in the order they appear in navigation.
+ *
+ * The single source for "which calculators exist and in what sequence." The
+ * header, the footer and the hub tool grid all iterate this, so a new
+ * calculator is one entry here plus its page — and it cannot land in one nav
+ * surface but not another. That is not hypothetical: before this list existed,
+ * "Pay off or invest" shipped into the header and the hub but was never added
+ * to the footer, because each surface kept its own hand-typed list.
+ *
+ * Add a calculator here the day its page ships, not the day it is planned
+ * (project brief §3, defect 3 — nine links to pages that did not yet exist).
+ */
+export const CALCULATOR_KEYS = [
+  "payment",
+  "payoff",
+  "payoffVsInvest",
+] as const satisfies readonly RouteKey[];
+
+/**
+ * The label the header, footer and hub show for a route. Prefers `navLabel`,
+ * falls back to the related-links `label`, then to the route key, so a nav
+ * surface can never render an empty string. This is the one place those
+ * surfaces read their calculator names from — none of them carries its own
+ * copy any more (§0.13).
+ */
+export function navLabel(key: RouteKey): string {
+  const meta = ROUTE_META[key];
+  return meta?.navLabel ?? meta?.label ?? key;
+}
 
 /**
  * The most closely related live routes, excluding the page itself.

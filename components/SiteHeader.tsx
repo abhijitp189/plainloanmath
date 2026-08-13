@@ -3,12 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  PAYOFF_PATH,
-  PAYOFF_VS_INVEST_PATH,
-  PAYMENT_PATH,
-  ROUTES,
-} from "@/lib/routes";
+import { ROUTES, CALCULATOR_KEYS, navLabel } from "@/lib/routes";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // The menu bar.
@@ -83,19 +78,17 @@ const ICON = {
   ),
 };
 
-// Only tools with a live page appear. Project brief §3, defect 3 — the site
-// shipped nine links to routes that did not exist, and a nav array is exactly
-// where a tenth comes from. Add a calculator here the day its page ships, not
-// the day it is planned.
-const CALCULATORS: Item[] = [
-  { href: PAYMENT_PATH, label: "Monthly payment", icon: ICON.payment },
-  { href: PAYOFF_PATH, label: "Payoff with extra payments", icon: ICON.payoff },
-  {
-    href: PAYOFF_VS_INVEST_PATH,
-    label: "Pay off or invest",
-    icon: ICON.payoffVsInvest,
-  },
-];
+// This file owns only the ICONS and their presentation. The set of calculators,
+// their order and their labels all come from lib/routes.ts — CALCULATOR_KEYS for
+// the order and navLabel() for the text — so the header, the footer and the hub
+// read one source and cannot drift (§0.13). Adding a calculator is one entry in
+// CALCULATOR_KEYS plus an icon here, on the day its page ships (project brief §3,
+// defect 3 — the site once shipped nine links to routes that did not exist).
+const CALCULATORS: Item[] = CALCULATOR_KEYS.map((key) => ({
+  href: ROUTES[key],
+  label: navLabel(key),
+  icon: ICON[key],
+}));
 
 const SECTIONS: Item[] = [
   { href: ROUTES.methodology, label: "Methodology", icon: ICON.methodology },

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PAYOFF_PATH, PAYMENT_PATH, ROUTES } from "@/lib/routes";
+import { ROUTES, CALCULATOR_KEYS, navLabel } from "@/lib/routes";
 import { SITE } from "@/lib/constants";
 
 // Light footer, deliberately. Design guide §3.2: the dark band is spent once
@@ -10,13 +10,13 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
   [
     {
       heading: "Calculators",
-      links: [
-        { href: PAYMENT_PATH, label: "Monthly payment" },
-        {
-          href: PAYOFF_PATH,
-          label: "Payoff with extra payments",
-        },
-      ],
+      // Every live calculator, from the one list in lib/routes.ts. Hand-typing
+      // this column is how it came to be missing "Pay off or invest" after that
+      // calculator shipped into the header and the hub but not here (§0.13).
+      links: CALCULATOR_KEYS.map((key) => ({
+        href: ROUTES[key],
+        label: navLabel(key),
+      })),
     },
     {
       heading: "How this works",
