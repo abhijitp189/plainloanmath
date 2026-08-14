@@ -56,7 +56,21 @@
   --paper-2: #E7E1D4;
   --line-strong: #8E7F5F;
   --focus: #0D6E5F;
-  --ink-deep: #101A18;
+  /* The one dark field. Changed August 14, 2026 from #101A18, which was
+     R16 G26 B24 — green was its highest channel and it read as dark green on
+     a phone. Two reasons for this value specifically:
+
+     1. The palette went warm on August 11 (--paper #F2EEE6) but both darks
+        kept their cool cast from before that change. This one is now warm
+        (R15 G12 B10), so the site's ground and its dark agree.
+     2. It fixes a contrast failure nobody had computed. --accent is the
+        primary button fill sitting ON this band, and against #101A18 its
+        boundary measured 2.885:1 against WCAG 1.4.11's 3:1. Design guide
+        §7.1 never listed the pair. It is 3.17:1 here.
+
+     A neutral or warm near-black at the old lightness does NOT fix (2), and
+     pure black does but throws away (1). This is the value that does both. */
+  --ink-deep: #0F0C0A;
 
   /* A brass tint, for brass on the dark band where the full-strength value
      goes muddy. Kept under its old name so nothing that referenced it

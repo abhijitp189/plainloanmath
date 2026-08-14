@@ -414,7 +414,13 @@ export default function RefinanceCalculator() {
                   </p>
                 ) : (
                   <>
-                    <p className="figure-note num mt-2 text-[clamp(1.6rem,5vw,2.3rem)] leading-none">
+                    {/* NOT `.figure-note`, which is brass. Brass means "money
+                        you do not pay" and this is a duration (design guide
+                        §1.3). The only brass on this page is the interest
+                        saved in the chart. Same size and weight, ink instead —
+                        it is still the page's loudest figure, it just is not
+                        spending a color that means something else. */}
+                    <p className="num mt-2 text-[clamp(1.6rem,5vw,2.3rem)] font-bold leading-none tracking-[-0.03em] text-ink">
                       {yearsLabel(shown.breakEvenMonth)}
                     </p>
                     <p className="mt-2 max-w-prose text-[0.9rem] leading-relaxed text-ink-2">
@@ -428,8 +434,16 @@ export default function RefinanceCalculator() {
                 )}
 
                 {/* THE DIFFERENTIATOR, and §8.4 requires it on the first
-                    screen rather than buried further down the page. */}
-                <div className="mt-5 border-l-[3px] border-brass bg-brass-soft p-4">
+                    screen rather than buried further down the page.
+
+                    Neutral `--line-strong` on `--surface`, which is design
+                    guide §4.9's treatment for a block that explains rather
+                    than warns. It was brass on `--brass-soft` until a phone
+                    screenshot showed brass doing three unrelated jobs on one
+                    page: a duration, a rate, and money. Only the last is what
+                    the color means. §4.9's brass variant is for caveats about
+                    a figure's reliability, which this is not. */}
+                <div className="mt-5 border-l-[3px] border-line-strong bg-paper-2 p-4">
                   <p className="label">
                     The rate you would need, staying{" "}
                     <span className="num">{num(stayYears)}</span> years

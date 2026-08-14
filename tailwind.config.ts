@@ -39,7 +39,8 @@ const config: Config = {
         // utility — design guide §1.2
         "paper-2": "#E7E1D4",
         "line-strong": "#8E7F5F",
-        "ink-deep": "#101A18",
+        // Must match --ink-deep in globals.css. Changed August 14, 2026.
+        "ink-deep": "#0F0C0A",
 
         // A brass tint for brass on the dark band. Kept under its old name so
         // existing references resolve; it is no longer a separate gold.
