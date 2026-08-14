@@ -42,6 +42,16 @@ export const PAYMENT_PATH = "/mortgage/payment-with-taxes-and-insurance/";
  */
 export const PAYOFF_VS_INVEST_PATH = "/mortgage/payoff-vs-invest/";
 
+/**
+ * When a refinance pays for itself.
+ *
+ * Added August 14, 2026. Three-word slug under the loan-type silo, and it does
+ * not repeat "mortgage" inside the path. "break-even" is hyphenated because
+ * that is how a reader writes it; the search phrase runs both ways and short
+ * beats exact match.
+ */
+export const REFINANCE_PATH = "/mortgage/refinance-break-even/";
+
 export type PayoffParams = {
   loanAmount: number;
   ratePct: number;
@@ -86,6 +96,7 @@ export const ROUTES = {
   payment: PAYMENT_PATH,
   payoff: PAYOFF_PATH,
   payoffVsInvest: PAYOFF_VS_INVEST_PATH,
+  refinance: REFINANCE_PATH,
   methodology: "/methodology/",
   corrections: "/corrections/",
   editorialPolicy: "/editorial-policy/",
@@ -119,6 +130,8 @@ export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
   payoff: "2026-08-12",
   // Built August 13, 2026. The rest of the site was not reviewed that day.
   payoffVsInvest: "2026-08-13",
+  // Built August 14, 2026. The rest of the site was not reviewed that day.
+  refinance: "2026-08-14",
 };
 
 /**
@@ -184,6 +197,12 @@ export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
     silo: "mortgage",
     topics: ["payoff", "extra-payments", "investing", "interest"],
   },
+  refinance: {
+    label: "Refinance break-even",
+    navLabel: "Refinance break-even",
+    silo: "mortgage",
+    topics: ["refinance", "closing-costs", "interest", "payment"],
+  },
   methodology: {
     label: "How we calculate",
     silo: null,
@@ -208,6 +227,7 @@ export const CALCULATOR_KEYS = [
   "payment",
   "payoff",
   "payoffVsInvest",
+  "refinance",
 ] as const satisfies readonly RouteKey[];
 
 /**
@@ -248,6 +268,10 @@ export const CALC_STRIPE: Record<
   payoffVsInvest: {
     eyebrow: "Pay off or invest",
     breadcrumb: "Pay off or invest",
+  },
+  refinance: {
+    eyebrow: "Refinance calculator",
+    breadcrumb: "Refinance break-even",
   },
 };
 

@@ -5,6 +5,7 @@ import {
   PAYOFF_PATH,
   PAYOFF_VS_INVEST_PATH,
   PAYMENT_PATH,
+  REFINANCE_PATH,
   navLabel,
 } from "@/lib/routes";
 import { SectionHead } from "@/components/PageChrome";
@@ -25,7 +26,7 @@ import { CALC_ICON } from "@/components/CalcIcons";
 //
 // 1. The tool cards are monochrome. Each of the six used to carry its own
 //    accent, pale tint and border drawn from the data palette — blue for
-//    payment, teal for payoff, purple for amortization, orange for
+//    payment, teal for payoff, purple for a third tool, orange for
 //    affordability. Six tinted chips in a row was the loudest thing on the
 //    site, and it spent the meaning of those hues before a reader reached a
 //    chart. The data palette is for data. Icons are ink strokes in a plain
@@ -94,23 +95,20 @@ const LIVE: LiveTool[] = [
     question: "“Which is worth more in the end?”",
     icon: CALC_ICON.payoffVsInvest,
   },
+  {
+    href: REFINANCE_PATH,
+    title: navLabel("refinance"),
+    body: "Work out the month a refinance pays back what it cost, and the rate it would need to be worth it.",
+    question: "“Is refinancing worth it?”",
+    icon: CALC_ICON.refinance,
+  },
 ];
 
 const PLANNED: PlannedTool[] = [
   {
     flag: "Next",
-    title: "Amortization schedule",
-    question: "“Where is my money going?”",
-  },
-  {
-    flag: "Soon",
     title: "How much house you can afford",
     question: "“What can I really afford?”",
-  },
-  {
-    flag: "Soon",
-    title: "Refinance break-even",
-    question: "“Is refinancing worth it?”",
   },
   {
     flag: "Soon",

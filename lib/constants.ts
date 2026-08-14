@@ -194,6 +194,79 @@ export const RETURN_SOURCE = {
   verified: "2026-08-13",
 } as const;
 
+/**
+ * ⚠️ STARTING VALUE FOR THE CLOSING-COST FIELD — NOT A PUBLISHED AVERAGE ⚠️
+ *
+ * $4,000 prefills the refinance calculator so a visitor sees a working result
+ * immediately (design guide §9.8, first paint). It is deliberately round so it
+ * reads as a placeholder, and the field tells the reader to replace it with
+ * the figure on their own Loan Estimate.
+ *
+ * WHY THERE IS NO SOURCED DEFAULT. Unlike a PMI threshold, no authority
+ * publishes a current refinance closing-cost figure, and the available numbers
+ * conflict badly. Recorded rather than resolved (project brief §0.3):
+ *
+ *   - CoreLogic/ClosingCorp put the 2021 national average for a single-family
+ *     REFINANCE at $2,375, under 1% of the average refinance loan, excluding
+ *     recordation and other specialty taxes.
+ *   - The CFPB's 2022 HMDA report put total loan costs at $5,954, up 22% from
+ *     2021, with 50.2% of borrowers paying discount points at a median $2,370.
+ *     That release discusses home purchase borrowers throughout.
+ *   - The widely repeated "2% to 5% of the loan amount" is a PURCHASE figure.
+ *
+ * THE TRAP THIS AVOIDS, and it is the page's reason to exist: applying a
+ * purchase percentage to a refinance overstates the cost, which overstates the
+ * break-even, which tells a reader not to refinance when they should. A
+ * refinance has no seller, no agent commission and normally no owner's title
+ * policy. ClosingCorp's own comparison for 2021 was $3,860 for a purchase
+ * against $2,375 for a refinance on the same exclusions.
+ *
+ * RULE: this number may sit in an input box. It may NOT appear in prose, a
+ * heading, a meta description or a schema field.
+ */
+export const REFI_COST_PLACEHOLDER = 4_000;
+
+/**
+ * Sources for the refinance page. Every URL read August 14, 2026.
+ *
+ * `pointsBreakEven` is the CFPB describing the closing-costs-over-monthly-
+ * saving shortcut as a rough estimate. It is cited on the page for exactly
+ * that: the shortcut is theirs, the word "roughly" is theirs, and the page
+ * shows how far off it runs on the reader's own loan.
+ *
+ * `pointsNoFixedValue` matters because several competing tools imply a point
+ * buys a fixed rate reduction. The CFPB states points have no fixed value in
+ * terms of the change in interest rate, which is why this calculator takes the
+ * quoted rate as an input instead of deriving it from points.
+ */
+export const REFI_SOURCES = {
+  pmms: {
+    label: "Freddie Mac Primary Mortgage Market Survey",
+    url: "https://www.freddiemac.com/pmms",
+    verified: "2026-08-14",
+  },
+  pointsBreakEven: {
+    label: "CFPB: trends in discount points amid rising interest rates",
+    url: "https://www.consumerfinance.gov/data-research/research-reports/data-spotlight-trends-in-discount-points-amid-rising-interest-rates/",
+    verified: "2026-08-14",
+  },
+  pointsNoFixedValue: {
+    label: "CFPB: borrowers paying upfront fees to lower mortgage rates",
+    url: "https://www.consumerfinance.gov/about-us/newsroom/cfpb-finds-americans-are-paying-upfront-fees-seeking-to-lower-interest-rates-on-mortgages/",
+    verified: "2026-08-14",
+  },
+  irsPoints: {
+    label: "IRS Publication 936: Home Mortgage Interest Deduction",
+    url: "https://www.irs.gov/pub/irs-pdf/p936.pdf",
+    verified: "2026-08-14",
+  },
+  irsPointsFaq: {
+    label: "IRS: deducting refinance points over the life of the loan",
+    url: "https://www.irs.gov/faqs/itemized-deductions-standard-deduction/real-estate-taxes-mortgage-interest-points-other-property-expenses/real-estate-taxes-mortgage-interest-points-other-property-expenses-6",
+    verified: "2026-08-14",
+  },
+} as const;
+
 /** Last full editorial review, shown on the page and matching the schema. */
 export const LAST_REVIEWED = "2026-08-08";
 

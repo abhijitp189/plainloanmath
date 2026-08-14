@@ -45,4 +45,14 @@ export const CALC_ICON: Record<CalculatorKey, React.ReactNode> = {
       <path d="M7 8l-3 5h6zM17 8l-3 5h6z" />
     </>
   ),
+  // Two arrows swapping places: one loan replaced by another. Deliberately not
+  // a circular refresh glyph, which reads as "reload" rather than "replace".
+  refinance: (
+    <>
+      <path d="M4 9h13" />
+      <path d="M14 6l3 3-3 3" />
+      <path d="M20 15H7" />
+      <path d="M10 12l-3 3 3 3" />
+    </>
+  ),
 };

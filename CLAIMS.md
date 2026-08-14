@@ -79,3 +79,54 @@ Recorded so they don't get reintroduced.
 - Typical PMI rate ranges
 - Current mortgage rates (the `/rates/` tracker is month 3, and is FRED-sourced by design)
 - Any claim about a named competitor's business model
+
+---
+
+# Claim table — refinance break-even calculator
+
+**Built:** August 14, 2026
+**Page:** `/mortgage/refinance-break-even/`
+
+Every URL below was opened on the date shown. Nothing here is from recall, and
+nothing is cited from an aggregator, a competitor's calculator, or an AI answer.
+
+## Verified against primary sources
+
+| # | Claim as it appears on the page | Primary source | Corroboration | Verified |
+|---|---|---|---|---|
+| 1 | Points paid to refinance normally cannot be deducted in full in the year paid, and are spread over the loan | [IRS Pub 936](https://www.irs.gov/pub/irs-pdf/p936.pdf) | [IRS FAQ, real estate](https://www.irs.gov/faqs/itemized-deductions-standard-deduction/real-estate-taxes-mortgage-interest-points-other-property-expenses/real-estate-taxes-mortgage-interest-points-other-property-expenses-6); IRS IR-2003-127 | 2026-08-14 |
+| 2 | Points are spread by dividing across the number of scheduled payments, not by the number of years | IRS FAQ (as above) | IRS Tax Tip 2004-57 | 2026-08-14 |
+| 3 | Unamortized points can be deducted in the year the loan ends, unless refinanced with the same lender | IRS Pub 936 | IRS FAQ (as above) | 2026-08-14 |
+| 4 | Charges such as appraisal and processing fees generally are not deductible | IRS IR-2003-127 | IRS Pub 936, "amounts charged for services" | 2026-08-14 |
+| 5 | One discount point costs 1% of the loan amount | [CFPB newsroom](https://www.consumerfinance.gov/about-us/newsroom/cfpb-finds-americans-are-paying-upfront-fees-seeking-to-lower-interest-rates-on-mortgages/) | ABA Banking Journal; Compliance Cohort | 2026-08-14 |
+| 6 | Points have no fixed value in terms of how much they move the rate | CFPB newsroom (as above) | Compliance Cohort summary of the same report | 2026-08-14 |
+| 7 | The costs-divided-by-monthly-saving method is a rough estimate | [CFPB Data Spotlight, discount points](https://www.consumerfinance.gov/data-research/research-reports/data-spotlight-trends-in-discount-points-amid-rising-interest-rates/) | — the CFPB's own wording | 2026-08-14 |
+| 8 | Prepayment penalty capped at 2% of the amount prepaid in years 1–2, 1% in year 3, barred after 3 years | [eCFR 12 C.F.R. § 1026.43(g)](https://www.ecfr.gov/current/title-12/chapter-X/part-1026/subpart-E/section-1026.43) | Cornell LII; Fed Consumer Compliance Outlook | 2026-08-12 |
+| 9 | Freddie Mac publishes a national survey average weekly, on Thursdays | [Freddie Mac PMMS](https://www.freddiemac.com/pmms) | PMMS FAQ on the same page | 2026-08-14 |
+| 10 | PMMS surveys purchase applications, so it is not a refinance rate and is not an offer | Freddie Mac PMMS FAQ | Same page, methodology note | 2026-08-14 |
+
+## Arithmetic — verified by computation, not by citation
+
+| Claim | How it was checked | Result |
+|---|---|---|
+| Break-even is the first month where interest saved exceeds closing costs | Derived twice: by cumulative-interest difference, and by net position (cash paid plus balance owed). Proven algebraically equal, then tested across 2,000 randomized scenarios | Zero disagreements |
+| Every figure produced by `refinance()` | Reimplemented from the algebra in a separate file, not by importing the engine; compared across 5,000 randomized scenarios spanning financed and upfront costs, term cuts and extensions | Zero mismatches |
+| Payment arithmetic | Compared to mortgagecalculator.org's published worked example: $200,000 at 5% over 240 months, and the same refinanced at 3.25% over 180 months | Matched both to the cent |
+| The rule of thumb is out by 4 months on the example loan | Both computed by the engine at build time; the page prints whichever gap the reader's own inputs produce | Shortcut 19, correct 15 |
+| Refinancing a 20-year remainder into a fresh 30 costs more interest even at a 2-point rate drop | Computed from the engine | Confirmed |
+
+## Deliberately NOT stated on the page
+
+| Considered | Why it was left out |
+|---|---|
+| A current mortgage rate figure | PMMS moves weekly. A number stated here is wrong within seven days and nobody would update it. The page links to PMMS instead and states no rate |
+| "Closing costs are typically 2% to 5% of the loan" | This is a **home purchase** figure. A refinance has no seller, no agent commission and normally no owner's title policy. Applying it overstates the break-even |
+| A sourced average refinance closing cost | Sources conflict and all are stale: CoreLogic/ClosingCorp put 2021 refinances at $2,375 excluding transfer taxes; the CFPB's 2022 figure of $5,954 for total loan costs is discussed in a home-purchase context. Conflict recorded, not resolved (§0.3). The field carries a round placeholder instead |
+| A recommendation about whether to refinance | Advice framing. The page reports the month, the rate needed, and the lifetime interest, and stops |
+
+## Still unverified — do not state these on any page yet
+
+- Any current or average refinance closing cost figure
+- Average refinance rates, as distinct from PMMS purchase rates
+- How long a refinance takes to close
+- Typical equity or credit score thresholds to qualify for a refinance
