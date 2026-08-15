@@ -130,3 +130,49 @@ nothing is cited from an aggregator, a competitor's calculator, or an AI answer.
 - Average refinance rates, as distinct from PMMS purchase rates
 - How long a refinance takes to close
 - Typical equity or credit score thresholds to qualify for a refinance
+
+---
+
+## /learn/when-you-start-paying-more-principal-than-interest/
+
+Verified August 15, 2026. Every arithmetic figure on this page is computed at
+build time from `lib/mortgage.ts` and is not typed into the copy, so the page
+cannot drift from the engine. The claim table below covers the figures that
+come from outside the engine, plus the one arithmetic result that needed an
+outside check.
+
+| Claim | Primary source | Corroboration | Verified |
+|---|---|---|---|
+| 30-year fixed averaged 6.67%, 15-year 5.96%, week ending 08/13/2026; 30-year was 6.58% a year earlier | Freddie Mac PMMS, https://www.freddiemac.com/pmms | Freddie Mac's own 08/06/2026 release (6.69% / 6.01%) shows the series and the week-on-week move; GlobeNewswire carried the 08/13 release | 2026-08-15 |
+| PMMS surveys conventional conforming purchase applications from borrowers with 20% down and good to excellent credit, and is not an offer | Freddie Mac PMMS methodology note on the same page | Freddie Mac PMMS FAQ | 2026-08-15 |
+| Interest is charged on the outstanding balance, so early payments are mostly interest with the remainder going to principal | CFPB, https://www.consumerfinance.gov/ask-cfpb/how-does-paying-down-a-mortgage-work-en-1943/ | Matches the engine's own output; consistent with the CFPB refinance handout's illustrations | 2026-08-15 |
+| Escrow is an account a lender establishes to cover property-related bills such as taxes and insurance | CFPB, https://www.consumerfinance.gov/ask-cfpb/what-is-an-escrow-or-impound-account-en-140/ | CFPB servicing handout, which requires the escrow portion to be itemized on the monthly statement | 2026-08-15 |
+| A fixed rate does not change; an adjustable rate can move at each adjustment, rewriting the schedule | CFPB, https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-rate-and-adjustable-rate-mortgage-arm-loan-en-100/ | CFPB refinance handout, section 3 | 2026-08-15 |
+| Refinancing pays off the current mortgage with money from a new mortgage | CFPB "Should I refinance?" handout (9/2020), https://files.consumerfinance.gov/f/documents/cfpb_should_i_refinance_handout.pdf | Fetched and read in full 08/15/2026; the same handout notes the new loan carries a new term which could be longer | 2026-08-15 |
+| Borrowers should check whether the loan allows extra payments and, if so, confirm they are applied to principal rather than interest | CFPB "Know your rights: your mortgage servicer must comply with federal rules" (9/2020), https://files.consumerfinance.gov/f/documents/cfpb_know_your_rights_mortgage_servicer_comply_federal_rules_handout.pdf | Fetched and read in full 08/15/2026 | 2026-08-15 |
+| The monthly mortgage statement must show how much of the payment goes to principal, to interest and to escrow | Same servicing handout, "Billing information in writing" | Reg X periodic statement requirements | 2026-08-15 |
+| At 3%, 4% and 5% on a 30-year loan the crossover falls at months 84, 153 and 195 | `lib/mortgage.ts`, computed at build time | Reproduced by an independent script written from the formula; matches SmartAsset's 2021 study (84 and 195) and HSH's 2021 answer (about 154 at 4%) | 2026-08-15 |
+
+### Stated deliberately, and why
+
+- **The rate appears exactly once**, with its survey week attached. A rate
+  repeated through the prose is a figure nobody would return to update. It does
+  not appear in the FAQ at all, because FAQ answers feed structured data and a
+  dated market figure inside undated schema is a claim that goes stale silently.
+- **The extra-payment crossover is stated as month 164, not 147.** Both are
+  correct. 164 measures the scheduled payment's own split, which is what
+  `crossoverMonth()` has always measured and what the payoff calculator
+  publishes; 147 counts the extra $250 as principal as well. The page says which
+  one it is rather than picking silently.
+- **The 15-year comparison uses 6.00%, not 6.75%.** A 15-year loan is not priced
+  like a 30-year one, so holding the rate equal would have described a choice
+  nobody is offered. The same-rate figure is given too, labeled as isolating the
+  term.
+
+### Not stated, and why
+
+- **No claim about how many borrowers reach the crossover before selling or
+  refinancing.** No primary source was found for it.
+- **No current-rate figure anywhere but the one dated sentence**, and no forecast.
+- **No recommendation** about extra payments, term choice or refinancing. The
+  page computes both sides and stops.

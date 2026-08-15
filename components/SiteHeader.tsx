@@ -43,6 +43,16 @@ type Item = { href: string; label: string; icon: React.ReactNode };
 // (CALC_ICON) once the second copy started to drift (§0.13). These three have
 // exactly one home and stay put.
 const SECTION_ICON = {
+  // Added August 15, 2026 with the /learn/ silo. An open book: two leaves and
+  // a spine, on the same 24-unit box and the same square-cap stroke as the
+  // rest (design guide §4.6).
+  learn: (
+    <>
+      <path d="M12 6.5v13" />
+      <path d="M12 6.5C10 5 7.5 4.6 4 4.8v12.6c3.5-.2 6 .2 8 1.6" />
+      <path d="M12 6.5c2-1.5 4.5-1.9 8-1.7v12.6c-3.5-.2-6 .2-8 1.6" />
+    </>
+  ),
   methodology: (
     <>
       <path d="M4 5h16v14H4z" />
@@ -77,7 +87,15 @@ const CALCULATORS: Item[] = CALCULATOR_KEYS.map((key) => ({
   icon: CALC_ICON[key],
 }));
 
+// Learn leads, because it is the section a reader browses rather than the one
+// they audit. Only the first two appear in the desktop bar — the planned shape
+// in technical brief §7 is `Calculators` · `Rates` · `Learn` · `Methodology`
+// with About dropping to the footer, and About is already in the footer. The
+// bar measured 496px of 576px available at its 640px breakpoint, and swapping
+// About for Learn is a five-character label for a five-character label, so the
+// measurement does not move.
 const SECTIONS: Item[] = [
+  { href: ROUTES.learn, label: "Learn", icon: SECTION_ICON.learn },
   {
     href: ROUTES.methodology,
     label: "Methodology",

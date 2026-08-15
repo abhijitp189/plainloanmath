@@ -267,6 +267,49 @@ export const REFI_SOURCES = {
   },
 } as const;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Freddie Mac's Primary Mortgage Market Survey, one dated snapshot.
+//
+// Guardrail 3: no dated figure is typed into a page. This one lives here
+// because /learn/when-you-start-paying-more-principal-than-interest/ has to
+// establish, once, that the rate environment its arithmetic assumes is the one
+// that exists — the whole premise of that article is that the pages currently
+// ranking were computed at 3% and nobody has published a figure for a loan
+// written above 5%.
+//
+// TWO THINGS THIS FIGURE IS NOT, both from Freddie Mac's own FAQ and both of
+// which the page states:
+//
+//   - It is not an offer or a quote. It is a survey of applications submitted
+//     through Loan Product Advisor, for conventional conforming purchase loans
+//     from borrowers with 20% down and good to excellent credit.
+//   - It is not a refinance rate. PMMS surveys purchase applications.
+//
+// AND ONE THING IT CANNOT SUPPLY: fees and points. Freddie Mac stopped
+// reporting them in November 2022 because lenders are no longer always
+// required to provide them.
+//
+// The article states this once, with the survey date attached, and never
+// again. A rate repeated through the prose is a maintenance liability that
+// nobody would ever come back to update. When /rates/ ships (project brief
+// §17) it reads FRED weekly and this constant becomes the fallback rather than
+// the source.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const PMMS = {
+  /** Survey week the figures below belong to. */
+  weekEnding: "2026-08-13",
+  thirtyYearPct: 6.67,
+  fifteenYearPct: 5.96,
+  /** The same week one year earlier, for the "not a spike" point. */
+  thirtyYearYearAgoPct: 6.58,
+  source: {
+    label: "Freddie Mac Primary Mortgage Market Survey",
+    url: "https://www.freddiemac.com/pmms",
+    verified: "2026-08-15",
+  },
+} as const;
+
 /** Last full editorial review, shown on the page and matching the schema. */
 export const LAST_REVIEWED = "2026-08-08";
 

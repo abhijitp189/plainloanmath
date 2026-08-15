@@ -52,6 +52,30 @@ export const PAYOFF_VS_INVEST_PATH = "/mortgage/payoff-vs-invest/";
  */
 export const REFINANCE_PATH = "/mortgage/refinance-break-even/";
 
+/**
+ * The editorial silo, added August 15, 2026. The site's second silo, and the
+ * first thing to exercise `relatedRoutes()` across a silo boundary.
+ *
+ * `/learn/` is a real page, not a bare path. That matters because `/mortgage/`
+ * is NOT one: it 301s to `/` at the Cloudflare edge (technical brief §5), a
+ * dashboard setting nobody can see from the repo. Nothing here may assume the
+ * same arrangement in reverse — this directory has an index because one was
+ * built, and if `/mortgage/` ever gets a landing page the redirect has to be
+ * removed in the dashboard first.
+ */
+export const LEARN_PATH = "/learn/";
+
+/**
+ * When a mortgage payment starts putting more toward principal than interest.
+ *
+ * Added August 15, 2026. The slug is long by the two-to-three-word rule used
+ * for calculators, and deliberately so: this is an article competing on a
+ * question phrase people type almost verbatim, not a tool competing on a noun
+ * phrase. The words in the path are the words in the query.
+ */
+export const PRINCIPAL_VS_INTEREST_PATH =
+  "/learn/when-you-start-paying-more-principal-than-interest/";
+
 export type PayoffParams = {
   loanAmount: number;
   ratePct: number;
@@ -97,6 +121,8 @@ export const ROUTES = {
   payoff: PAYOFF_PATH,
   payoffVsInvest: PAYOFF_VS_INVEST_PATH,
   refinance: REFINANCE_PATH,
+  learn: LEARN_PATH,
+  principalVsInterest: PRINCIPAL_VS_INTEREST_PATH,
   methodology: "/methodology/",
   corrections: "/corrections/",
   editorialPolicy: "/editorial-policy/",
@@ -132,6 +158,9 @@ export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
   payoffVsInvest: "2026-08-13",
   // Built August 14, 2026. The rest of the site was not reviewed that day.
   refinance: "2026-08-14",
+  // Built August 15, 2026, with the /learn/ index alongside it.
+  learn: "2026-08-15",
+  principalVsInterest: "2026-08-15",
 };
 
 /**
@@ -173,8 +202,18 @@ type RouteMeta = {
    * and the footer was missing the "Pay off or invest" calculator entirely.
    */
   navLabel?: string;
-  /** The loan type, or null for non-loan pages. */
-  silo: "mortgage" | null;
+  /**
+   * The silo, or null for pages that belong to none.
+   *
+   * Widened from `"mortgage" | null` on August 15, 2026 when `/learn/`
+   * shipped. The scoring in `relatedRoutes()` did not change: same-silo still
+   * earns two points, and now that two silos exist that weighting finally does
+   * something. A mortgage page fills its slots with mortgage pages first and
+   * reaches into `/learn/` only when the topic overlap is strong enough to
+   * beat a weaker same-silo match, which is the behavior the helper was
+   * written for in August with nothing to exercise it.
+   */
+  silo: "mortgage" | "learn" | null;
   topics: readonly string[];
 };
 
@@ -202,6 +241,29 @@ export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
     navLabel: "Refinance break-even",
     silo: "mortgage",
     topics: ["refinance", "closing-costs", "interest", "payment"],
+  },
+  learn: {
+    label: "Learn",
+    navLabel: "Learn",
+    silo: "learn",
+    // Deliberately empty. A silo index has no subject of its own, and
+    // `relatedRoutes()` drops any route sharing zero topics, so leaving this
+    // empty keeps the hub out of every sibling block without needing an
+    // exclusion list. It still appears in the header, the footer and the
+    // sitemap, which read ROUTES rather than topic scores.
+    topics: [],
+  },
+  principalVsInterest: {
+    label: "When principal overtakes interest",
+    navLabel: "Principal vs interest",
+    silo: "learn",
+    // Four tags, all shared with the payoff calculator, which is the page this
+    // article should hand its readers to and the one whose tipping point it
+    // explains. Scored out on August 15: payoff 4, pay off or invest 3,
+    // methodology 2, refinance 1. No same-silo bonus applies until a second
+    // article ships, so those four are cross-silo links earned on topic
+    // overlap alone.
+    topics: ["amortization", "interest", "payoff", "extra-payments"],
   },
   methodology: {
     label: "How we calculate",
@@ -274,6 +336,56 @@ export const CALC_STRIPE: Record<
     breadcrumb: "Refinance break-even",
   },
 };
+
+/**
+ * The live articles, in the order they appear on the /learn/ index.
+ *
+ * The editorial counterpart to CALCULATOR_KEYS, and deliberately a SEPARATE
+ * array rather than an addition to it. CALCULATOR_KEYS drives three surfaces
+ * that mean "tool" — the header dropdown, the footer's Calculators column and
+ * the hub's tool grid — so folding an article into it would have published a
+ * 2,000-word explainer as the site's fifth calculator in all three places at
+ * once. The types below keep them distinct at compile time.
+ *
+ * Newest first: unlike the calculator order, which is a considered sequence,
+ * an article index is a reverse chronology.
+ */
+export const ARTICLE_KEYS = [
+  "principalVsInterest",
+] as const satisfies readonly RouteKey[];
+
+export type ArticleKey = (typeof ARTICLE_KEYS)[number];
+
+/** Stripe identity for each article, on the same terms as CALC_STRIPE. */
+export const ARTICLE_STRIPE: Record<
+  ArticleKey,
+  { eyebrow: string; breadcrumb: string }
+> = {
+  principalVsInterest: {
+    eyebrow: "Article",
+    breadcrumb: "Principal vs interest",
+  },
+};
+
+/**
+ * Every page that opens with a stripe, calculator or article.
+ *
+ * `CalcStripe` and `calcBreadcrumbSchema` both read this one record, so the
+ * visible breadcrumb and the BreadcrumbList schema still cannot disagree —
+ * the guarantee that made CALC_STRIPE worth building in the first place, now
+ * covering two kinds of page.
+ *
+ * Composed from the two records above rather than replacing them, so each half
+ * keeps its own exhaustive `Record<...Key, ...>` check: a new calculator still
+ * cannot ship without an eyebrow and a breadcrumb, and neither can a new
+ * article.
+ */
+export type StripeKey = CalculatorKey | ArticleKey;
+
+export const PAGE_STRIPE: Record<
+  StripeKey,
+  { eyebrow: string; breadcrumb: string }
+> = { ...CALC_STRIPE, ...ARTICLE_STRIPE };
 
 /**
  * The label the header, footer and hub show for a route. Prefers `navLabel`,

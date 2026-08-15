@@ -21,6 +21,7 @@ const COLUMNS: { heading: string; links: { href: string; label: string }[] }[] =
     {
       heading: "How this works",
       links: [
+        { href: ROUTES.learn, label: "Learn" },
         { href: ROUTES.methodology, label: "Methodology" },
         { href: ROUTES.corrections, label: "Corrections" },
         { href: ROUTES.editorialPolicy, label: "Editorial policy" },

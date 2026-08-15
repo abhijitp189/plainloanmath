@@ -68,12 +68,25 @@ export default function LoanLifeStrip({
   accelerated,
   baselineMonths,
   monthsSaved,
+  crossover,
 }: {
   /** The schedule actually paid. */
   accelerated: PayoffRow[];
   /** Months the loan would have run with no extra payment. */
   baselineMonths: number;
   monthsSaved: number;
+  /**
+   * The month principal first exceeds interest, marked with a rule.
+   *
+   * Optional, and undefined on the payoff calculator, where the reader is
+   * looking at what their extra payments erase and a second vertical rule
+   * beside the payoff marker would be two lines meaning two different things
+   * with nothing to tell them apart. The article at
+   * /learn/when-you-start-paying-more-principal-than-interest/ is the reverse
+   * case: the crossing IS the subject, and the strip is the only place a
+   * reader can see it rather than be told it.
+   */
+  crossover?: number | null;
 }) {
   const paid = accelerated.length;
   const total = Math.max(baselineMonths, paid);
@@ -129,6 +142,14 @@ export default function LoanLifeStrip({
 
   const markerX = paid * slot;
 
+  // Centered on the month's own mark rather than on its leading edge: at 360
+  // months a slot is 2 user units, so the difference is invisible on a desktop
+  // and the center is the honest position either way.
+  const crossX =
+    crossover && crossover >= 1 && crossover <= paid
+      ? (crossover - 0.5) * slot
+      : null;
+
   return (
     <figure className="mt-7">
       {/* Legend in HTML, never inside the SVG — design guide §5.1. */}
@@ -150,7 +171,9 @@ export default function LoanLifeStrip({
             ? `One mark per month of the loan. Early months are almost entirely interest and later months almost entirely principal, and the final ${formatDuration(
                 monthsSaved,
               )} of the original term are erased by the extra payments.`
-            : "One mark per month of the loan. Early months are almost entirely interest and later months are almost entirely principal."
+            : crossX !== null
+              ? `One mark per month of the loan. Early months are almost entirely interest and later months are almost entirely principal, and the two halves become equal at month ${crossover}.`
+              : "One mark per month of the loan. Early months are almost entirely interest and later months are almost entirely principal."
         }
       >
         <defs>
@@ -193,6 +216,24 @@ export default function LoanLifeStrip({
           strokeLinecap="butt"
         />
 
+        {/* The crossover rule. Accent, not brass: the crossing is a date, and
+            brass means money you do not pay (design guide §1.3). It measures
+            6.15:1 on --surface and 5.33:1 over either fill, well past the 3:1
+            a meaningful graphic needs, and it is dashed so it does not read as
+            a third data series. */}
+        {crossX !== null && (
+          <line
+            x1={crossX}
+            y1="0"
+            x2={crossX}
+            y2={BASE + 7}
+            stroke="var(--accent)"
+            strokeWidth="3"
+            strokeDasharray="7 5"
+            strokeLinecap="butt"
+          />
+        )}
+
         {erasedCount > 0 && (
           <>
             <path d={erased.join("")} fill="url(#loan-strip-erased)" />
@@ -214,6 +255,12 @@ export default function LoanLifeStrip({
 
       <figcaption className="mt-2.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-[0.82rem] text-muted">
         <span>Month 1</span>
+        {crossX !== null && (
+          <span className="text-ink">
+            Principal overtakes interest at month{" "}
+            <span className="num font-semibold">{crossover}</span>
+          </span>
+        )}
         {erasedCount > 0 && (
           <span className="text-ink">
             <span className="num font-semibold">

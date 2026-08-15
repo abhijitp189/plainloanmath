@@ -6,6 +6,7 @@ import {
   PAYOFF_VS_INVEST_PATH,
   PAYMENT_PATH,
   REFINANCE_PATH,
+  LEARN_PATH,
   navLabel,
 } from "@/lib/routes";
 import { SectionHead } from "@/components/PageChrome";
@@ -104,14 +105,19 @@ const LIVE: LiveTool[] = [
   },
 ];
 
+// The roadmap, and it is a promise, so it only carries tools that will exist.
+//
+// "How much house you can afford" was flagged Next here until August 15, 2026
+// and was removed on the evidence rather than deferred: page one for that
+// phrase is Wells Fargo, Chase, U.S. Bank, PNC, NerdWallet, Zillow and
+// calculator.net, it needs the heaviest research load of any candidate, and it
+// sits closest to the advice line (project brief §7). It went the same way the
+// amortization schedule calculator went the day before. A roadmap promising a
+// tool nobody intends to build is a false statement on the site's most-read
+// page, so the entry comes off in the same delivery as the decision.
 const PLANNED: PlannedTool[] = [
   {
     flag: "Next",
-    title: "How much house you can afford",
-    question: "“What can I really afford?”",
-  },
-  {
-    flag: "Soon",
     title: "15-year vs 30-year",
     question: "“Which term should I take?”",
   },
@@ -334,6 +340,28 @@ export default function Home() {
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Where the /learn/ silo surfaces on the hub. Deliberately below the
+              roadmap and outside the tool grid: an article is not a tool, and
+              technical brief guardrail 14 keeps anything that is not a live
+              tool out of every array a reader could mistake for the calculator
+              set. */}
+          <div className="mt-8 border-l-[3px] border-line-strong bg-paper-2 p-5">
+            <p className="label">Reading, not a tool</p>
+            <p className="mt-2 max-w-prose text-[0.95rem] leading-relaxed text-ink-2">
+              Some questions do not need a calculator, they need the arithmetic
+              written out. The month your own payment starts putting more toward
+              principal than interest is one of them.
+            </p>
+            <p className="mt-3.5">
+              <Link
+                href={LEARN_PATH}
+                className="text-[0.92rem] font-bold text-accent-dk underline decoration-line-strong underline-offset-2"
+              >
+                Read the explainers &rarr;
+              </Link>
+            </p>
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Disclaimer from "@/components/Disclaimer";
 import { breadcrumbSchema } from "@/components/PageChrome";
-import { ROUTES, CALC_STRIPE, type CalculatorKey } from "@/lib/routes";
+import { ROUTES, PAGE_STRIPE, type StripeKey } from "@/lib/routes";
 
 /**
  * The page furniture every calculator page shares.
@@ -57,16 +57,23 @@ export function CalcStripe({
    * one in the page's BreadcrumbList schema — pass the same key to
    * `calcBreadcrumbSchema` (§0.13).
    */
-  route: CalculatorKey;
+  route: StripeKey;
   title: string;
   lede: string;
   asideTitle: string;
   /** Three to five short lines. The right column must not be empty (§3.4). */
   asidePoints: string[];
-  /** The calculator. */
-  children: React.ReactNode;
+  /**
+   * The calculator, on a calculator page.
+   *
+   * Optional as of August 15, 2026, because an article page opens with the
+   * same stripe and has no tool to put in it (design guide §8.3). When absent
+   * the trailing spacer is not rendered either, or the stripe would carry an
+   * empty 2rem block below the lede on every article.
+   */
+  children?: React.ReactNode;
 }) {
-  const { eyebrow, breadcrumb } = CALC_STRIPE[route];
+  const { eyebrow, breadcrumb } = PAGE_STRIPE[route];
 
   return (
     <section className="banner">
@@ -121,7 +128,7 @@ export function CalcStripe({
           </div>
         </div>
 
-        <div className="mt-8">{children}</div>
+        {children ? <div className="mt-8">{children}</div> : null}
       </div>
     </section>
   );
@@ -136,8 +143,8 @@ export function CalcStripe({
  * visible breadcrumb are guaranteed to describe the same trail. Pass the same
  * route key to both.
  */
-export function calcBreadcrumbSchema(route: CalculatorKey) {
-  return breadcrumbSchema(CALC_STRIPE[route].breadcrumb, ROUTES[route]);
+export function calcBreadcrumbSchema(route: StripeKey) {
+  return breadcrumbSchema(PAGE_STRIPE[route].breadcrumb, ROUTES[route]);
 }
 
 /* ── Bands ───────────────────────────────────────────────────────── */
