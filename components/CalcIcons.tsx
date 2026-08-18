@@ -55,4 +55,17 @@ export const CALC_ICON: Record<CalculatorKey, React.ReactNode> = {
       <path d="M10 12l-3 3 3 3" />
     </>
   ),
+  // Two loan lives against a shared start line: a short one and a long one,
+  // each closed with an end cap so the finish date is the thing you read.
+  // Deliberately not a clock or a calendar, which would say "time" in general
+  // rather than "these two terms".
+  termCompare: (
+    <>
+      <path d="M4 4v16" />
+      <path d="M4 9h9" />
+      <path d="M13 7v4" />
+      <path d="M4 16h16" />
+      <path d="M20 14v4" />
+    </>
+  ),
 };

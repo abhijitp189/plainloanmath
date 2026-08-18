@@ -24,10 +24,9 @@ import {
 } from "@/components/CalcChrome";
 import {
   PAYOFF_PATH,
-  PAYOFF_VS_INVEST_PATH,
   PAYMENT_PATH,
-  ROUTES,
   ROUTE_REVIEWED,
+  relatedRoutes,
 } from "@/lib/routes";
 import {
   amortizePlan,
@@ -181,13 +180,14 @@ const appSchema = {
   publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
 };
 
-const SIBLINGS = [
-  { href: PAYMENT_PATH, label: "What your full monthly payment is made of" },
-  { href: PAYOFF_VS_INVEST_PATH, label: "Pay off, or invest the same money" },
-  { href: ROUTES.methodology, label: "How every figure here is calculated" },
-  { href: ROUTES.corrections, label: "Corrections policy" },
-  { href: ROUTES.editorialPolicy, label: "How this site is written" },
-];
+// Generated rather than typed, August 18, 2026. This list predated
+// `relatedRoutes()` and was the reason the article that explains this page's
+// own tipping point never appeared on it, and the reason the 15-versus-30
+// calculator would not have either. Methodology, corrections and the editorial
+// policy are dropped from it deliberately: CalcFooter already links the first
+// two in its review meta and SiteFooter carries all three on every page, so
+// they were spending sibling slots that belong to tools.
+const SIBLINGS = relatedRoutes("payoff");
 
 export default function MortgagePayoffPage() {
   return (

@@ -306,7 +306,75 @@ export const PMMS = {
   source: {
     label: "Freddie Mac Primary Mortgage Market Survey",
     url: "https://www.freddiemac.com/pmms",
-    verified: "2026-08-15",
+    verified: "2026-08-18",
+  },
+} as const;
+
+/**
+ * The rate on the shorter loan in the 15-versus-30 page's worked example.
+ *
+ * DERIVED, NOT TYPED. It is the site's recurring 6.75% less the gap between
+ * the two PMMS series above, so it moves with that constant and cannot drift
+ * away from it. At the week ending 08/13/2026 that gap is 0.71 points, giving
+ * 6.04%.
+ *
+ * It is an ILLUSTRATION on the same footing as EXAMPLE, not a published
+ * average and not a rate anyone is being offered. The point of the page is
+ * that the size of this gap is the whole financial case for the shorter loan,
+ * so the calculator takes both rates as required inputs and this figure only
+ * ever prefills a box and drives the worked example in the prose.
+ */
+export const EXAMPLE_SHORT_RATE_PCT = Number(
+  (EXAMPLE.annualRatePct - (PMMS.thirtyYearPct - PMMS.fifteenYearPct)).toFixed(
+    2,
+  ),
+);
+
+/**
+ * Sources for the 15-versus-30 page. Every URL read live on August 18, 2026.
+ *
+ * `servicerRules` is the one that matters most, because the whole page turns
+ * on whether a borrower can actually pay a 30-year loan at a 15-year loan's
+ * amount. The CFPB says to check whether your loan allows extra payments and
+ * to make sure they reach the principal rather than sitting somewhere else,
+ * and it describes the suspense account behavior that catches people out: a
+ * payment that is not a full installment can be held until enough accumulates
+ * to make one. That is the practical failure mode of the strategy this page
+ * describes, so the page states it rather than assuming it away.
+ *
+ * `servicerRules` also records that the periodic statement must disclose any
+ * penalty for paying the loan off early, which is where a reader should look
+ * before relying on any of this.
+ */
+export const TERM_SOURCES = {
+  /**
+   * The rule that makes "pay the 30 like a 15" work, from a primary rather
+   * than from inference. Fannie Mae's Servicing Guide C-1.2-01 requires the
+   * servicer to immediately accept and apply an additional principal payment
+   * that the BORROWER HAS IDENTIFIED as such, on a current loan. The
+   * identification is the operative part, and it is why the page tells the
+   * reader to label the payment rather than just send it.
+   *
+   * SCOPE, stated on the page rather than glossed over: this binds servicers
+   * of loans Fannie Mae owns or guarantees. It is not a universal rule for
+   * every mortgage, so the page attributes it rather than presenting it as
+   * federal law.
+   */
+  fannieCurtailment: {
+    label:
+      "Fannie Mae Servicing Guide C-1.2-01: processing additional principal payments",
+    url: "https://servicing-guide.fanniemae.com/svc/c-1.2-01/processing-additional-principal-payments",
+    verified: "2026-08-18",
+  },
+  servicerRules: {
+    label: "CFPB: your mortgage servicer must comply with federal rules",
+    url: "https://www.consumerfinance.gov/consumer-tools/mortgages/your-mortgage-servicer-must-comply-with-federal-rules/",
+    verified: "2026-08-18",
+  },
+  pmms: {
+    label: "Freddie Mac Primary Mortgage Market Survey",
+    url: "https://www.freddiemac.com/pmms",
+    verified: "2026-08-18",
   },
 } as const;
 

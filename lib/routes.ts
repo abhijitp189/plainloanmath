@@ -66,6 +66,22 @@ export const REFINANCE_PATH = "/mortgage/refinance-break-even/";
 export const LEARN_PATH = "/learn/";
 
 /**
+ * Fifteen-year loan against thirty-year loan.
+ *
+ * Added August 18, 2026. The slug carries numerals, which the URL rules
+ * otherwise forbid, and the rule was amended in the same delivery rather than
+ * bent quietly: numerals are allowed where the number is part of the product's
+ * own name. "15 vs 30" is what a reader says out loud and types into a search
+ * box. The wordless alternatives that obey the letter of the old rule, such as
+ * /mortgage/loan-term/, do not say what the tool does and nobody searches
+ * them.
+ *
+ * Three segments-worth of meaning in three tokens, no repetition of the silo,
+ * and no stuffing of the full target phrase into the path.
+ */
+export const TERM_COMPARE_PATH = "/mortgage/15-vs-30/";
+
+/**
  * When a mortgage payment starts putting more toward principal than interest.
  *
  * Added August 15, 2026. The slug is long by the two-to-three-word rule used
@@ -121,6 +137,7 @@ export const ROUTES = {
   payoff: PAYOFF_PATH,
   payoffVsInvest: PAYOFF_VS_INVEST_PATH,
   refinance: REFINANCE_PATH,
+  termCompare: TERM_COMPARE_PATH,
   learn: LEARN_PATH,
   principalVsInterest: PRINCIPAL_VS_INTEREST_PATH,
   methodology: "/methodology/",
@@ -158,6 +175,8 @@ export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
   payoffVsInvest: "2026-08-13",
   // Built August 14, 2026. The rest of the site was not reviewed that day.
   refinance: "2026-08-14",
+  // Built August 18, 2026. The rest of the site was not reviewed that day.
+  termCompare: "2026-08-18",
   // Built August 15, 2026, with the /learn/ index alongside it.
   learn: "2026-08-15",
   principalVsInterest: "2026-08-15",
@@ -242,6 +261,19 @@ export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
     silo: "mortgage",
     topics: ["refinance", "closing-costs", "interest", "payment"],
   },
+  termCompare: {
+    label: "15-year vs 30-year",
+    navLabel: "15 vs 30 year",
+    silo: "mortgage",
+    // "term" is the tag this page owns, and it is new: no other route carries
+    // it, so it earns nothing on its own today. The other three are shared
+    // deliberately. Scored out on August 18: payoff 6, pay off or invest 5,
+    // payment 5, refinance 5, principal vs interest 2, methodology 2. The
+    // payoff calculator leads because a reader told most of their "saving"
+    // comes from paying more will want the tool that shows what paying more
+    // does, which is exactly that page.
+    topics: ["term", "interest", "payment", "amortization"],
+  },
   learn: {
     label: "Learn",
     navLabel: "Learn",
@@ -290,6 +322,7 @@ export const CALCULATOR_KEYS = [
   "payoff",
   "payoffVsInvest",
   "refinance",
+  "termCompare",
 ] as const satisfies readonly RouteKey[];
 
 /**
@@ -334,6 +367,10 @@ export const CALC_STRIPE: Record<
   refinance: {
     eyebrow: "Refinance calculator",
     breadcrumb: "Refinance break-even",
+  },
+  termCompare: {
+    eyebrow: "15 vs 30 year calculator",
+    breadcrumb: "15-year vs 30-year",
   },
 };
 

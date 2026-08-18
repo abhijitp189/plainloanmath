@@ -16,11 +16,7 @@ import {
 } from "@/components/CalcChrome";
 import { monthlyPayment, formatUSD } from "@/lib/mortgage";
 import { LAST_REVIEWED, SITE, PMI_SOURCE, EXAMPLE } from "@/lib/constants";
-import {
-  PAYOFF_PATH,
-  PAYOFF_VS_INVEST_PATH,
-  PAYMENT_PATH,
-} from "@/lib/routes";
+import { PAYMENT_PATH, relatedRoutes } from "@/lib/routes";
 
 // The monthly payment calculator, on its own page from August 10, 2026.
 //
@@ -152,12 +148,11 @@ const appSchema = {
   publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
 };
 
-const SIBLINGS = [
-  { href: PAYOFF_PATH, label: "Payoff with extra payments" },
-  { href: PAYOFF_VS_INVEST_PATH, label: "Pay off, or invest the same money" },
-  { href: "/methodology/", label: "Methodology" },
-  { href: "/", label: "All calculators" },
-];
+// Generated rather than typed, August 18, 2026. Same reason as the payoff
+// page: a hand-typed list predating `relatedRoutes()` cannot learn about pages
+// built after it. This one also carried a raw "/methodology/" string, which is
+// exactly the inline path lib/routes.ts exists to prevent.
+const SIBLINGS = relatedRoutes("payment");
 
 export default function MortgagePaymentCalculatorPage() {
   return (

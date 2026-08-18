@@ -9,7 +9,20 @@
 
 import type { PayoffRow } from "@/lib/mortgage";
 
-/** Quotes a field only when it needs it, per RFC 4180. */
+/**
+ * Quotes a field only when it needs it, per RFC 4180.
+ *
+ * Exported August 18, 2026. It was private, and the 15-versus-30 calculator's
+ * export was joining its own rows with a bare `join(",")` while carrying eight
+ * labels with commas inside them, which shifted every value on those rows into
+ * the wrong column. The other calculators had only avoided it by happening to
+ * use comma-free labels. A second copy of an escaper would have been the
+ * defect (§0.13), so the one that already existed is now shared.
+ */
+export function csvCell(value: string | number): string {
+  return cell(value);
+}
+
 function cell(value: string | number): string {
   const s = String(value);
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;

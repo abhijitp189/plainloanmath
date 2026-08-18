@@ -25,6 +25,42 @@ import { ROUTES, PAGE_STRIPE, type StripeKey } from "@/lib/routes";
  * inline "just for this page".
  */
 
+/* ── Inline links in prose ───────────────────────────────────────── */
+
+/**
+ * A link inside a paragraph.
+ *
+ * Added August 18, 2026, and the reason is a count rather than an argument.
+ * The eleven-word class string this replaces existed ELEVEN times across the
+ * pages before this component, which is §0.13 at its most literal: two of
+ * anything is the defect, and this was nowhere near two. It had not visibly
+ * drifted yet, which is the only reason nobody had noticed.
+ *
+ * New pages use this. The eleven existing copies are a sweep of their own and
+ * are recorded as an open item rather than folded into a build session, since
+ * changing them touches five files that this session otherwise has no business
+ * in. What matters today is that the count stopped growing.
+ *
+ * `--accent-dk` on white is 8.48:1, and the underline is a second signal so
+ * color is not carrying the link on its own (§7).
+ */
+export function InlineLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="text-accent-dk underline decoration-line-strong underline-offset-2"
+    >
+      {children}
+    </Link>
+  );
+}
+
 /* ── The stripe ──────────────────────────────────────────────────── */
 
 /**
