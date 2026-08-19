@@ -89,6 +89,35 @@ function assertRegistryIsComplete(): void {
         `out of the sitemap, add it to ROUTES and list its key in SITEMAP_EXCLUDE.`,
     );
   }
+
+  // The mirror of the check above, added August 19, 2026 after it was needed.
+  //
+  // The original assertion only ran one way: every page on disk must have a
+  // route. A route with no page passed silently, and on August 19 that shipped
+  // a live 404. A delivery meant to add /learn/when-does-pmi-drop-off/ landed
+  // its page.tsx in the neighbouring article's folder instead. Both files are
+  // called page.tsx, so nothing looked wrong. The result: routes.ts declared
+  // the article, the header and /learn/ and the payment calculator all linked
+  // to it, the sitemap listed it, the build succeeded, and the URL 404ed. The
+  // other article was silently replaced at the same time.
+  //
+  // A route entry is a promise that a page exists. This makes the build keep it.
+  const onDiskSet = new Set(onDisk);
+  const orphaned = Object.entries(ROUTES)
+    .filter(([, route]) => !onDiskSet.has(route))
+    .map(([key, route]) => `  ${key}: ${route}`)
+    .sort();
+
+  if (orphaned.length > 0) {
+    throw new Error(
+      `sitemap: ${orphaned.length} route(s) are declared in ROUTES in ` +
+        `lib/routes.ts but have no page.tsx on disk:\n` +
+        orphaned.join("\n") +
+        `\n\nEach would be linked from the header, the silo index and the ` +
+        `sitemap, and would return 404. Add the missing app/<path>/page.tsx, ` +
+        `or remove the ROUTES entry.`,
+    );
+  }
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
