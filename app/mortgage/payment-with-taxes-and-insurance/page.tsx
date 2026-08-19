@@ -69,7 +69,7 @@ const COSTS = [
   {
     color: "var(--c-tax)",
     title: "Property tax",
-    body: "Set by local taxing authorities — county, city, school district — not by your lender. It is collected monthly into an escrow account and paid out once or twice a year. It rises as assessed values rise, which is why your payment can change on a fixed-rate loan.",
+    body: "Set by local taxing authorities (county, city, school district), not by your lender. It is collected monthly into an escrow account and paid out once or twice a year. It rises as assessed values rise, which is why your payment can change on a fixed-rate loan.",
   },
   {
     color: "var(--c-ins)",
@@ -79,7 +79,7 @@ const COSTS = [
   {
     color: "var(--c-pmi)",
     title: "Mortgage insurance",
-    body: "Charged when you put down less than 20%. It protects the lender if you default — it does nothing for you. On a conventional loan federal law forces it to end on a schedule. On an FHA loan it usually does not: since June 2013 the premium generally runs for the life of the loan, and refinancing is the only way out. This calculator models the conventional rules.",
+    body: "Charged when you put down less than 20%. It protects the lender if you default. It does nothing for you. On a conventional loan federal law forces it to end on a schedule. On an FHA loan it usually does not: since June 2013 the premium generally runs for the life of the loan, and refinancing is the only way out. This calculator models the conventional rules.",
   },
   {
     color: "var(--c-hoa)",
@@ -89,7 +89,7 @@ const COSTS = [
   {
     color: "var(--c-interest)",
     title: "What is not here",
-    body: "Closing costs, maintenance, repairs, and utilities are real costs of owning a home and none of them appear in a monthly payment. Budget for them separately — no calculator that quotes you a payment is telling you what the house actually costs to run.",
+    body: "Closing costs, maintenance, repairs, and utilities are real costs of owning a home and none of them appear in a monthly payment. Budget for them separately. No calculator that quotes you a payment is telling you what the house actually costs to run.",
   },
 ];
 
@@ -100,7 +100,7 @@ const FAQS: Faq[] = [
   },
   {
     q: "What is a good down payment?",
-    a: "Twenty percent is the number everyone repeats, and the only thing that actually happens at 20% is that mortgage insurance stops being required. It is a threshold, not a rule. Plenty of conventional loans go to 3% down, and government-backed loans go lower. Putting less down means a bigger loan, a bigger payment, and mortgage insurance until you build equity — all of which the calculator above will show you if you change the field.",
+    a: "Twenty percent is the number everyone repeats, and the only thing that actually happens at 20% is that mortgage insurance stops being required. It is a threshold, not a rule. Plenty of conventional loans go to 3% down, and government-backed loans go lower. Putting less down means a bigger loan, a bigger payment, and mortgage insurance until you build equity, all of which the calculator above will show you if you change the field.",
   },
   {
     q: "How much house can I afford?",
@@ -108,7 +108,7 @@ const FAQS: Faq[] = [
   },
   {
     q: "Are property taxes and insurance included in my payment?",
-    a: "Usually yes, through escrow. Your lender collects a twelfth of each annual bill every month and pays them when due. That is why your payment can change on a fixed-rate loan — the loan part is fixed, the escrow part is not.",
+    a: "Usually yes, through escrow. Your lender collects a twelfth of each annual bill every month and pays them when due. That is why your payment can change on a fixed-rate loan: the loan part is fixed, the escrow part is not.",
   },
   {
     q: "Why is my payment higher than the mortgage calculator said?",
@@ -116,11 +116,11 @@ const FAQS: Faq[] = [
   },
   {
     q: "What is the difference between the interest rate and the APR?",
-    a: "The interest rate — the note rate — is what your payment is calculated from. The APR folds lender fees and points into a single annualized number so you can compare two offers on a like-for-like basis. APR is the better comparison tool and the wrong input for a payment calculation.",
+    a: "The interest rate, the note rate, is what your payment is calculated from. The APR folds lender fees and points into a single annualized number so you can compare two offers on a like-for-like basis. APR is the better comparison tool and the wrong input for a payment calculation.",
   },
   {
     q: "When does mortgage insurance come off?",
-    a: "There are two separate rules and they behave differently. One cancels it automatically at a set point in your original schedule. The other lets you request cancellation earlier once you have enough equity — but you have to ask, in writing, and you may need an appraisal. Nobody will remind you.",
+    a: "There are two separate rules and they behave differently. One cancels it automatically at a set point in your original schedule. The other lets you request cancellation earlier once you have enough equity, but you have to ask, in writing, and you may need an appraisal. Nobody will remind you.",
   },
   {
     q: "Does paying extra lower my monthly bill?",
@@ -132,7 +132,7 @@ const FAQS: Faq[] = [
   },
   {
     q: "Is a 15-year mortgage better than a 30-year?",
-    a: "A 15-year loan carries a lower rate and dramatically less total interest, at the cost of a much higher required payment. The honest trade-off is not discipline versus laziness — it is that a 30-year loan with an extra payment gives you nearly the same outcome while leaving you the option to stop in a bad month. A 15-year loan removes that option permanently.",
+    a: "A 15-year loan carries a lower rate and dramatically less total interest, at the cost of a much higher required payment. The honest trade-off is not discipline versus laziness. It is that a 30-year loan with an extra payment gives you nearly the same outcome while leaving you the option to stop in a bad month. A 15-year loan removes that option permanently.",
   },
 ];
 
@@ -179,10 +179,10 @@ export default function MortgagePaymentCalculatorPage() {
         <CalcStripe
           route="payment"
           title="Mortgage payment calculator, with taxes and insurance"
-          lede="Most calculators show you principal and interest and stop there. This one separates every part of the bill — the loan, the county, the insurer, and the mortgage insurance that only protects the lender — so you can see which pieces an interest rate can actually change."
+          lede="Most calculators show you principal and interest and stop there. This one separates every part of the bill: the loan, the county, the insurer, and the mortgage insurance that only protects the lender, so you can see which pieces an interest rate can actually change."
           asideTitle="What this does"
           asidePoints={[
-            "Updates as you type — nothing to submit",
+            "Updates as you type, nothing to submit",
             "Splits PITI, PMI and HOA dues apart",
             "Tells you when mortgage insurance ends",
             "Shareable link, CSV and PDF",
@@ -243,27 +243,27 @@ export default function MortgagePaymentCalculatorPage() {
                 <ul className="space-y-1.5 text-[0.95rem]">
                   <li>
                     <strong className="num font-semibold text-ink">M</strong>{" "}
-                    &mdash; the monthly payment you are solving for
+                    is the monthly payment you are solving for
                   </li>
                   <li>
                     <strong className="num font-semibold text-ink">P</strong>{" "}
-                    &mdash; the amount borrowed, after the down payment
+                    is the amount borrowed, after the down payment
                   </li>
                   <li>
                     <strong className="num font-semibold text-ink">r</strong>{" "}
-                    &mdash; the annual rate divided by 12
+                    is the annual rate divided by 12
                   </li>
                   <li>
                     <strong className="num font-semibold text-ink">n</strong>{" "}
-                    &mdash; the number of monthly payments, so 360 on a 30-year
+                    is the number of monthly payments, so 360 on a 30-year
                     loan
                   </li>
                 </ul>
                 <p className="max-w-prose">
-                  On the example loan used across this site &mdash;{" "}
+                  On the example loan used across this site,{" "}
                   <span className="num">{formatUSD(EXAMPLE.loanAmount)}</span>{" "}
                   at <span className="num">{EXAMPLE.annualRatePct}%</span> over{" "}
-                  <span className="num">{EXAMPLE.termYears}</span> years &mdash;
+                  <span className="num">{EXAMPLE.termYears}</span> years,
                   that works out to{" "}
                   <strong className="num font-semibold text-ink">
                     {usd2(EX_PAYMENT)}
@@ -291,11 +291,11 @@ export default function MortgagePaymentCalculatorPage() {
                     {usd2(EX_MONTH1_PRINCIPAL)}
                   </strong>{" "}
                   reduces the balance. By the final year that ratio is almost
-                  exactly reversed. Nothing was hidden from you — it is what
+                  exactly reversed. Nothing was hidden from you. It is what
                   charging a fee on a shrinking balance does.
                 </p>
                 <div
-                  className="border border-l-[3px] border-line-strong bg-[var(--indigo-soft)] p-4 text-[0.92rem] leading-relaxed"
+                  className="border border-l-[3px] border-line-strong bg-paper-2 p-4 text-[0.92rem] leading-relaxed"
                   style={{ borderLeftColor: "var(--c-tax)" }}
                 >
                   <strong className="font-semibold text-ink">

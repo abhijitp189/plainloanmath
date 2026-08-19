@@ -428,7 +428,7 @@ export default function PaymentCalculator() {
         </div>
 
         {pmi.applies && pmi.endsMonth && (
-          <p className="mt-4 border-l-[3px] border-c-pmi bg-paper px-3.5 py-3 text-[0.87rem] leading-relaxed text-ink-2">
+          <p className="mt-4 border-l-[3px] border-line-strong bg-paper px-3.5 py-3 text-[0.87rem] leading-relaxed text-ink-2">
             Below 20% down, mortgage insurance is added. On a conventional loan,
             if you stay current, your servicer must drop it by month{" "}
             <span className="num font-semibold text-ink">

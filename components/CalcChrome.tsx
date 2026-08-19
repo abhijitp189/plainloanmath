@@ -328,7 +328,7 @@ export function Sources({ items }: { items: Source[] }) {
               {s.label}
             </a>{" "}
             <span className="text-muted">
-              — read <span className="num">{s.verified}</span>
+              (read <span className="num">{s.verified}</span>)
             </span>
           </li>
         ))}
@@ -377,7 +377,7 @@ export function CalcFooter({
         <time className="num" dateTime={reviewed}>
           {reviewed}
         </time>
-        . Estimates only — not financial advice, and not a loan offer.{" "}
+        . Estimates only, not financial advice, and not a loan offer.{" "}
         <Link
           href={ROUTES.methodology}
           className="text-accent-dk underline decoration-line-strong underline-offset-2"

@@ -43,7 +43,7 @@ export default function AboutPage() {
             If you search for a mortgage calculator, most of what you find is
             published by a lender, a broker, a comparison site paid by lenders,
             or a listings portal that earns a fee when you are passed to one.
-            None of that is hidden &mdash; it is usually in their own advertiser
+            None of that is hidden. It is usually in their own advertiser
             disclosure.
           </p>
           <p>
@@ -64,7 +64,7 @@ export default function AboutPage() {
             <li>No lender links, quote buttons, or rate tables tied to offers</li>
             <li>No lead forms, no email capture, no &ldquo;get pre-approved&rdquo;</li>
             <li>No affiliate relationships with anyone in the mortgage industry</li>
-            <li>No accounts and no database — nothing you type is stored</li>
+            <li>No accounts and no database, so nothing you type is stored</li>
           </ul>
           <p>
             These are structural, not promises. The site is a set of static
@@ -77,7 +77,7 @@ export default function AboutPage() {
           <p>
             Advertising, through Google AdSense. That means we are paid the
             same whether you take out a mortgage tomorrow or never take one out
-            at all &mdash; which is the point. We have no incentive to steer
+            at all, which is the point. We have no incentive to steer
             you, because there is no direction that pays us more.
           </p>
           <p>
@@ -99,8 +99,8 @@ export default function AboutPage() {
               any other calculator.
             </li>
             <li>
-              Rules and thresholds link to the primary source &mdash; the CFPB,
-              the FHFA, HUD, the IRS &mdash; not to another blog.
+              Rules and thresholds link to the primary source, whether that is the CFPB,
+              the FHFA, HUD or the IRS, never another blog.
             </li>
             <li>
               Every page carries the date it was last reviewed, and mistakes go

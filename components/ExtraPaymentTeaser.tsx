@@ -65,7 +65,7 @@ export default function ExtraPaymentTeaser() {
               <span className="num">{formatUSD(loanAmount)}</span> at{" "}
               <span className="num">{Number(ratePct.toFixed(3))}%</span> over{" "}
               <span className="num">{Math.round(termYears)}</span> years. Your
-              required payment does not change — the loan just ends sooner.
+              required payment does not change. The loan just ends sooner.
             </p>
           </div>
 
@@ -84,7 +84,7 @@ export default function ExtraPaymentTeaser() {
                   <strong className="num font-semibold text-ink">
                     {formatDuration(result.monthsSaved)}
                   </strong>{" "}
-                  sooner &mdash; in{" "}
+                  sooner, in{" "}
                   <span className="num">
                     {formatDuration(result.accelerated.months)}
                   </span>{" "}

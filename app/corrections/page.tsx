@@ -63,8 +63,8 @@ export default function CorrectionsPage() {
             <li>
               <strong className="font-semibold text-ink">
                 Arithmetic errors are fixed immediately
-              </strong>{" "}
-              &mdash; within a day of being confirmed.
+              </strong>
+              , within a day of being confirmed.
             </li>
             <li>
               The corrected page carries a note saying what was wrong and when
@@ -86,9 +86,9 @@ export default function CorrectionsPage() {
 
         <Block title="Telling us about one">
           <p>
-            <a href="/contact/">Tell us</a> — include the page, the figure you
+            <a href="/contact/">Tell us</a>. Include the page, the figure you
             saw, and what you believe it should be. You do not need
-            to be certain &mdash; a question that turns out to be nothing costs
+            to be certain. A question that turns out to be nothing costs
             us five minutes, and a real error left in place costs a reader far
             more. Corrections jump the queue ahead of everything else.
           </p>

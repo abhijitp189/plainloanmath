@@ -137,15 +137,15 @@ const EXAMPLE_LABEL = `${formatUSD(P)} at ${R}% over ${EXAMPLE.termYears} years`
 const FAQ: Faq[] = [
   {
     q: "Does paying extra lower my monthly payment?",
-    a: "No. Your scheduled payment is fixed for the life of a fixed-rate loan, and paying extra does not change it — it shortens the loan instead. The only way to lower the required payment on the same loan is a recast, where the servicer re-amortizes your reduced balance over the remaining term. Recasting lowers the payment but keeps the original payoff date, so it saves less interest than simply paying extra does.",
+    a: "No. Your scheduled payment is fixed for the life of a fixed-rate loan, and paying extra does not change it. It shortens the loan instead. The only way to lower the required payment on the same loan is a recast, where the servicer re-amortizes your reduced balance over the remaining term. Recasting lowers the payment but keeps the original payoff date, so it saves less interest than simply paying extra does.",
   },
   {
     q: "Is it better to pay extra every month or once a year?",
-    a: `Monthly, if the amounts are the same over the year. Money that reaches the principal in January stops being charged interest eleven months earlier than money that arrives in December. On ${EXAMPLE_LABEL}, ${formatUSD(SCHEDULED / 12)} added to every payment saves ${formatUSD(TWELFTH.totalInterest > 0 ? BASE.totalInterest - TWELFTH.totalInterest : 0)} against ${formatUSD(BASE.totalInterest - BIWEEKLY.totalInterest)} for one extra payment paid each December — the same money, about ${formatUSD(BIWEEKLY.totalInterest - TWELFTH.totalInterest)} apart. In practice the schedule you will actually stick to beats the marginally better one you will not.`,
+    a: `Monthly, if the amounts are the same over the year. Money that reaches the principal in January stops being charged interest eleven months earlier than money that arrives in December. On ${EXAMPLE_LABEL}, ${formatUSD(SCHEDULED / 12)} added to every payment saves ${formatUSD(TWELFTH.totalInterest > 0 ? BASE.totalInterest - TWELFTH.totalInterest : 0)} against ${formatUSD(BASE.totalInterest - BIWEEKLY.totalInterest)} for one extra payment paid each December. That is the same money, about ${formatUSD(BIWEEKLY.totalInterest - TWELFTH.totalInterest)} apart. In practice the schedule you will actually stick to beats the marginally better one you will not.`,
   },
   {
     q: "Are biweekly mortgage payments worth it?",
-    a: `Biweekly means 26 half-payments a year, which is 13 monthly payments rather than 12 — so the whole benefit is the one extra payment, not the fortnightly rhythm. You can produce the same 13 payments yourself by adding ${formatUSD(SCHEDULED / 12)} to each monthly payment on ${EXAMPLE_LABEL}, and that version saves slightly more because the money reaches the principal as it arrives instead of waiting for a full payment to accumulate. Companies that charge a setup or per-transaction fee to convert you to biweekly are charging for something you can do free.`,
+    a: `Biweekly means 26 half-payments a year, which is 13 monthly payments rather than 12, so the whole benefit is the one extra payment, not the fortnightly rhythm. You can produce the same 13 payments yourself by adding ${formatUSD(SCHEDULED / 12)} to each monthly payment on ${EXAMPLE_LABEL}, and that version saves slightly more because the money reaches the principal as it arrives instead of waiting for a full payment to accumulate. Companies that charge a setup or per-transaction fee to convert you to biweekly are charging for something you can do free.`,
   },
   {
     q: "Will my lender charge me for paying my mortgage off early?",
@@ -161,11 +161,11 @@ const FAQ: Faq[] = [
   },
   {
     q: "Should I pay off my mortgage early or invest the money instead?",
-    a: "Paying down the mortgage returns exactly your interest rate, guaranteed and tax-free in the sense that there is no tax on money you never pay. Investing may return more, with risk and no guarantee. The comparison also depends on whether you itemize, what other debt you carry, and whether you have an emergency fund — and the honest answer for most people is to fund the emergency fund and clear anything at a higher rate first. There is no single right answer, which is why this page computes the mortgage side and does not pretend to settle the rest.",
+    a: "Paying down the mortgage returns exactly your interest rate, guaranteed and tax-free in the sense that there is no tax on money you never pay. Investing may return more, with risk and no guarantee. The comparison also depends on whether you itemize, what other debt you carry, and whether you have an emergency fund. The honest answer for most people is to fund the emergency fund and clear anything at a higher rate first. There is no single right answer, which is why this page computes the mortgage side and does not pretend to settle the rest.",
   },
   {
     q: "Does paying extra get rid of my mortgage insurance sooner?",
-    a: "It brings forward the date you can ask for it. Under the Homeowners Protection Act you may request cancellation once the balance reaches 80% of the original value, and that test looks at your actual balance — so extra payments move it earlier. The automatic termination at 78% does not move, because the servicer reads that date off the original amortization schedule regardless of what you have actually paid.",
+    a: "It brings forward the date you can ask for it. Under the Homeowners Protection Act you may request cancellation once the balance reaches 80% of the original value, and that test looks at your actual balance, so extra payments move it earlier. The automatic termination at 78% does not move, because the servicer reads that date off the original amortization schedule regardless of what you have actually paid.",
   },
 ];
 
@@ -213,7 +213,7 @@ export default function MortgagePayoffPage() {
         lede="Add a little each month, one payment a year, a lump sum, or a biweekly schedule. See the payoff date move and the interest you never hand over."
         asideTitle="What this does"
         asidePoints={[
-          "Updates as you type — nothing to submit",
+          "Updates as you type, nothing to submit",
           "Monthly, yearly, lump sum or biweekly",
           "Shows the month your payment starts working for you",
           "Shareable link, CSV and PDF",
@@ -244,7 +244,7 @@ export default function MortgagePayoffPage() {
             <p>
               An extra payment skips that queue entirely. It goes straight to
               principal, which means the balance is smaller for every single
-              month that follows — and so is the interest charged on it. That is
+              month that follows, and so is the interest charged on it. That is
               why the effect compounds. A modest amount applied early removes
               years from the term, because each early dollar of principal avoids
               decades of interest. The same dollar paid in year twenty-five
@@ -256,16 +256,16 @@ export default function MortgagePayoffPage() {
               There is a month in every loan where the split finally reverses
               and more of your payment goes to principal than to interest. It is
               a genuinely useful thing to know and it is almost always quoted as
-              a rule of thumb — &ldquo;year eighteen or nineteen on a thirty-year
-              loan&rdquo; — rather than computed. The real answer depends
+              a rule of thumb (&ldquo;year eighteen or nineteen on a thirty-year
+              loan&rdquo;) rather than computed. The real answer depends
               entirely on the rate.
             </p>
             <p>
               On {EXAMPLE_LABEL}, it is{" "}
               <strong className="font-semibold text-ink">
                 month <span className="num">{BASE_CROSSOVER}</span>
-              </strong>{" "}
-              — {BASE_CROSSOVER ? formatDuration(BASE_CROSSOVER) : ""} in, not
+              </strong>,{" "}
+              {BASE_CROSSOVER ? formatDuration(BASE_CROSSOVER) : ""} in, not
               year eighteen. Add {formatUSD(250)} a month and it arrives at{" "}
               <strong className="font-semibold text-ink">
                 month <span className="num">{EXTRA_250_CROSSOVER}</span>
@@ -284,19 +284,19 @@ export default function MortgagePayoffPage() {
             </div>
             <ul className="list-disc space-y-1.5 pl-5">
               <li>
-                <strong className="font-semibold text-ink">M</strong> — the
+                <strong className="font-semibold text-ink">M</strong> is the
                 monthly payment, principal and interest only
               </li>
               <li>
-                <strong className="font-semibold text-ink">P</strong> — the
+                <strong className="font-semibold text-ink">P</strong> is the
                 amount borrowed, or what you owe today
               </li>
               <li>
-                <strong className="font-semibold text-ink">r</strong> — the
+                <strong className="font-semibold text-ink">r</strong> is the
                 monthly interest rate, which is the annual rate divided by 12
               </li>
               <li>
-                <strong className="font-semibold text-ink">n</strong> — the
+                <strong className="font-semibold text-ink">n</strong> is the
                 number of monthly payments left in the term
               </li>
             </ul>
@@ -305,8 +305,8 @@ export default function MortgagePayoffPage() {
               it charges interest on the opening balance, applies the payment to
               that interest first, puts the remainder plus anything extra
               against the principal, and repeats until the balance reaches zero.
-              It runs the same loan twice — once with your extra payments and
-              once without — and reports the difference. The final month pays
+              It runs the same loan twice, once with your extra payments and
+              once without, and reports the difference. The final month pays
               only what is actually owed rather than a full installment.
             </p>
             </>}
@@ -363,7 +363,7 @@ export default function MortgagePayoffPage() {
                   <td className="num px-3 py-2.5 text-right text-ink-2">
                     {formatUSD(BASE.totalInterest)}
                   </td>
-                  <td className="num px-3 py-2.5 text-right text-muted">—</td>
+                  <td className="num px-3 py-2.5 text-right text-muted">$0</td>
                 </tr>
                 {STRATEGIES.map((s) => (
                   <tr key={s.name} className="border-b border-line">
@@ -405,7 +405,7 @@ export default function MortgagePayoffPage() {
               Which means you can have the same benefit for free. Adding{" "}
               <span className="num">{formatUSD(SCHEDULED / 12)}</span> to each
               monthly payment on {EXAMPLE_LABEL} puts in the same 13 payments a
-              year — and pays off in{" "}
+              year, and pays off in{" "}
               <span className="num">{formatDuration(TWELFTH.months)}</span>{" "}
               against{" "}
               <span className="num">{formatDuration(BIWEEKLY.months)}</span> for
@@ -428,8 +428,8 @@ export default function MortgagePayoffPage() {
             right={<>
             <Sub>Lump sums, and what a recast actually does</Sub>
             <p>
-              A one-off payment — an inheritance, a bonus, the proceeds of a
-              sale — behaves the same way as a monthly extra, just concentrated.
+              A one-off payment (an inheritance, a bonus, the proceeds of a
+              sale) behaves the same way as a monthly extra, just concentrated.
               It reduces the balance immediately and every month of interest
               after it is charged on the smaller number. What it does{" "}
               <em>not</em> do is reduce your monthly payment. That stays exactly
@@ -448,8 +448,8 @@ export default function MortgagePayoffPage() {
             </p>
             <p>
               Neither is a refinance. A refinance replaces the loan, which means
-              a new rate, new closing costs, and — if you take a fresh
-              thirty-year term — a reset amortization schedule that puts you
+              a new rate, new closing costs, and, if you take a fresh
+              thirty-year term, a reset amortization schedule that puts you
               back at the front of the interest curve.
             </p>
             </>}
@@ -471,7 +471,7 @@ export default function MortgagePayoffPage() {
               servicers treat extra money as a payment made early: they hold it
               and apply it to next month&rsquo;s installment, which advances
               your due date and saves you nothing. Most online payment forms
-              have a separate principal-only field — use it, and if there
+              have a separate principal-only field. Use it, and if there
               isn&rsquo;t one, send the extra as its own payment marked for
               principal rather than adding it to your regular one.
             </p>
@@ -486,8 +486,8 @@ export default function MortgagePayoffPage() {
             <p>
               Most borrowers do not have one. The CFPB&rsquo;s guidance is that
               a prepayment penalty typically applies only when the whole balance
-              is paid off within a set number of years — because you sold or
-              refinanced — and that penalties do not normally attach to extra
+              is paid off within a set number of years, because you sold or
+              refinanced, and that penalties do not normally attach to extra
               principal paid in small amounts.
             </p>
             <p>
@@ -512,7 +512,7 @@ export default function MortgagePayoffPage() {
             right={<>
             <Sub>When paying extra is the wrong move</Sub>
             <p>
-              Money put into a mortgage returns your interest rate, guaranteed —
+              Money put into a mortgage returns your interest rate, guaranteed,
               which is a genuinely good return, and also an illiquid one. You
               cannot get it back out without borrowing against the house again.
               So the ordinary sequence is: an emergency fund first, then any
@@ -545,8 +545,8 @@ export default function MortgagePayoffPage() {
                 These figures are principal and interest only.
               </strong>{" "}
               Your actual monthly payment also includes property taxes,
-              homeowners insurance, and possibly mortgage insurance and HOA dues
-              — often several hundred dollars more. Extra payments do not reduce
+              homeowners insurance, and possibly mortgage insurance and HOA dues,
+              often several hundred dollars more. Extra payments do not reduce
               any of those. If you want the whole number, the{" "}
               <Link href={PAYMENT_PATH} className="text-accent-dk underline decoration-line-strong underline-offset-2">
                 monthly payment calculator
@@ -613,7 +613,7 @@ export default function MortgagePayoffPage() {
               CFPB_SOURCES.payingDown,
               CFPB_SOURCES.prepaymentPenalty,
               {
-                label: `${PREPAYMENT_SOURCE.label} — limits on prepayment penalties`,
+                label: `${PREPAYMENT_SOURCE.label}: limits on prepayment penalties`,
                 url: PREPAYMENT_SOURCE.url,
                 verified: PREPAYMENT_SOURCE.verified,
               },

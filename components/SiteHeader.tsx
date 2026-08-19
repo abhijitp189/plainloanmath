@@ -177,7 +177,7 @@ export default function SiteHeader() {
         <Link
           href="/"
           className="group flex min-h-tap items-center gap-2.5"
-          aria-label="Plain Loan Math — home"
+          aria-label="Plain Loan Math home"
         >
           {/* The mark is the loan-life strip in miniature: interest-heavy on
               the left, principal-heavy on the right. */}
@@ -262,7 +262,7 @@ export default function SiteHeader() {
                 ))}
                 <li className="mt-1 border-t border-line">
                   <Link
-                    href="/"
+                    href={ROUTES.calculators}
                     className="flex min-h-tap items-center px-4 text-[0.88rem] font-bold text-accent-dk transition-colors duration-150 hover:bg-accent-soft"
                   >
                     All calculators &rarr;
@@ -367,7 +367,7 @@ export default function SiteHeader() {
           ))}
         </ul>
 
-        <Link href="/" className="btn btn-primary mt-3 w-full">
+        <Link href={ROUTES.calculators} className="btn btn-primary mt-3 w-full">
           All calculators &rarr;
         </Link>
       </nav>

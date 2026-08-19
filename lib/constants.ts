@@ -97,12 +97,12 @@ export const PREPAYMENT_SOURCE = {
  */
 export const CFPB_SOURCES = {
   prepaymentPenalty: {
-    label: "CFPB — What is a prepayment penalty?",
+    label: "CFPB: What is a prepayment penalty?",
     url: "https://www.consumerfinance.gov/ask-cfpb/what-is-a-prepayment-penalty-en-1957/",
     verified: "2026-08-12",
   },
   payingDown: {
-    label: "CFPB — How does paying down a mortgage work?",
+    label: "CFPB: How does paying down a mortgage work?",
     url: "https://www.consumerfinance.gov/ask-cfpb/how-does-paying-down-a-mortgage-work-en-1943/",
     verified: "2026-08-12",
   },

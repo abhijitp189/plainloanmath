@@ -51,7 +51,7 @@ export default function PrivacyPage() {
           <p>
             There is no server to receive it. This site is a set of static
             files. That is a deliberate architectural choice, not a policy we
-            could quietly change &mdash; there is no database to put your
+            could quietly change. There is no database to put your
             figures in.
           </p>
         </Block>
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
           <p>
             We use Google Analytics 4 to understand which pages people read and
             how they arrive. It sets cookies in your browser and reports
-            aggregate information to us &mdash; page views, approximate
+            aggregate information to us: page views, approximate
             location at city level, device type, and referring site. We do not
             use it to identify individual people, and we have Google Signals
             turned off.
@@ -101,7 +101,7 @@ export default function PrivacyPage() {
           </p>
         </Block>
 
-        <Block title="Advertising — Google AdSense">
+        <Block title="Advertising: Google AdSense">
           <p>
             This site is funded by advertising, which is what keeps it free and
             free of lender money. Our advertising partner is{" "}
@@ -162,7 +162,7 @@ export default function PrivacyPage() {
           </p>
           <p>
             Because we hold no personal information about you, we generally
-            have nothing to look up, export, or delete if you ask &mdash; there
+            have nothing to look up, export, or delete if you ask. There
             is no account and no record. For the data Google holds, use the
             Google links above, which reach further than we can.
           </p>

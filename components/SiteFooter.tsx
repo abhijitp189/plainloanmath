@@ -74,7 +74,7 @@ export default function SiteFooter() {
           <p className="max-w-prose text-[0.88rem] leading-relaxed text-muted">
             {SITE.name} is not a lender, a broker, or a lead generator. No
             lender pays us, there are no rate quotes or lead forms anywhere on
-            this site, and every calculation runs in your browser — the numbers
+            this site, and every calculation runs in your browser, and the numbers
             you enter are never sent to us and never stored. Everything here is
             an estimate for education, not financial advice.
           </p>

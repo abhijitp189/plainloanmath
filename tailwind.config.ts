@@ -46,12 +46,6 @@ const config: Config = {
         // existing references resolve; it is no longer a separate gold.
         "gold-dark": "#C88F2A",
 
-        // Retained so existing references resolve, but no longer part of the
-        // system — these were the homepage category tints. Do not reach for
-        // them on a new page.
-        mint: "#EFF6F4",
-        "indigo-soft": "#EAF0F7",
-
         // the data palette — design guide §1.4. Data only, as of August 11:
         // never navigation, cards or icons.
         "c-pi": "#0D6E5F",

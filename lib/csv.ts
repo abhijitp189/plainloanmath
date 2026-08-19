@@ -76,7 +76,7 @@ export function scheduleToCsv(
   );
 
   const lines: string[] = [
-    row([`Plain Loan Math — ${meta.tool}`]),
+    row([`Plain Loan Math: ${meta.tool}`]),
     row([
       `Loan ${money(meta.loanAmount)} at ${meta.annualRatePct}% over ${years} years` +
         (meta.planNote
@@ -131,7 +131,7 @@ export function breakdownToCsv(
   );
 
   const lines: string[] = [
-    row(["Plain Loan Math — monthly payment breakdown"]),
+    row(["Plain Loan Math: monthly payment breakdown"]),
     row([
       `${money(meta.homePrice)} home, ${money(meta.downPayment)} down, ` +
         `${meta.annualRatePct}% over ${years} years`,

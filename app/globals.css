@@ -81,8 +81,6 @@
      system: these were the pale category tints behind the homepage tool
      icons, and category tints are what the August 11 pass removed. Do not
      reach for them on a new page. */
-  --mint: #EFF6F4;
-  --indigo-soft: #EAF0F7;
 
   /* Geometry. Square corners are the whole gesture of this system: a
      measuring instrument has edges, not pillows. One value, and it is zero —
@@ -389,21 +387,11 @@ summary::-webkit-details-marker {
     text-transform: uppercase;
   }
 
-  /* The status tag — "Next", "Soon". Flat text, not a tinted chip.
-     Added August 11 with the tool list rebuild.
-
-     NOT brass, for two reasons. Design guide §1.3 and do-not #7 reserve brass
-     for savings figures, and promoting it to a status role is a rule change
-     that belongs in the design guide before it appears in a component. And
-     --brass measures 4.05:1 on --paper, which is the page ground — under the
-     4.5 floor for text this size. --muted is 5.50:1 there. */
-  .tag-status {
-    padding: 0;
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--muted);
-  }
-
+  /* .tag-status ("Next", "Soon") was removed on August 19, 2026 along with the
+     homepage roadmap it existed for. Kept as a note rather than as dead CSS:
+     if a status tag ever returns, it is flat --muted text and NOT brass.
+     Design guide §1.3 reserves brass for savings figures, and brass measures
+     4.05:1 on --paper against a 4.5 floor at this size. --muted is 5.50:1. */
   /* ── Panel ───────────────────────────────────────────────────────
      The system's one container. A hairline box on white, no shadow, no
      radius. Structure inside it is drawn with .rule. */

@@ -69,7 +69,7 @@ gtag('config', '${GA_MEASUREMENT_ID}');`,
             wrong the day after it ships, which is the bug the footer copyright
             year already has. */}
         <div className="print-only border-b-rule border-line-strong pb-3 text-[0.8rem]">
-          <p className="font-bold">Plain Loan Math &mdash; plainloanmath.com</p>
+          <p className="font-bold">Plain Loan Math, plainloanmath.com</p>
           <p>
             Estimates only. Not financial advice, and not a loan offer.
           </p>

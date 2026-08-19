@@ -3,11 +3,12 @@ import Link from "next/link";
 import { LAST_REVIEWED, SITE } from "@/lib/constants";
 import {
   PAYOFF_PATH,
-  PAYOFF_VS_INVEST_PATH,
   PAYMENT_PATH,
-  REFINANCE_PATH,
   LEARN_PATH,
+  ROUTES,
+  CALCULATOR_KEYS,
   navLabel,
+  type CalculatorKey,
 } from "@/lib/routes";
 import { SectionHead } from "@/components/PageChrome";
 import { CALC_ICON } from "@/components/CalcIcons";
@@ -36,9 +37,9 @@ import { CALC_ICON } from "@/components/CalcIcons";
 //
 // 2. Two live tools, four listed. Four of six cards were dashed placeholders
 //    taking the same space as the working tools, so the page's dominant
-//    visual fact was absence. The built ones now get full-size cards; the
-//    unbuilt ones are a ruled list underneath, which is also more honest —
-//    a list reads as a roadmap, six cards read as a product with holes in it.
+//    visual fact was absence. The built ones got full-size cards and the
+//    unbuilt ones a ruled list underneath. SUPERSEDED August 19, 2026: the
+//    ruled list is gone too, and the reasoning is at the tool grid below.
 //
 // 3. One dark band, per design guide §3.2. The trust section was a second
 //    full-width --ink-deep field, and two dark slabs with a light grid
@@ -50,78 +51,79 @@ import { CALC_ICON } from "@/components/CalcIcons";
 //    Same twelve terms, same words.
 
 export const metadata: Metadata = {
-  title: "Plain Loan Math — Mortgage Calculators With Nothing to Sell",
+  title: "Plain Loan Math: Mortgage Calculators With Nothing to Sell",
   description:
     "Free mortgage calculators and plain explanations of the math behind them. No lender pays us, and there are no rate quotes, lead forms or affiliate links anywhere on this site.",
   alternates: { canonical: "/" },
-};
-
-type LiveTool = {
-  href: string;
-  title: string;
-  body: string;
-  question: string;
-  icon: React.ReactNode;
-};
-
-type PlannedTool = {
-  flag: string;
-  title: string;
-  question: string;
 };
 
 // Only tools with a live page appear as cards. Project brief §3, defect 3 —
 // the site shipped nine links to routes that did not exist, and this grid is
 // exactly where a tenth would come from. An unbuilt tool cannot be a card at
 // all now, which is a stronger guard than rendering it as plain text.
-const LIVE: LiveTool[] = [
-  {
-    href: PAYMENT_PATH,
-    title: navLabel("payment"),
-    body: "Principal, interest, taxes and insurance — separated, not lumped into one number.",
+//
+// ── August 19, 2026 — the grid is derived, not typed ─────────────────────
+//
+// This was the last nav surface keeping its own hand-typed list of live
+// tools. On August 18 the 15-year vs 30-year calculator shipped; it reached
+// the header and the footer, because both iterate CALCULATOR_KEYS, and never
+// reached this grid, while the roadmap below it went on promising the same
+// tool as "Next". Two of anything is the defect, and the second copy is the
+// one that does not receive the first one's fixes — project brief §0.13,
+// technical brief §7.1.
+//
+// The path, the label and the icon now come from the same three records every
+// other surface reads. What stays here is the only genuinely page-local part:
+// the sentence and the question printed on the card. TOOL_COPY is keyed over
+// CalculatorKey, so adding a calculator to CALCULATOR_KEYS without writing
+// its card copy is a compile error rather than a card that quietly never
+// appears.
+const TOOL_COPY: Record<CalculatorKey, { body: string; question: string }> = {
+  payment: {
+    body: "Principal, interest, taxes and insurance, separated rather than lumped into one number.",
     question: "“What will I actually pay?”",
-    icon: CALC_ICON.payment,
   },
-  {
-    href: PAYOFF_PATH,
-    title: navLabel("payoff"),
+  payoff: {
     body: "Add anything extra each month and watch the interest disappear.",
     question: "“What if I pay $200 more?”",
-    icon: CALC_ICON.payoff,
   },
-  {
-    href: PAYOFF_VS_INVEST_PATH,
-    title: navLabel("payoffVsInvest"),
+  payoffVsInvest: {
     body: "Put the same money either way and see where each one ends, plus the return that decides it.",
     question: "“Which is worth more in the end?”",
-    icon: CALC_ICON.payoffVsInvest,
   },
-  {
-    href: REFINANCE_PATH,
-    title: navLabel("refinance"),
+  refinance: {
     body: "Work out the month a refinance pays back what it cost, and the rate it would need to be worth it.",
     question: "“Is refinancing worth it?”",
-    icon: CALC_ICON.refinance,
   },
-];
-
-// The roadmap, and it is a promise, so it only carries tools that will exist.
-//
-// "How much house you can afford" was flagged Next here until August 15, 2026
-// and was removed on the evidence rather than deferred: page one for that
-// phrase is Wells Fargo, Chase, U.S. Bank, PNC, NerdWallet, Zillow and
-// calculator.net, it needs the heaviest research load of any candidate, and it
-// sits closest to the advice line (project brief §7). It went the same way the
-// amortization schedule calculator went the day before. A roadmap promising a
-// tool nobody intends to build is a false statement on the site's most-read
-// page, so the entry comes off in the same delivery as the decision.
-const PLANNED: PlannedTool[] = [
-  {
-    flag: "Next",
-    title: "15-year vs 30-year",
+  termCompare: {
+    body: "The shorter loan is sold on the interest it saves. See how much of that comes from the term, and how much from simply paying more.",
     question: "“Which term should I take?”",
   },
-];
+};
+
+const LIVE = CALCULATOR_KEYS.map((key) => ({
+  href: ROUTES[key],
+  title: navLabel(key),
+  body: TOOL_COPY[key].body,
+  question: TOOL_COPY[key].question,
+  icon: CALC_ICON[key],
+}));
+
+// ── August 19, 2026 — the roadmap is gone, not hidden ────────────────────
+//
+// The hub used to carry a "Not built yet" list under the tool grid. It is
+// removed, and the decision behind that is in the ledger (project brief §2.3):
+// nobody arrives at a mortgage calculator wanting to know what the site
+// intends to build next, and a published roadmap is a promise that has to be
+// maintained against reality forever. It was not maintained: 15-year vs
+// 30-year shipped on August 18 and sat on this list advertised as "Next" for a
+// day afterwards, on the same page that had stopped linking to it.
+//
+// Sequencing is now an internal decision, which is where it always belonged.
+// Nothing replaces the block; the tool grid simply ends and the /learn/
+// callout follows it.
+//
+// If it ever comes back, it comes back knowing why it left.
 
 const GLOSSARY = [
   ["Principal", "The amount you owe. Every payment shaves a little off it."],
@@ -136,7 +138,7 @@ const GLOSSARY = [
   ],
   [
     "PITI",
-    "Principal, interest, taxes, insurance — the four parts of a typical bill.",
+    "Principal, interest, taxes, insurance: the four parts of a typical bill.",
   ],
   ["PMI", "Insurance you buy that protects the lender if you stop paying."],
   ["Equity", "What the home is worth minus what you still owe on it."],
@@ -151,7 +153,7 @@ const GLOSSARY = [
   ],
   [
     "DTI",
-    "Debt-to-income — the ratio lenders use to decide how much you can borrow.",
+    "Debt-to-income: the ratio lenders use to decide how much you can borrow.",
   ],
   [
     "Conforming loan",
@@ -251,10 +253,10 @@ export default function Home() {
               </h1>
               <p className="mt-3 max-w-lede text-[1.02rem] leading-relaxed text-white/80">
                 Every other calculator you have found is owned by someone who
-                makes money when you take out a loan. This one is not. There
-                are no rate quotes, no lead forms and no lender links anywhere
-                on this site — just the arithmetic, with the formula published
-                so you can check it.
+                makes money when you take out a loan. This one is not. There are
+                no rate quotes, no lead forms and no lender links anywhere on
+                this site. Just the arithmetic, with the formula published so
+                you can check it.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-2.5">
@@ -290,12 +292,13 @@ export default function Home() {
         <div className="mx-auto max-w-wrap px-[var(--gutter)]">
           <SectionHead
             title="The calculators"
-            intro="One tool per page, each answering a single question, each with the formula written out underneath it. Tools without a link are not built yet — they are listed so you can see where this is going."
+            intro="One tool per page, each answering a single question, each with the formula written out underneath it."
           />
 
-          {/* Two live tools, at full size. Two columns rather than three:
-              a 3-column grid sized for six cards left these two looking like
-              the remnants of something larger. */}
+          {/* Every live tool, at full size. Two columns rather than three:
+              a 3-column grid sized for six cards left the original two looking
+              like the remnants of something larger, and two columns still read
+              as a set rather than a shortfall as the array grows. */}
           <ul className="grid gap-4 sm:grid-cols-2">
             {LIVE.map((t) => (
               <li key={t.title}>
@@ -318,35 +321,10 @@ export default function Home() {
             ))}
           </ul>
 
-          {/* The roadmap. A ruled list, not cards — see note 2 at the top.
-              Grid rather than flex so the question column lines up down the
-              list regardless of how long a title runs; the question drops off
-              below 640px rather than wrapping to three ragged lines. */}
-          <div className="mt-8">
-            <p className="label">Not built yet</p>
-            <ul className="mt-2.5 border-t border-line">
-              {PLANNED.map((t) => (
-                <li
-                  key={t.title}
-                  className="grid grid-cols-[3rem_minmax(0,1fr)] items-baseline gap-x-3.5 border-b border-line py-2.5 sm:grid-cols-[3rem_15rem_minmax(0,1fr)]"
-                >
-                  <span className="tag tag-status">{t.flag}</span>
-                  <span className="text-[0.95rem] font-bold text-ink">
-                    {t.title}
-                  </span>
-                  <span className="hidden text-[0.88rem] text-muted sm:block">
-                    {t.question}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Where the /learn/ silo surfaces on the hub. Deliberately below the
-              roadmap and outside the tool grid: an article is not a tool, and
-              technical brief guardrail 14 keeps anything that is not a live
-              tool out of every array a reader could mistake for the calculator
-              set. */}
+          {/* Where the /learn/ silo surfaces on the hub. Deliberately outside
+              the tool grid: an article is not a tool, and technical brief
+              guardrail 14 keeps anything that is not a live tool out of every
+              array a reader could mistake for the calculator set. */}
           <div className="mt-8 border-l-[3px] border-line-strong bg-paper-2 p-5">
             <p className="label">Reading, not a tool</p>
             <p className="mt-2 max-w-prose text-[0.95rem] leading-relaxed text-ink-2">
@@ -386,13 +364,12 @@ export default function Home() {
               This site carries no lender links, no quote buttons, and no
               affiliate relationships. It is funded by ads, which means we are
               paid the same whether or not you ever take out a loan. There is
-              nothing here to submit, because there is nothing we want from
-              you.
+              nothing here to submit, because there is nothing we want from you.
             </p>
             <p className="mt-3 max-w-lede leading-relaxed text-ink-2">
               Every calculation runs in your own browser. The figures you type
               are never sent to us and never stored anywhere, which is not a
-              policy we chose to write — it is a consequence of the site having
+              policy we chose to write. It is a consequence of the site having
               no accounts, no database and nowhere to put them.
             </p>
           </div>
@@ -407,8 +384,8 @@ export default function Home() {
                   className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
                 >
                   Methodology
-                </Link>{" "}
-                — every formula on the site, written out with its sources.
+                </Link>
+                : every formula on the site, written out with its sources.
               </li>
               <li>
                 <Link
@@ -416,8 +393,8 @@ export default function Home() {
                   className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
                 >
                   Corrections
-                </Link>{" "}
-                — what we got wrong, and when we fixed it.
+                </Link>
+                : what we got wrong, and when we fixed it.
               </li>
               <li>
                 <Link
@@ -425,8 +402,8 @@ export default function Home() {
                   className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
                 >
                   Editorial policy
-                </Link>{" "}
-                — how pages get written and reviewed.
+                </Link>
+                : how pages get written and reviewed.
               </li>
             </ul>
           </div>
@@ -481,7 +458,7 @@ export default function Home() {
             <time className="num" dateTime={LAST_REVIEWED}>
               {LAST_REVIEWED}
             </time>
-            . Estimates only — not financial advice, and not a loan offer.
+            . Estimates only, not financial advice, and not a loan offer.
           </p>
         </div>
       </section>

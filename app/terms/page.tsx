@@ -85,7 +85,7 @@ export default function TermsPage() {
             The text, explanations, charts and code on this site are ours. You
             may quote a reasonable extract with a link back. Please do not
             republish whole pages, or copy the calculators wholesale, without
-            asking first &mdash; write to us and the answer is usually yes.
+            asking first. Write to us and the answer is usually yes.
           </p>
           <p>
             Results you generate from your own numbers are yours. Screenshot

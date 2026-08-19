@@ -16,7 +16,7 @@ import {
 } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Methodology — Every Formula, With Its Sources",
+  title: "Methodology: Every Formula, With Its Sources",
   description:
     "The exact arithmetic behind every Plain Loan Math calculator: the amortization formula, how extra payments are applied, how PITI is assembled, and where the PMI rules come from.",
   alternates: { canonical: "/methodology/" },
@@ -76,7 +76,7 @@ export default function MethodologyPage() {
       <PageHeader
         eyebrow="How this works"
         title="Methodology"
-        lede="Every formula this site uses, written out, with the example numbers worked through. Nothing here is proprietary — you should be able to reproduce any figure by hand."
+        lede="Every formula this site uses, written out, with the example numbers worked through. Nothing here is proprietary. You should be able to reproduce any figure by hand."
         siblings={[
           { href: "/editorial-policy/", label: "Editorial policy" },
           { href: "/corrections/", label: "Corrections" },
@@ -89,7 +89,7 @@ export default function MethodologyPage() {
           The calculators on {SITE.url} share one math engine. It is plain
           TypeScript with no framework in it, which means the same code
           produces the homepage figure, the payoff figure, and the numbers on
-          this page &mdash; they cannot disagree with each other.
+          this page. They cannot disagree with each other.
         </p>
         <p>
           Throughout, we use one example: a{" "}
@@ -110,19 +110,19 @@ export default function MethodologyPage() {
           </Formula>
           <ul className="ml-5 list-disc space-y-1.5">
             <li>
-              <strong className="num font-semibold text-ink">M</strong> &mdash;
+              <strong className="num font-semibold text-ink">M</strong> is
               the monthly payment
             </li>
             <li>
-              <strong className="num font-semibold text-ink">P</strong> &mdash;
+              <strong className="num font-semibold text-ink">P</strong> is
               the principal, meaning the amount borrowed after the down payment
             </li>
             <li>
-              <strong className="num font-semibold text-ink">r</strong> &mdash;
+              <strong className="num font-semibold text-ink">r</strong> is
               the monthly interest rate, which is the annual rate divided by 12
             </li>
             <li>
-              <strong className="num font-semibold text-ink">n</strong> &mdash;
+              <strong className="num font-semibold text-ink">n</strong> is
               the total number of monthly payments
             </li>
           </ul>
@@ -176,7 +176,7 @@ export default function MethodologyPage() {
           </p>
           <p>
             This is why the early years feel like nothing is happening. It is
-            not a trick and nothing is hidden from you &mdash; it is what
+            not a trick and nothing is hidden from you. It is what
             charging a percentage fee on a shrinking balance does.
           </p>
           <p>
@@ -216,7 +216,7 @@ export default function MethodologyPage() {
           <p>
             We assume the extra is applied to principal in the month it is
             paid. Some servicers instead hold it as a prepayment of next
-            month&rsquo;s bill, which saves nothing at all &mdash; worth
+            month&rsquo;s bill, which saves nothing at all, so it is worth
             checking your statement after the first one.
           </p>
         </Block>
@@ -301,7 +301,7 @@ export default function MethodologyPage() {
           <p>
             This rule covers conventional loans only. FHA mortgage insurance
             premiums follow separate HUD rules and, for most loans since June
-            2013, run for the life of the loan &mdash; refinancing is generally
+            2013, run for the life of the loan, and refinancing is generally
             the only way out. Our calculators model the conventional rules.
           </p>
         </Block>
@@ -317,7 +317,7 @@ export default function MethodologyPage() {
           <p>
             Your lender may round differently at the cent level, so a
             one-or-two-dollar difference against your statement is normal. A
-            difference larger than that usually means an input differs &mdash;
+            difference larger than that usually means an input differs,
             most often escrow amounts, or a rate quoted as APR rather than the
             note rate.
           </p>
@@ -340,7 +340,7 @@ export default function MethodologyPage() {
 
         <Block title="Checking our work">
           <p>
-            Take any figure on this site and reproduce it &mdash; by hand, in a
+            Take any figure on this site and reproduce it: by hand, in a
             spreadsheet, or against another calculator. If ours disagrees, we
             want to know: <a href="/contact/">tell us</a> and see the{" "}
             <a href="/corrections/">corrections page</a> for what happens next.

@@ -30,7 +30,7 @@ export default function DisclaimerPage() {
         <p>
           Everything on this site is general information. We do not know your
           income, your credit history, your other debts, your tax position, or
-          your plans — so nothing here can be a recommendation about what you
+          your plans, so nothing here can be a recommendation about what you
           should do. A calculator that has never met you cannot advise you.
         </p>
         <p>
@@ -64,7 +64,7 @@ export default function DisclaimerPage() {
         <p>
           We show the formula behind each calculation so you can check our work
           rather than take it on trust. We test the arithmetic against
-          published reference figures. Even so, errors are possible — in the
+          published reference figures. Even so, errors are possible: in the
           code, in the explanation, or in a source we relied on.
         </p>
         <p>
@@ -102,7 +102,7 @@ export default function DisclaimerPage() {
 
       <Section title="United States focus">
         <p>
-          This site describes United States mortgage conventions — monthly
+          This site describes United States mortgage conventions: monthly
           compounding, fixed-rate amortization, and US loan products. If you are
           borrowing in another country, the arithmetic on this site may not
           match how your lender calculates interest.

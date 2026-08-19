@@ -15,7 +15,7 @@ export default function Disclaimer() {
         </strong>{" "}
         Plain Loan Math is not a lender, broker, or licensed financial adviser,
         and no lender pays us. These figures are illustrations produced by the
-        formula shown on the page — your actual loan will depend on your
+        formula shown on the page. Your actual loan will depend on your
         lender&rsquo;s terms, fees, taxes, and insurance. Check any number that
         matters with your lender before acting on it.
       </p>

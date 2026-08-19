@@ -467,8 +467,8 @@ export default function PayoffCalculator() {
                     instead of{" "}
                     <span className="num text-ink-2">
                       {formatDuration(result.baseline.months)}
-                    </span>{" "}
-                    — {formatDuration(result.monthsSaved)} sooner
+                    </span>,{" "}
+                    {formatDuration(result.monthsSaved)} sooner
                   </>
                 ) : (
                   <>
@@ -611,8 +611,8 @@ export default function PayoffCalculator() {
                 principal than to interest starting at{" "}
                 <strong className="font-semibold text-ink">
                   month <span className="num">{crossBefore}</span>
-                </strong>{" "}
-                — {formatDuration(crossBefore)} in.
+                </strong>,{" "}
+                {formatDuration(crossBefore)} in.
                 {crossAfter < crossBefore ? (
                   <>
                     {" "}
@@ -650,7 +650,7 @@ export default function PayoffCalculator() {
                 Paying every two weeks puts in 13 monthly payments a year. You
                 can get the same 13 by adding{" "}
                 <span className="num">{formatUSD(basePayment / 12)}</span> to
-                each monthly payment yourself — and that version pays off in{" "}
+                each monthly payment yourself, and that version pays off in{" "}
                 <span className="num">
                   {formatDuration(biweeklyVsMonthly.months)}
                 </span>{" "}

@@ -126,7 +126,7 @@ export default function ResultActions({
       </p>
 
       <p className="mt-2.5 text-[0.8rem] leading-relaxed text-muted">
-        {note} The link carries your figures, not your identity — everything
+        {note} The link carries your figures, not your identity. Everything
         here is generated on your device and nothing is uploaded.
       </p>
     </div>

@@ -56,14 +56,36 @@ export const REFINANCE_PATH = "/mortgage/refinance-break-even/";
  * The editorial silo, added August 15, 2026. The site's second silo, and the
  * first thing to exercise `relatedRoutes()` across a silo boundary.
  *
- * `/learn/` is a real page, not a bare path. That matters because `/mortgage/`
- * is NOT one: it 301s to `/` at the Cloudflare edge (technical brief §5), a
- * dashboard setting nobody can see from the repo. Nothing here may assume the
- * same arrangement in reverse — this directory has an index because one was
- * built, and if `/mortgage/` ever gets a landing page the redirect has to be
- * removed in the dashboard first.
+ * `/learn/` is a real page, not a bare path.
+ *
+ * UPDATED August 19, 2026: `/mortgage/` is now one too, see MORTGAGE_PATH
+ * below. Until that date this comment recorded the asymmetry and the reason
+ * for it, which was a Cloudflare redirect rather than a design choice.
  */
 export const LEARN_PATH = "/learn/";
+
+/**
+ * The calculator silo index, added August 19, 2026.
+ *
+ * ⚠️ THIS PATH DEPENDS ON A DASHBOARD CHANGE. ⚠️
+ *
+ * `/mortgage/` used to 301 to `/` at the Cloudflare edge (technical brief §5),
+ * which is a setting nobody can see from the repo and nothing in the build can
+ * check. That redirect rule has to be deleted before this page can be reached;
+ * with it in place the page builds, enters the sitemap, and then redirects
+ * away from itself, which is worse than not having it. If this page ever
+ * appears to 404 or to bounce to the homepage, that rule is the first place to
+ * look.
+ *
+ * Why it exists now, having deliberately not existed since August 9: the site
+ * has two silos, `/learn/` has had an index since the day it shipped, and the
+ * header carried two "All calculators" links that both pointed at the
+ * homepage because there was nowhere better to send them. A silo with five
+ * pages and no front door was the odd one out.
+ *
+ * Bare directory, no slug. The path is the noun.
+ */
+export const MORTGAGE_PATH = "/mortgage/";
 
 /**
  * Fifteen-year loan against thirty-year loan.
@@ -133,6 +155,7 @@ export function payoffHref(p: PayoffParams): string {
 
 export const ROUTES = {
   home: "/",
+  calculators: MORTGAGE_PATH,
   payment: PAYMENT_PATH,
   payoff: PAYOFF_PATH,
   payoffVsInvest: PAYOFF_VS_INVEST_PATH,
@@ -177,6 +200,8 @@ export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
   refinance: "2026-08-14",
   // Built August 18, 2026. The rest of the site was not reviewed that day.
   termCompare: "2026-08-18",
+  // Built August 19, 2026, when /mortgage/ stopped being a redirect.
+  calculators: "2026-08-19",
   // Built August 15, 2026, with the /learn/ index alongside it.
   learn: "2026-08-15",
   principalVsInterest: "2026-08-15",
@@ -273,6 +298,17 @@ export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
     // comes from paying more will want the tool that shows what paying more
     // does, which is exactly that page.
     topics: ["term", "interest", "payment", "amortization"],
+  },
+  calculators: {
+    label: "All calculators",
+    navLabel: "Calculators",
+    silo: "mortgage",
+    // Deliberately empty, on the same reasoning as `learn` below. A silo index
+    // has no subject of its own, and `relatedRoutes()` drops any route sharing
+    // zero topics, so an empty list keeps this page out of every sibling block
+    // without needing an exclusion list. It still reaches the header and the
+    // sitemap, which read ROUTES rather than topic scores.
+    topics: [],
   },
   learn: {
     label: "Learn",

@@ -61,7 +61,7 @@ export default function PriceTable() {
               <strong className="num font-semibold text-ink">
                 {Math.round(downPct)}%
               </strong>{" "}
-              down &mdash; the figures you entered above. Principal and interest
+              down, the figures you entered above. Principal and interest
               only; taxes and insurance sit on top of these numbers.
             </>
           }
@@ -121,7 +121,7 @@ export default function PriceTable() {
 
         <p className="mt-3 text-[0.85rem] leading-relaxed text-muted">
           Reading across one row shows the cost of the house. Reading down the
-          last column shows something else entirely &mdash; how much of what you
+          last column shows something else entirely: how much of what you
           pay is the house, and how much is the borrowing.
         </p>
       </div>

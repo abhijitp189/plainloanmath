@@ -11,7 +11,7 @@ import { LAST_REVIEWED } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Editorial Policy",
   description:
-    "How Plain Loan Math researches, sources, reviews and updates what it publishes — and what it will not publish at any price.",
+    "How Plain Loan Math researches, sources, reviews and updates what it publishes, and what it will not publish at any price.",
   alternates: { canonical: "/editorial-policy/" },
 };
 
@@ -47,7 +47,7 @@ export default function EditorialPolicyPage() {
           </p>
           <p>
             Secondary sources are used to check that a rule has not been
-            superseded &mdash; never to establish it in the first place. We do
+            superseded, never to establish it in the first place. We do
             not cite other calculators, comparison sites, or blogs as authority
             for a fact.
           </p>
@@ -122,7 +122,7 @@ export default function EditorialPolicyPage() {
             <li>Lender comparisons or recommendations</li>
             <li>Sponsored or affiliate content of any kind</li>
             <li>
-              Predictions about where interest rates are going — nobody knows,
+              Predictions about where interest rates are going. Nobody knows,
               and a guess printed next to real arithmetic borrows its
               credibility
             </li>
