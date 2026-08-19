@@ -15,6 +15,8 @@ import CalcField from "@/components/CalcField";
 import Donut, { DonutLegend } from "@/components/Donut";
 import { breakdownToCsv } from "@/lib/csv";
 import { encodeParams, readNum, syncAddressBar } from "@/lib/share";
+import Link from "next/link";
+import { PMI_DROP_OFF_PATH } from "@/lib/routes";
 
 // The monthly payment calculator. It lived on the homepage until August 10,
 // 2026 and now has its own page at PAYMENT_PATH, so it can be tuned for one
@@ -443,7 +445,14 @@ export default function PaymentCalculator() {
               </>
             )}
             . FHA loans follow different rules and usually carry the premium for
-            the life of the loan.
+            the life of the loan.{" "}
+            <Link
+              href={PMI_DROP_OFF_PATH}
+              className="text-accent-dk underline decoration-line-strong underline-offset-2"
+            >
+              What decides these two months
+            </Link>
+            .
           </p>
         )}
 

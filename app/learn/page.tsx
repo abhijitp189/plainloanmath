@@ -39,6 +39,11 @@ const REVIEWED = ROUTE_REVIEWED.learn ?? LAST_REVIEWED;
 // ─────────────────────────────────────────────────────────────────────────────
 
 const BLURB: Record<ArticleKey, { title: string; blurb: string }> = {
+  pmiDropOff: {
+    title: "When PMI drops off, and how to force it sooner",
+    blurb:
+      "Three dates decide it, and the down payment decides which arrives first. On a $425,000 home with 10% down, month 98 and month 112. Why extra payments move only one of them.",
+  },
   principalVsInterest: {
     title:
       "When your mortgage starts paying down more principal than interest",

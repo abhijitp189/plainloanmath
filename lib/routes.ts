@@ -114,6 +114,16 @@ export const TERM_COMPARE_PATH = "/mortgage/15-vs-30/";
 export const PRINCIPAL_VS_INTEREST_PATH =
   "/learn/when-you-start-paying-more-principal-than-interest/";
 
+/**
+ * When PMI drops off, and how to force it sooner.
+ *
+ * Added August 19, 2026. Short, unlike the article above, because the query is
+ * short: "when does PMI drop off" is typed almost verbatim and the whole phrase
+ * fits the slug. The longer article's slug is long for the same reason its
+ * query is.
+ */
+export const PMI_DROP_OFF_PATH = "/learn/when-does-pmi-drop-off/";
+
 export type PayoffParams = {
   loanAmount: number;
   ratePct: number;
@@ -163,6 +173,7 @@ export const ROUTES = {
   termCompare: TERM_COMPARE_PATH,
   learn: LEARN_PATH,
   principalVsInterest: PRINCIPAL_VS_INTEREST_PATH,
+  pmiDropOff: PMI_DROP_OFF_PATH,
   methodology: "/methodology/",
   corrections: "/corrections/",
   editorialPolicy: "/editorial-policy/",
@@ -205,6 +216,8 @@ export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
   // Built August 15, 2026, with the /learn/ index alongside it.
   learn: "2026-08-15",
   principalVsInterest: "2026-08-15",
+  // Built August 19, 2026. The rest of the site was not reviewed that day.
+  pmiDropOff: "2026-08-19",
 };
 
 /**
@@ -333,6 +346,19 @@ export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
     // overlap alone.
     topics: ["amortization", "interest", "payoff", "extra-payments"],
   },
+  pmiDropOff: {
+    label: "When PMI drops off",
+    navLabel: "When PMI drops off",
+    silo: "learn",
+    // "pmi" is shared with the payment calculator alone, which is the page a
+    // reader wanting to see a premium line in a monthly total should land on,
+    // and the only other route that carries the tag. "extra-payments" and
+    // "amortization" reach the payoff calculator and the sibling article,
+    // because the whole "how to force it" half of this page is extra principal
+    // read against the original schedule. Scored out on August 19: payment 3,
+    // payoff 2, principal vs interest 2, pay off or invest 1.
+    topics: ["pmi", "payment", "extra-payments", "amortization"],
+  },
   methodology: {
     label: "How we calculate",
     silo: null,
@@ -424,6 +450,7 @@ export const CALC_STRIPE: Record<
  * an article index is a reverse chronology.
  */
 export const ARTICLE_KEYS = [
+  "pmiDropOff",
   "principalVsInterest",
 ] as const satisfies readonly RouteKey[];
 
@@ -437,6 +464,10 @@ export const ARTICLE_STRIPE: Record<
   principalVsInterest: {
     eyebrow: "Article",
     breadcrumb: "Principal vs interest",
+  },
+  pmiDropOff: {
+    eyebrow: "Article",
+    breadcrumb: "When PMI drops off",
   },
 };
 

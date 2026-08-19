@@ -176,3 +176,68 @@ outside check.
 - **No current-rate figure anywhere but the one dated sentence**, and no forecast.
 - **No recommendation** about extra payments, term choice or refinancing. The
   page computes both sides and stops.
+
+---
+
+## `/learn/when-does-pmi-drop-off/`
+
+Reviewed 2026-08-19. Every statutory rule below was read from the U.S. Code on
+that date, not recalled. Every month was computed at build time by
+`pmiSchedule()` in `lib/mortgage.ts`, which is the same function the payment
+calculator uses, and independently reproduced by a separate script written from
+the amortization formula.
+
+| Claim | Source | Check | Verified |
+|---|---|---|---|
+| Borrower may request cancellation at 80% of original value, in writing, with good payment history, current, and evidence value has not declined | 12 U.S.C. § 4902(a), including the "or any later date" clause and the subordinate-lien certification at § 4902(a)(4)(B) | Read from uscode.house.gov | 2026-08-19 |
+| The cancellation date may be taken on the initial schedule **or** on actual payments, at the borrower's option | 12 U.S.C. § 4901(2)(A)(i) and (ii) | Read from statute | 2026-08-19 |
+| Automatic termination at 78% is fixed by the initial amortization schedule, irrespective of the outstanding balance | 12 U.S.C. § 4901(18)(A), § 4902(b) | Read from statute. This is the distinction the page is built around | 2026-08-19 |
+| Final termination no later than the first day of the month after the midpoint; midpoint is month 180 on a 30-year loan, so the deadline is month 181 | 12 U.S.C. § 4902(c), § 4901(7) | Read from statute. `pmiSchedule().finalMonth` returns the deadline, 181, not the midpoint | 2026-08-19 |
+| Original value is the lesser of sales price or appraised value at consummation | 12 U.S.C. § 4901(12) | Read from statute | 2026-08-19 |
+| All three dates recalculate on a loan modification | 12 U.S.C. § 4902(d); Fannie Mae B-8.1-04 | Read from both | 2026-08-19 |
+| Lender-paid MI is outside §§ 4902 to 4904 and ends only on refinance, payoff or other termination | 12 U.S.C. § 4905(b), § 4905(c)(1)(B) | Read from statute | 2026-08-19 |
+| FHA and VA are excluded from the definition of private mortgage insurance | 12 U.S.C. § 4901(13) | Read from statute | 2026-08-19 |
+| The chapter reaches single-family principal residences consummated on or after July 29, 1999 | 12 U.S.C. § 4901(14), § 4901(15) | Read from statute | 2026-08-19 |
+| High-risk loans terminate at 77% rather than 78%, and the midpoint rule still applies | 12 U.S.C. § 4902(g)(1)(B), (g)(2) | Read from statute | 2026-08-19 |
+| Fannie Mae current-value termination: 75% LTV at two to five years' seasoning, 80% past five years, 80% where two-year seasoning is waived for borrower improvements | Fannie Mae Servicing Guide B-8.1-04 | Read from the Guide, edition published 2026-08-12 | 2026-08-19 |
+| The servicer must not solicit for current-value termination, and may act only on a borrower-initiated request | Fannie Mae B-8.1-04 | Read from the Guide | 2026-08-19 |
+| On the original-value route the servicer **is** authorized to notify a borrower approaching 80%, but may terminate only after a direct response | Fannie Mae B-8.1-04 | Read from the Guide | 2026-08-19 |
+| A denial on an automated value does not end the original-value route: the borrower may pay down further or elect a BPO or appraisal | Fannie Mae B-8.1-04 | Read from the Guide | 2026-08-19 |
+| Premiums stop within 30 days; notice within 30 days; unearned premiums refunded within 45 days; no fee for required notices; written grounds for denial within 30 days | 12 U.S.C. § 4902(e)(1), § 4902(f)(1), § 4906, § 4904(b); Fannie Mae B-8.1-04 | Read from both | 2026-08-19 |
+| § 4908(a)(2) preserves state laws enacted within two years of the Act, in states regulating PMI on or before January 2, 1998, where the state law is earlier, at a higher balance, or more disclosing | 12 U.S.C. § 4908(a)(2) | Read from statute | 2026-08-19 |
+| On $382,500 at 6.75% over 30 years: request month 98, automatic month 112, a 14-month window | `lib/mortgage.ts` `pmiSchedule()`, computed at build time | Reproduced by an independent script across all five tiers and all seven extra-principal rows | 2026-08-19 |
+| $100 extra per month moves the request date to month 79 and leaves the automatic date at 112 | `lib/mortgage.ts` `amortize()`, computed at build time | Reproduced independently. The automatic date is invariant by construction, since `pmiSchedule` amortizes with zero extra | 2026-08-19 |
+
+### Stated deliberately, and why
+
+- **The 20%-down canonical example is adapted, not abandoned.** Twenty percent
+  down carries no PMI, so the page holds the home price, rate and term constant
+  and moves only the down payment. Project brief §10.
+- **The midpoint and the deadline are given as two different months.** Month 180
+  is the midpoint under § 4901(7); month 181 is the last date PMI may be
+  imposed under § 4902(c). Sources that give one figure for both are compressing
+  the statute.
+- **The servicer-notification asymmetry is stated even though it softens the
+  page's own argument.** B-8.1-04 forbids soliciting on the current-value route
+  and permits notification on the original-value route. Reporting only the
+  first would have been the stronger sentence and the wrong one.
+- **The verbal-request nuance is kept.** Fannie Mae permits a servicer to act on
+  a verbal request; only writing satisfies § 4902(a). A reader who telephones
+  and believes the matter closed is the exact failure this page exists to stop.
+- **A build-time assertion holds the chart's claim.** `MIDPOINT_NEVER_GOVERNS`
+  is computed rather than asserted in prose, so a future rate change that pushes
+  a tier's 78% date past the deadline changes the sentence instead of leaving a
+  false one standing.
+
+### Not stated, and why
+
+- **No PMI premium rate and no dollar saving.** Rates vary by credit score, LTV,
+  term and insurer and no primary source publishes a single figure. Savings are
+  counted in months of premium. This is the pattern established by the invest
+  page, used for the fourth time.
+- **No Freddie Mac or portfolio-lender thresholds.** Not read against a primary
+  source for this page, and the page says so.
+- **No template letter.** The page states what the rules require the request to
+  establish and stops short of drafting it. Project brief §22, rule 2.
+- **No state-by-state list under § 4908(a)(2).** The preservation rule is stated;
+  which states qualify was not verified.
