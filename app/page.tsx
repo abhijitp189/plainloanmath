@@ -11,7 +11,7 @@ import {
   type CalculatorKey,
 } from "@/lib/routes";
 import { SectionHead } from "@/components/PageChrome";
-import { CALC_ICON } from "@/components/CalcIcons";
+import { CALC_ICON, IconTile } from "@/components/CalcIcons";
 
 // The hub, from August 10, 2026. Repaletted August 11.
 //
@@ -187,40 +187,6 @@ const siteSchema = {
   url: SITE.url,
   publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
 };
-
-/** Design guide §4.3, revised August 11 — outlined ink icon in a plain square.
-    No per-tool color, no pale tint, no gradient chip. The square is a hairline
-    in --line-strong and the strokes are ink; the only thing that moves on
-    hover is the card border, and it moves to the accent. */
-function IconTile({
-  children,
-  size = 44,
-}: {
-  children: React.ReactNode;
-  size?: number;
-}) {
-  return (
-    <span
-      aria-hidden="true"
-      className="inline-flex shrink-0 items-center justify-center border border-line-strong"
-      style={{ width: size, height: size }}
-    >
-      <svg
-        viewBox="0 0 24 24"
-        width={size * 0.5}
-        height={size * 0.5}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.8}
-        strokeLinecap="square"
-        strokeLinejoin="miter"
-        className="text-ink"
-      >
-        {children}
-      </svg>
-    </span>
-  );
-}
 
 export default function Home() {
   return (

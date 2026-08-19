@@ -7,7 +7,7 @@ import {
   breadcrumbSchema,
 } from "@/components/PageChrome";
 import { Band } from "@/components/CalcChrome";
-import { CALC_ICON } from "@/components/CalcIcons";
+import { CALC_ICON, IconTile } from "@/components/CalcIcons";
 import {
   CALCULATOR_KEYS,
   MORTGAGE_PATH,
@@ -122,12 +122,7 @@ export default function CalculatorIndexPage() {
                 href={ROUTES[key]}
                 className="panel group flex h-full flex-col p-6 transition-colors duration-150 hover:border-accent"
               >
-                <span
-                  className="inline-flex h-11 w-11 items-center justify-center border border-line-strong text-ink"
-                  aria-hidden="true"
-                >
-                  {CALC_ICON[key]}
-                </span>
+                <IconTile>{CALC_ICON[key]}</IconTile>
                 <p className="label mt-4">{navLabel(key)}</p>
                 <h2 className="mt-2 text-[1.2rem] font-bold leading-snug tracking-[-.02em] text-ink">
                   {CARD[key].question}

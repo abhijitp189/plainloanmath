@@ -23,6 +23,56 @@ import type { CalculatorKey } from "@/lib/routes";
  * compile time rather than rendering nothing (an absent header icon used to
  * fail silently — `ICON[key]` was simply `undefined`).
  */
+/**
+ * The shared icon tile: a bordered square with the SVG wrapper inside it.
+ *
+ * Added August 19, 2026, and it is a consolidation rather than a new thing.
+ * This markup lived inside app/page.tsx, which meant the /mortgage/ index had
+ * no way to import it and instead dropped a bare CALC_ICON fragment into a
+ * <span>. The fragment is <path> and <circle> elements with no <svg> around
+ * them, so it rendered as an empty box on all five cards and nothing failed:
+ * the build passed, the page validated, and the defect was visible only to
+ * somebody looking at the page. Design guide §0.6, again.
+ *
+ * The stroke conventions live here and only here, for anything wearing a tile:
+ * width 1.8, square caps, miter joins, on a 0 0 24 24 viewBox. The glyph is
+ * half the tile's width, centered.
+ *
+ * SiteHeader's RowIcon is deliberately NOT folded in. It has no tile, sits in
+ * accent rather than ink, and is sized for a 52px nav row. It repeats the four
+ * stroke attributes, which is worth revisiting, but it is a different object
+ * rather than a second copy of this one.
+ */
+export function IconTile({
+  children,
+  size = 44,
+}: {
+  children: React.ReactNode;
+  size?: number;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-flex shrink-0 items-center justify-center border border-line-strong"
+      style={{ width: size, height: size }}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width={size * 0.5}
+        height={size * 0.5}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+        className="text-ink"
+      >
+        {children}
+      </svg>
+    </span>
+  );
+}
+
 export const CALC_ICON: Record<CalculatorKey, React.ReactNode> = {
   payment: (
     <>
