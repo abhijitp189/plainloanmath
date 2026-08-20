@@ -12,6 +12,7 @@ import {
 } from "@/lib/routes";
 import { SectionHead } from "@/components/PageChrome";
 import { CALC_ICON, IconTile } from "@/components/CalcIcons";
+import { InlineLink } from "@/components/InlineLink";
 
 // The hub, from August 10, 2026. Repaletted August 11.
 //
@@ -299,12 +300,9 @@ export default function Home() {
               principal than interest is one of them.
             </p>
             <p className="mt-3.5">
-              <Link
-                href={LEARN_PATH}
-                className="text-[0.92rem] font-bold text-accent-dk underline decoration-line-strong underline-offset-2"
-              >
+              <InlineLink href={LEARN_PATH} tone="strong">
                 Read the explainers &rarr;
-              </Link>
+              </InlineLink>
             </p>
           </div>
         </div>
@@ -345,30 +343,21 @@ export default function Home() {
             <p className="label">How to check us</p>
             <ul className="mt-3 space-y-3 text-[0.94rem] text-ink-2">
               <li>
-                <Link
-                  href="/methodology/"
-                  className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
-                >
+                <InlineLink href={ROUTES.methodology} tone="strong">
                   Methodology
-                </Link>
+                </InlineLink>
                 : every formula on the site, written out with its sources.
               </li>
               <li>
-                <Link
-                  href="/corrections/"
-                  className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
-                >
+                <InlineLink href={ROUTES.corrections} tone="strong">
                   Corrections
-                </Link>
+                </InlineLink>
                 : what we got wrong, and when we fixed it.
               </li>
               <li>
-                <Link
-                  href="/editorial-policy/"
-                  className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
-                >
+                <InlineLink href={ROUTES.editorialPolicy} tone="strong">
                   Editorial policy
-                </Link>
+                </InlineLink>
                 : how pages get written and reviewed.
               </li>
             </ul>

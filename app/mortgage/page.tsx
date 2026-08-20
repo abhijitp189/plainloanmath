@@ -8,6 +8,7 @@ import {
 } from "@/components/PageChrome";
 import { Band } from "@/components/CalcChrome";
 import { CALC_ICON, IconTile } from "@/components/CalcIcons";
+import { InlineLink } from "@/components/InlineLink";
 import {
   CALCULATOR_KEYS,
   MORTGAGE_PATH,
@@ -159,19 +160,13 @@ export default function CalculatorIndexPage() {
             <p className="mt-3 text-ink-2">
               Where the answer is arithmetic you read once rather than a number
               you type into, it goes in{" "}
-              <Link
-                href={ROUTES.learn}
-                className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
-              >
+              <InlineLink href={ROUTES.learn} tone="strong">
                 the explainers
-              </Link>{" "}
+              </InlineLink>{" "}
               instead. Every formula used anywhere on the site is written out on{" "}
-              <Link
-                href={ROUTES.methodology}
-                className="font-bold text-accent-dk underline decoration-accent/40 underline-offset-4 hover:decoration-accent"
-              >
+              <InlineLink href={ROUTES.methodology} tone="strong">
                 the methodology page
-              </Link>
+              </InlineLink>
               , with its sources.
             </p>
           </div>

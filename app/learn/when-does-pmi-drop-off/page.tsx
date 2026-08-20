@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { LAST_REVIEWED, PMI } from "@/lib/constants";
 import { SectionHead } from "@/components/PageChrome";
 import {
@@ -15,6 +14,7 @@ import {
   type Faq,
 } from "@/components/CalcChrome";
 import PmiWindowChart from "@/components/PmiWindowChart";
+import { InlineLink } from "@/components/InlineLink";
 import { PMI_DROP_OFF_PATH, ROUTES, ROUTE_REVIEWED, relatedRoutes } from "@/lib/routes";
 import {
   amortize,
@@ -152,29 +152,6 @@ const SOURCE_LIST = [
   },
 ];
 
-/* A link that reads as one, without the eleventh raw copy of the class string. */
-function A({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <a
-      href={href}
-      className="text-accent-dk underline decoration-line-strong underline-offset-2"
-    >
-      {children}
-    </a>
-  );
-}
-
-function L({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className="text-accent-dk underline decoration-line-strong underline-offset-2"
-    >
-      {children}
-    </Link>
-  );
-}
-
 const FAQ: Faq[] = [
   {
     q: "does pmi come off automatically or do i have to ask",
@@ -300,15 +277,15 @@ export default function PmiDropOffPage() {
               <p>
                 On a new loan almost the whole payment is interest, which is why
                 the early months move the balance so little (
-                <L href={ROUTES.principalVsInterest}>
+                <InlineLink href={ROUTES.principalVsInterest}>
                   the month principal finally overtakes interest
-                </L>
+                </InlineLink>
                 ).
               </p>
               <p>
                 The months below are read off amortization schedules rather than
                 estimated, and they are computed by the same engine that runs{" "}
-                <L href={ROUTES.payment}>the payment calculator</L>, so the two
+                <InlineLink href={ROUTES.payment}>the payment calculator</InlineLink>, so the two
                 pages cannot disagree.
               </p>
             </>
@@ -390,7 +367,7 @@ export default function PmiDropOffPage() {
                   itself is month <span className="num">{FINAL}</span>. On a
                   15-year loan the midpoint is month{" "}
                   <span className="num">90</span> (
-                  <L href={ROUTES.termCompare}>15-year against 30-year</L>).
+                  <InlineLink href={ROUTES.termCompare}>15-year against 30-year</InlineLink>).
                 </p>
                 <p>
                   <strong>Original value</strong> is defined at § 4901(12) as
@@ -504,10 +481,10 @@ export default function PmiDropOffPage() {
           dollars. PMI rates vary by credit score, LTV, term and insurer, and no
           primary source publishes a single figure. A reader with a premium
           amount printed on a statement can enter it in{" "}
-          <L href={ROUTES.payment}>the payment calculator</L>, which takes PMI
+          <InlineLink href={ROUTES.payment}>the payment calculator</InlineLink>, which takes PMI
           as an input and applies these same two dates. The payment and every
           schedule behind it come from the standard amortization formula (
-          <L href={ROUTES.methodology}>how we calculate</L>).
+          <InlineLink href={ROUTES.methodology}>how we calculate</InlineLink>).
         </p>
       </Band>
 
@@ -637,7 +614,7 @@ export default function PmiDropOffPage() {
                 Extra principal also removes interest from the rest of the loan,
                 which is a separate calculation with a much larger number
                 attached to it (
-                <L href={ROUTES.payoff}>what extra payments do to the total</L>
+                <InlineLink href={ROUTES.payoff}>what extra payments do to the total</InlineLink>
                 ).
               </p>
             </>
@@ -707,7 +684,7 @@ export default function PmiDropOffPage() {
               <p>
                 Appreciation counts under a different set of rules: those of
                 whoever owns the loan. For loans owned by Fannie Mae they are in{" "}
-                <A href={FANNIE_URL}>Servicing Guide B-8.1-04</A>.
+                <InlineLink href={FANNIE_URL}>Servicing Guide B-8.1-04</InlineLink>.
               </p>
               <Sub>The current value route, and its seasoning tiers</Sub>
               <p>
@@ -913,7 +890,7 @@ export default function PmiDropOffPage() {
                 exchange for a higher rate, has no cancellation date at all.
                 There is nothing to write to the servicer about. The route out
                 is a new loan (
-                <L href={ROUTES.refinance}>what a refinance has to recover</L>
+                <InlineLink href={ROUTES.refinance}>what a refinance has to recover</InlineLink>
                 ).
               </p>
               <Sub>FHA and VA loans</Sub>

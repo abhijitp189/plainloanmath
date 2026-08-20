@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import { InlineLink } from "@/components/InlineLink";
 import PaymentCalculator from "@/components/PaymentCalculator";
 import PriceTable from "@/components/PriceTable";
 import ExtraPaymentTeaser from "@/components/ExtraPaymentTeaser";
 import { CalcProvider } from "@/components/CalcState";
-import Disclaimer from "@/components/Disclaimer";
 import { SectionHead } from "@/components/PageChrome";
 import {
   Band,
@@ -317,13 +317,9 @@ export default function MortgagePaymentCalculatorPage() {
                   both are measured against the original value rather than a
                   later appraisal, and loans the lender classifies as high-risk
                   are exempt.{" "}
-                  <a
-                    href={PMI_SOURCE.url}
-                    className="text-accent-dk underline decoration-line-strong underline-offset-2 hover:decoration-accent"
-                    rel="noopener"
-                  >
+                  <InlineLink href={PMI_SOURCE.url}>
                     CFPB explains the rule here
-                  </a>
+                  </InlineLink>
                   .
                 </p>
               </div>

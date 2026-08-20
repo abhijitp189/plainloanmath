@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { LAST_REVIEWED, PMMS } from "@/lib/constants";
 import { SectionHead } from "@/components/PageChrome";
 import {
@@ -15,6 +14,7 @@ import {
   type Faq,
 } from "@/components/CalcChrome";
 import LoanLifeStrip from "@/components/LoanLifeStrip";
+import { InlineLink } from "@/components/InlineLink";
 import LoanSizeInvariance from "@/components/LoanSizeInvariance";
 import {
   PRINCIPAL_VS_INTEREST_PATH,
@@ -336,10 +336,10 @@ export default function PrincipalVsInterestPage() {
               <p>
                 Your own month depends on the rate written on your note and the
                 term you signed, not on an average, so{" "}
-                <Link href={ROUTES.payoff} className="text-accent-dk underline decoration-line-strong underline-offset-2">
+                <InlineLink href={ROUTES.payoff}>
                   entering your rate, balance and term will show the crossover
                   month for your actual loan
-                </Link>
+                </InlineLink>
                 .
               </p>
             </>
@@ -470,10 +470,10 @@ export default function PrincipalVsInterestPage() {
                 month-one split, on a smaller balance, possibly at a lower rate,
                 but back at month one. What that costs up front and how long it
                 takes to earn back is separate arithmetic:{" "}
-                <Link href={ROUTES.refinance} className="text-accent-dk underline decoration-line-strong underline-offset-2">
+                <InlineLink href={ROUTES.refinance}>
                   the point at which a refinance has paid back what it cost, and
                   the rate it would take
-                </Link>
+                </InlineLink>
                 .
               </p>
             </>
@@ -682,10 +682,10 @@ export default function PrincipalVsInterestPage() {
                 if it does, to make sure the money is applied to the loan{"'"}s
                 principal rather than to interest. And the same money has other
                 uses, which is what{" "}
-                <Link href={ROUTES.payoffVsInvest} className="text-accent-dk underline decoration-line-strong underline-offset-2">
+                <InlineLink href={ROUTES.payoffVsInvest}>
                   weighing an extra mortgage payment against investing the same
                   amount
-                </Link>{" "}
+                </InlineLink>{" "}
                 sets out.
               </p>
 
@@ -732,10 +732,10 @@ export default function PrincipalVsInterestPage() {
                 It does mean the number on your statement is bigger than the
                 number here, and that it moves when your tax bill or your
                 premium moves.{" "}
-                <Link href={ROUTES.payment} className="text-accent-dk underline decoration-line-strong underline-offset-2">
+                <InlineLink href={ROUTES.payment}>
                   Adding taxes, insurance and mortgage insurance to see the full
                   monthly figure
-                </Link>{" "}
+                </InlineLink>{" "}
                 gets you closer to the real one.
               </p>
 

@@ -19,11 +19,11 @@ import {
   EditorialCols,
   FaqBlock,
   faqSchema,
-  InlineLink,
   Sources,
   Sub,
   type Faq,
 } from "@/components/CalcChrome";
+import { InlineLink } from "@/components/InlineLink";
 import {
   TERM_COMPARE_PATH,
   PAYOFF_PATH,

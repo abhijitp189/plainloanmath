@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { InlineLink } from "@/components/InlineLink";
 import {
   LAST_REVIEWED,
   SITE,
@@ -548,9 +549,9 @@ export default function MortgagePayoffPage() {
               homeowners insurance, and possibly mortgage insurance and HOA dues,
               often several hundred dollars more. Extra payments do not reduce
               any of those. If you want the whole number, the{" "}
-              <Link href={PAYMENT_PATH} className="text-accent-dk underline decoration-line-strong underline-offset-2">
+              <InlineLink href={PAYMENT_PATH}>
                 monthly payment calculator
-              </Link>{" "}
+              </InlineLink>{" "}
               breaks it into parts.
             </p>
             <p>
