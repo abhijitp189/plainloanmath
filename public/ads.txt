@@ -1,0 +1,4 @@
+# Authorized Digital Sellers for plainloanmath.com
+# IAB Tech Lab ads.txt. One line, one authorized seller: Google AdSense.
+# This file authorizes a seller. It does not place an ad.
+google.com, pub-7054800206802450, DIRECT, f08c47fec0942fa0
