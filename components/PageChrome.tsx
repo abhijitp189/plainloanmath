@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { SITE } from "@/lib/constants";
+import { ROUTES } from "@/lib/routes";
+import { InlineLink } from "@/components/InlineLink";
 
 // The inner-page stripe — design guide §4.1. Same gradient and type treatment
 // as the homepage banner, shorter. Every page opens with one.
@@ -175,7 +177,8 @@ export function ReviewMeta({
         {showContact ? (
           <>
             {" "}
-            Questions or corrections: <a href="/contact/">contact us</a>.
+            Questions or corrections:{" "}
+            <InlineLink href={ROUTES.contact}>contact us</InlineLink>.
           </>
         ) : null}
       </p>

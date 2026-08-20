@@ -16,8 +16,9 @@ import { copyText, downloadText, printPage } from "@/lib/share";
 // money" position is worth nothing without.
 
 // Icons are hand-drawn on a 0 0 24 24 grid with square caps — design guide
-// §4.3, and the square cap is the Modernist tell. lucide-react is pinned in
-// package.json and imported nowhere; it stays unimported.
+// §4.3, and the square cap is the Modernist tell. An icon package was pinned
+// in package.json for months and imported nowhere; it was removed August 20.
+// Guardrail 7: no new dependency, for any reason, and that includes icons.
 const ICON = {
   share: "M4 12v8h16v-8M12 3v13M7 8l5-5 5 5",
   csv: "M12 3v12M7 11l5 5 5-5M4 20h16",

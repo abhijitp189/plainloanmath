@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { InlineLink } from "@/components/InlineLink";
 import { comparePayoff, formatUSD, formatDuration } from "@/lib/mortgage";
 import { useCalcSnapshot } from "@/components/CalcState";
 import { PAYOFF_PATH, payoffHref } from "@/lib/routes";
@@ -114,12 +115,9 @@ export default function ExtraPaymentTeaser() {
               <p className="text-[0.95rem] text-muted">
                 Enter a loan amount above to see what an extra payment would
                 do.{" "}
-                <Link
-                  href={PAYOFF_PATH}
-                  className="text-accent-dk underline decoration-line-strong underline-offset-2 hover:decoration-accent"
-                >
+                <InlineLink href={PAYOFF_PATH}>
                   Open the payoff calculator
-                </Link>
+                </InlineLink>
                 .
               </p>
             )}

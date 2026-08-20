@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { InlineLink } from "@/components/InlineLink";
+import { ROUTES } from "@/lib/routes";
 
 /**
  * Sits at the bottom of every calculator and every page that produces a
@@ -20,12 +21,7 @@ export default function Disclaimer() {
         matters with your lender before acting on it.
       </p>
       <p className="mt-3">
-        <Link
-          className="text-accent underline underline-offset-2 hover:text-accent-dk"
-          href="/disclaimer/"
-        >
-          Full disclaimer
-        </Link>
+        <InlineLink href={ROUTES.disclaimer}>Full disclaimer</InlineLink>
       </p>
     </aside>
   );

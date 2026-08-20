@@ -78,10 +78,14 @@ export default function SiteFooter() {
             you enter are never sent to us and never stored. Everything here is
             an estimate for education, not financial advice.
           </p>
+          {/* No year. `new Date().getFullYear()` runs at BUILD time on a
+              static export, so the year froze at whenever the last deploy
+              happened and would have read 2026 through the whole of 2027 if
+              nothing shipped in January. A copyright notice does not need a
+              year to be a copyright notice, and the alternative — shipping
+              JavaScript to print a number — is not worth one line of script. */}
           <p className="mt-4 text-[0.88rem] text-muted">
-            <span className="num">
-              &copy; {new Date().getFullYear()} {SITE.name}
-            </span>
+            <span>&copy; {SITE.name}</span>
           </p>
         </div>
       </div>

@@ -82,7 +82,6 @@ export default function PayoffCalculator() {
   const [annualExtra, setAnnualExtra] = useState("0");
   const [annualMonth, setAnnualMonth] = useState("12");
   const [biweekly, setBiweekly] = useState(false);
-  const [showSchedule, setShowSchedule] = useState(false);
 
   // Prefill from the query string when the visitor arrives from the homepage
   // teaser or a shared link. Read after mount rather than during render: the

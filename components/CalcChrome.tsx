@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Disclaimer from "@/components/Disclaimer";
+import { InlineLink } from "@/components/InlineLink";
 import { breadcrumbSchema } from "@/components/PageChrome";
 import { ROUTES, PAGE_STRIPE, type StripeKey } from "@/lib/routes";
 
@@ -24,42 +25,6 @@ import { ROUTES, PAGE_STRIPE, type StripeKey } from "@/lib/routes";
  * this file does not export, the thing to do is add it here — not to write it
  * inline "just for this page".
  */
-
-/* ── Inline links in prose ───────────────────────────────────────── */
-
-/**
- * A link inside a paragraph.
- *
- * Added August 18, 2026, and the reason is a count rather than an argument.
- * The eleven-word class string this replaces existed ELEVEN times across the
- * pages before this component, which is §0.13 at its most literal: two of
- * anything is the defect, and this was nowhere near two. It had not visibly
- * drifted yet, which is the only reason nobody had noticed.
- *
- * New pages use this. The eleven existing copies are a sweep of their own and
- * are recorded as an open item rather than folded into a build session, since
- * changing them touches five files that this session otherwise has no business
- * in. What matters today is that the count stopped growing.
- *
- * `--accent-dk` on white is 8.48:1, and the underline is a second signal so
- * color is not carrying the link on its own (§7).
- */
-export function InlineLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="text-accent-dk underline decoration-line-strong underline-offset-2"
-    >
-      {children}
-    </Link>
-  );
-}
 
 /* ── The stripe ──────────────────────────────────────────────────── */
 
@@ -321,12 +286,7 @@ export function Sources({ items }: { items: Source[] }) {
       <ul className="mt-3 grid gap-3 text-[0.88rem] text-ink-2 md:grid-cols-3">
         {items.map((s) => (
           <li key={s.url}>
-            <a
-              href={s.url}
-              className="text-accent-dk underline decoration-line-strong underline-offset-2"
-            >
-              {s.label}
-            </a>{" "}
+            <InlineLink href={s.url}>{s.label}</InlineLink>{" "}
             <span className="text-muted">
               (read <span className="num">{s.verified}</span>)
             </span>
@@ -378,19 +338,8 @@ export function CalcFooter({
           {reviewed}
         </time>
         . Estimates only, not financial advice, and not a loan offer.{" "}
-        <Link
-          href={ROUTES.methodology}
-          className="text-accent-dk underline decoration-line-strong underline-offset-2"
-        >
-          How we calculate
-        </Link>{" "}
-        ·{" "}
-        <Link
-          href={ROUTES.corrections}
-          className="text-accent-dk underline decoration-line-strong underline-offset-2"
-        >
-          Corrections
-        </Link>
+        <InlineLink href={ROUTES.methodology}>How we calculate</InlineLink>{" "}
+        · <InlineLink href={ROUTES.corrections}>Corrections</InlineLink>
       </p>
     </>
   );
