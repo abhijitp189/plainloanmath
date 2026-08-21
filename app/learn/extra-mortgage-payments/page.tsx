@@ -412,27 +412,38 @@ export default function ExtraPaymentsPage() {
           }
         />
 
-        <div className="mt-10 overflow-x-auto">
-          <table className="w-full">
+        <div className="mt-10 overflow-x-auto" data-print-full>
+          <table className="w-full min-w-[46rem] border-collapse text-[0.92rem]">
+            <caption className="label mb-3 text-left">
+              Every strategy on one loan
+            </caption>
             <thead>
-              <tr>
-                <th>Strategy</th>
-                <th>Costs you</th>
-                <th>Paid off in</th>
-                <th>Time cut</th>
-                <th>Interest saved</th>
-                <th>Saved per $1 extra</th>
+              <tr className="border-b-rule border-line-strong bg-paper-2">
+                <th className="label px-3 py-2.5 text-left">Strategy</th>
+                <th className="label px-3 py-2.5 text-right">Costs you</th>
+                <th className="label px-3 py-2.5 text-right">Paid off in</th>
+                <th className="label px-3 py-2.5 text-right">Time cut</th>
+                <th className="label px-3 py-2.5 text-right">Interest saved</th>
+                <th className="label px-3 py-2.5 text-right">Per $1 extra</th>
               </tr>
             </thead>
             <tbody>
               {TABLE.map((r) => (
-                <tr key={r.strategy}>
-                  <td>{r.strategy}</td>
-                  <td>{r.cost}</td>
-                  <td>{formatDuration(r.months)}</td>
-                  <td>{formatDuration(r.monthsSaved)}</td>
-                  <td>{formatUSD(r.interestSaved)}</td>
-                  <td>{`$${r.perDollar.toFixed(2)}`}</td>
+                <tr key={r.strategy} className="border-b border-line">
+                  <td className="px-3 py-2.5">{r.strategy}</td>
+                  <td className="num px-3 py-2.5 text-right">{r.cost}</td>
+                  <td className="num px-3 py-2.5 text-right">
+                    {formatDuration(r.months)}
+                  </td>
+                  <td className="num px-3 py-2.5 text-right">
+                    {formatDuration(r.monthsSaved)}
+                  </td>
+                  <td className="num px-3 py-2.5 text-right">
+                    {formatUSD(r.interestSaved)}
+                  </td>
+                  <td className="num px-3 py-2.5 text-right font-bold">
+                    {`$${r.perDollar.toFixed(2)}`}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -467,23 +478,36 @@ export default function ExtraPaymentsPage() {
           intro="Bigger extra payments save more money in total. They also save less money per dollar. Both are true at the same time, and the second one is almost never printed."
         />
 
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full">
+        <div className="mt-8 overflow-x-auto" data-print-full>
+          <table className="w-full min-w-[32rem] border-collapse text-[0.92rem]">
+            <caption className="label mb-3 text-left">
+              What each dollar of extra principal returns
+            </caption>
             <thead>
-              <tr>
-                <th>Extra payment</th>
-                <th>Total extra paid</th>
-                <th>Interest saved</th>
-                <th>Saved per $1</th>
+              <tr className="border-b-rule border-line-strong bg-paper-2">
+                <th className="label px-3 py-2.5 text-left">Extra payment</th>
+                <th className="label px-3 py-2.5 text-right">
+                  Total extra paid
+                </th>
+                <th className="label px-3 py-2.5 text-right">Interest saved</th>
+                <th className="label px-3 py-2.5 text-right">Per $1</th>
               </tr>
             </thead>
             <tbody>
               {DECLINE_ROWS.map((r) => (
-                <tr key={r.extra}>
-                  <td>{formatUSD(r.extra)} a month</td>
-                  <td>{formatUSD(r.paid)}</td>
-                  <td>{formatUSD(r.interestSaved)}</td>
-                  <td>{`$${r.perDollar.toFixed(2)}`}</td>
+                <tr key={r.extra} className="border-b border-line">
+                  <td className="px-3 py-2.5">
+                    <span className="num">{formatUSD(r.extra)}</span> a month
+                  </td>
+                  <td className="num px-3 py-2.5 text-right">
+                    {formatUSD(r.paid)}
+                  </td>
+                  <td className="num px-3 py-2.5 text-right">
+                    {formatUSD(r.interestSaved)}
+                  </td>
+                  <td className="num px-3 py-2.5 text-right font-bold">
+                    {`$${r.perDollar.toFixed(2)}`}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -555,23 +579,34 @@ export default function ExtraPaymentsPage() {
           )}, handed to the same loan at six different moments.`}
         />
 
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full">
+        <div className="mt-8 overflow-x-auto" data-print-full>
+          <table className="w-full min-w-[32rem] border-collapse text-[0.92rem]">
+            <caption className="label mb-3 text-left">
+              The same {formatUSD(LUMP)}, by the year it lands
+            </caption>
             <thead>
-              <tr>
-                <th>Lands in</th>
-                <th>Interest saved</th>
-                <th>Time cut</th>
-                <th>Saved per $1</th>
+              <tr className="border-b-rule border-line-strong bg-paper-2">
+                <th className="label px-3 py-2.5 text-left">Lands in</th>
+                <th className="label px-3 py-2.5 text-right">Interest saved</th>
+                <th className="label px-3 py-2.5 text-right">Time cut</th>
+                <th className="label px-3 py-2.5 text-right">Per $1</th>
               </tr>
             </thead>
             <tbody>
               {TIMING_ROWS.map((r) => (
-                <tr key={r.year}>
-                  <td>Year {r.year}</td>
-                  <td>{formatUSD(r.interestSaved)}</td>
-                  <td>{formatDuration(r.monthsSaved)}</td>
-                  <td>{`$${r.perDollar.toFixed(2)}`}</td>
+                <tr key={r.year} className="border-b border-line">
+                  <td className="px-3 py-2.5">
+                    Year <span className="num">{r.year}</span>
+                  </td>
+                  <td className="num px-3 py-2.5 text-right">
+                    {formatUSD(r.interestSaved)}
+                  </td>
+                  <td className="num px-3 py-2.5 text-right">
+                    {formatDuration(r.monthsSaved)}
+                  </td>
+                  <td className="num px-3 py-2.5 text-right font-bold">
+                    {`$${r.perDollar.toFixed(2)}`}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -635,31 +670,55 @@ export default function ExtraPaymentsPage() {
           intro="This is the most immediately useful line on the page, and acting on it costs nothing extra."
         />
 
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full">
+        <div className="mt-8 overflow-x-auto" data-print-full>
+          <table className="w-full min-w-[38rem] border-collapse text-[0.92rem]">
+            <caption className="label mb-3 text-left">
+              Same money each year, two schedules
+            </caption>
             <thead>
-              <tr>
-                <th>Method</th>
-                <th>Each month</th>
-                <th>Each year</th>
-                <th>Paid off in</th>
-                <th>Interest saved</th>
+              <tr className="border-b-rule border-line-strong bg-paper-2">
+                <th className="label px-3 py-2.5 text-left">Method</th>
+                <th className="label px-3 py-2.5 text-right">Each month</th>
+                <th className="label px-3 py-2.5 text-right">Each year</th>
+                <th className="label px-3 py-2.5 text-right">Paid off in</th>
+                <th className="label px-3 py-2.5 text-right">Interest saved</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>{usdCents(SPREAD)} added to every payment</td>
-                <td>{usdCents(SPREAD)}</td>
-                <td>{formatUSD(PAYMENT)}</td>
-                <td>{formatDuration(SPREAD_CMP.accelerated.months)}</td>
-                <td>{usdCents(SPREAD_SAVED)}</td>
+              <tr className="border-b border-line">
+                <td className="px-3 py-2.5">
+                  <span className="num">{usdCents(SPREAD)}</span> added to every
+                  payment
+                </td>
+                <td className="num px-3 py-2.5 text-right">
+                  {usdCents(SPREAD)}
+                </td>
+                <td className="num px-3 py-2.5 text-right">
+                  {formatUSD(PAYMENT)}
+                </td>
+                <td className="num px-3 py-2.5 text-right">
+                  {formatDuration(SPREAD_CMP.accelerated.months)}
+                </td>
+                <td className="num px-3 py-2.5 text-right font-bold">
+                  {usdCents(SPREAD_SAVED)}
+                </td>
               </tr>
-              <tr>
-                <td>One payment of {formatUSD(PAYMENT)} each December</td>
-                <td>nothing</td>
-                <td>{formatUSD(PAYMENT)}</td>
-                <td>{formatDuration(YEAR_END.accelerated.months)}</td>
-                <td>{usdCents(YEAR_END_SAVED)}</td>
+              <tr className="border-b border-line">
+                <td className="px-3 py-2.5">
+                  One payment of{" "}
+                  <span className="num">{formatUSD(PAYMENT)}</span> each
+                  December
+                </td>
+                <td className="px-3 py-2.5 text-right text-muted">nothing</td>
+                <td className="num px-3 py-2.5 text-right">
+                  {formatUSD(PAYMENT)}
+                </td>
+                <td className="num px-3 py-2.5 text-right">
+                  {formatDuration(YEAR_END.accelerated.months)}
+                </td>
+                <td className="num px-3 py-2.5 text-right font-bold">
+                  {usdCents(YEAR_END_SAVED)}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -854,9 +913,31 @@ export default function ExtraPaymentsPage() {
         />
       </Band>
 
-      <FaqBlock items={FAQ} />
-      <Sources items={SOURCE_LIST} />
-      <CalcFooter siblings={siblings} reviewed={REVIEWED} />
+      {/* Band supplies `mx-auto max-w-wrap px-[var(--gutter)]`. These three
+          were shipped unwrapped on August 21 and rendered full bleed with no
+          gutter, which is what broke the alignment below the fold. Every other
+          page wraps them. */}
+      <Band tone="paper">
+        <SectionHead
+          title="Common questions"
+          intro="Answers written to stand on their own, because search engines lift them out of the page."
+        />
+        <FaqBlock items={FAQ} />
+      </Band>
+
+      <Band tone="surface">
+        <Sources items={SOURCE_LIST} />
+        <p className="mt-6 max-w-prose text-[0.85rem] text-muted">
+          Every loan figure on this page was computed from the standard
+          amortization formula for a fixed rate loan, not quoted from a third
+          party. The per dollar column is interest saved divided by the extra
+          principal actually paid, read off the schedule.
+        </p>
+      </Band>
+
+      <Band tone="paper">
+        <CalcFooter siblings={siblings} reviewed={REVIEWED} />
+      </Band>
     </>
   );
 }
