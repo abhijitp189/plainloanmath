@@ -450,6 +450,7 @@ export default function ExtraPaymentsPage() {
           </table>
         </div>
 
+        <div className="mt-10">
         <EditorialCols
           left={
             <p>
@@ -469,6 +470,7 @@ export default function ExtraPaymentsPage() {
             </p>
           }
         />
+        </div>
       </Band>
 
       {/* ── 2. Finding 1 ──────────────────────────────────────────── */}
@@ -514,6 +516,7 @@ export default function ExtraPaymentsPage() {
           </table>
         </div>
 
+        <div className="mt-10">
         <EditorialCols
           left={
             <>
@@ -556,7 +559,11 @@ export default function ExtraPaymentsPage() {
                 {formatUSD(LARGEST.interestSaved)} is the largest saving
                 anywhere on this page. But it takes {formatUSD(LARGEST.paid)} of
                 extra principal to get there, and each of those dollars did less
-                work than a dollar in the {formatUSD(SMALLEST.extra)} row.
+                work than a dollar in the {formatUSD(SMALLEST.extra)} row. At
+                that size the real question is usually a{" "}
+                <InlineLink href={ROUTES.termCompare}>shorter term</InlineLink>,
+                where the lower rate does some of the work the extra payment is
+                doing here.
               </p>
               <p>
                 It is worth saying why you rarely read this. It points the wrong
@@ -568,6 +575,7 @@ export default function ExtraPaymentsPage() {
             </>
           }
         />
+        </div>
       </Band>
 
       {/* ── 3. Finding 2 ──────────────────────────────────────────── */}
@@ -621,6 +629,7 @@ export default function ExtraPaymentsPage() {
           amount={formatUSD(LUMP)}
         />
 
+        <div className="mt-10">
         <EditorialCols
           left={
             <>
@@ -661,6 +670,7 @@ export default function ExtraPaymentsPage() {
             </>
           }
         />
+        </div>
       </Band>
 
       {/* ── 4. Finding 3 ──────────────────────────────────────────── */}
@@ -724,6 +734,7 @@ export default function ExtraPaymentsPage() {
           </table>
         </div>
 
+        <div className="mt-10">
         <EditorialCols
           left={
             <>
@@ -767,6 +778,7 @@ export default function ExtraPaymentsPage() {
             </>
           }
         />
+        </div>
       </Band>
 
       {/* ── 5. The biweekly caveat ────────────────────────────────── */}
@@ -867,9 +879,10 @@ export default function ExtraPaymentsPage() {
                 Paying extra shortens the loan. It does not reduce the required
                 monthly payment, which stays at {formatUSD(PAYMENT)} on this
                 loan no matter what is sent alongside it. Someone whose goal is
-                a smaller monthly payment is asking about a recast or a
-                refinance, which are two different ways of changing the loan
-                itself, and this page does not cover either one.
+                a smaller monthly payment is asking about a recast or a{" "}
+                <InlineLink href={ROUTES.refinance}>refinance</InlineLink>,
+                which are two different ways of changing the loan itself, and
+                this page does not cover either one.
               </p>
             </>
           }
@@ -890,6 +903,10 @@ export default function ExtraPaymentsPage() {
                 Every figure here is principal and interest only (
                 <InlineLink href={ROUTES.payment}>
                   the full monthly payment
+                </InlineLink>
+                , and{" "}
+                <InlineLink href={ROUTES.pmiDropOff}>
+                  when PMI drops off
                 </InlineLink>
                 ).
               </li>
