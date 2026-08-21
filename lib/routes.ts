@@ -124,6 +124,14 @@ export const PRINCIPAL_VS_INTEREST_PATH =
  */
 export const PMI_DROP_OFF_PATH = "/learn/when-does-pmi-drop-off/";
 
+/**
+ * Cluster hub for extra payments. An article, not a silo index: it has a
+ * subject, an argument and its own computation, which /learn/ itself does not.
+ * It ships BEFORE the child pages that will link up to it, so the set never
+ * exists as a flat group of near-identical pages with no hierarchy above them.
+ */
+export const EXTRA_PAYMENTS_PATH = "/learn/extra-mortgage-payments/";
+
 export type PayoffParams = {
   loanAmount: number;
   ratePct: number;
@@ -174,6 +182,7 @@ export const ROUTES = {
   learn: LEARN_PATH,
   principalVsInterest: PRINCIPAL_VS_INTEREST_PATH,
   pmiDropOff: PMI_DROP_OFF_PATH,
+  extraPayments: EXTRA_PAYMENTS_PATH,
   methodology: "/methodology/",
   corrections: "/corrections/",
   editorialPolicy: "/editorial-policy/",
@@ -218,6 +227,7 @@ export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
   principalVsInterest: "2026-08-15",
   // Built August 19, 2026. The rest of the site was not reviewed that day.
   pmiDropOff: "2026-08-19",
+  extraPayments: "2026-08-21",
 };
 
 /**
@@ -359,6 +369,17 @@ export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
     // payoff 2, principal vs interest 2, pay off or invest 1.
     topics: ["pmi", "payment", "extra-payments", "amortization"],
   },
+  extraPayments: {
+    label: "Extra mortgage payments, compared",
+    navLabel: "Extra payments compared",
+    silo: "learn",
+    // The same four tags the payoff calculator carries, which is deliberate:
+    // this page's job is to hand a reader to that calculator once they know
+    // which strategy they want, and every child page in this cluster will
+    // carry a subset of these. Not empty topics — that treatment is for a silo
+    // index with no subject of its own, and this page has one.
+    topics: ["extra-payments", "payoff", "amortization", "interest"],
+  },
   methodology: {
     label: "How we calculate",
     silo: null,
@@ -450,6 +471,7 @@ export const CALC_STRIPE: Record<
  * an article index is a reverse chronology.
  */
 export const ARTICLE_KEYS = [
+  "extraPayments",
   "pmiDropOff",
   "principalVsInterest",
 ] as const satisfies readonly RouteKey[];
@@ -468,6 +490,10 @@ export const ARTICLE_STRIPE: Record<
   pmiDropOff: {
     eyebrow: "Article",
     breadcrumb: "When PMI drops off",
+  },
+  extraPayments: {
+    eyebrow: "Article",
+    breadcrumb: "Extra payments compared",
   },
 };
 

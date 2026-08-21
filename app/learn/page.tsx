@@ -39,6 +39,11 @@ const REVIEWED = ROUTE_REVIEWED.learn ?? LAST_REVIEWED;
 // ─────────────────────────────────────────────────────────────────────────────
 
 const BLURB: Record<ArticleKey, { title: string; blurb: string }> = {
+  extraPayments: {
+    title: "Extra mortgage payments: what each strategy is actually worth",
+    blurb:
+      "Fourteen strategies on one $340,000 loan, so they can finally be compared to each other. Includes the column nobody publishes: interest saved per dollar of extra principal, which falls from $2.17 to $1.70 as the payment grows.",
+  },
   pmiDropOff: {
     title: "When PMI drops off, and how to force it sooner",
     blurb:
@@ -97,20 +102,21 @@ export default function LearnIndexPage() {
           ))}
         </ul>
 
-        {/* §3.4: never a column of content with a void beside it. With one
-            article the grid is a single card on a half-width column, so the
-            second cell carries the standing note about what this silo is for
-            rather than being left empty. It becomes a second article as soon
-            as one ships. */}
-        {ARTICLE_KEYS.length % 2 === 1 && (
-          <div className="mt-5 border-l-[3px] border-line-strong bg-paper-2 p-5 md:mt-0 md:hidden">
-            <p className="label">More coming</p>
-            <p className="mt-2 max-w-prose text-[0.92rem] text-ink-2">
-              Written one at a time, each on a question with a real answer that
-              nobody has published for the current rate environment.
-            </p>
-          </div>
-        )}
+        {/* The "More coming" filler was REMOVED on August 21, 2026, when the
+            third article made it visible again and the check found it had never
+            worked. It carried `md:hidden`, so it rendered only on mobile, where
+            the grid is one column and there is no void to fill; on desktop,
+            where an odd card really does leave an empty cell, it was hidden.
+            It did the opposite of what its own comment claimed.
+
+            It is deleted rather than repaired, on the same reasoning that
+            removed the homepage roadmap (project brief §2.3, design guide
+            §8.1): it is a promise about pages that do not exist, it can never
+            be derived from the route data, and a surface that cannot be derived
+            and does not need to exist is removed rather than maintained.
+
+            The desktop void at an odd article count is a real §3.4 question and
+            is now OPEN. A fourth article closes it on its own. */}
       </Band>
 
       <Band tone="paper">

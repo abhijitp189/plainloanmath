@@ -241,3 +241,115 @@ the amortization formula.
   establish and stops short of drafting it. Project brief §22, rule 2.
 - **No state-by-state list under § 4908(a)(2).** The preservation rule is stated;
   which states qualify was not verified.
+
+---
+
+## `/learn/extra-mortgage-payments/`
+
+Cluster hub. Shipped August 21, 2026, before any of the child pages that will
+link up to it.
+
+## Verified against primary sources
+
+| Claim on the page | Source | Verified |
+|---|---|---|
+| A prepayment penalty on a covered fixed-rate qualified mortgage may not exceed 2% of the amount prepaid during the first two years | 12 C.F.R. § 1026.43(g)(2), eCFR | 2026-08-21 |
+| The cap drops to a maximum of 1% during the third year | 12 C.F.R. § 1026.43(g)(2), eCFR | 2026-08-21 |
+| No prepayment penalty is permitted after the third year | 12 C.F.R. § 1026.43(g)(2), eCFR | 2026-08-21 |
+| The servicer must immediately accept and apply an extra principal payment, a "principal curtailment", **identified by the borrower as such** on a current loan | Fannie Mae Servicing Guide C-1.2-01, read in the 08/12/2026 edition PDF | 2026-08-21 |
+| A curtailment sent with the scheduled payment is applied after it; one sent separately at another time of the month is applied before the next scheduled payment | Fannie Mae Servicing Guide F-1-09, Processing a Principal Curtailment | 2026-08-21 |
+| On a delinquent loan an extra principal payment must first cure the delinquency, and only remaining funds reach principal | Fannie Mae Servicing Guide C-1.2-01 | 2026-08-21 |
+
+**The servicing claim was rewritten on August 21, 2026, not merely sourced.**
+The draft said many servicers apply unlabeled extra money to the next scheduled
+payment. **The Servicing Guide does not establish that.** It sets what the
+servicer must do when a payment IS identified as a curtailment and is silent on
+the default for unidentified funds. Sourcing the sentence as written would have
+attached a primary citation to a claim the primary source does not make, which
+is worse than leaving it unsourced. The page now states the rule that exists,
+that the obligation attaches to the identifying, and stops there.
+
+**Scope limit stated on the page.** These rules bind servicers of loans Fannie
+Mae owns or guarantees. Same treatment as C-1.2-01 on the 15-versus-30 page.
+
+**The two-tier structure is the correction worth recording.** A first draft of
+this page stated the 2% cap and then jumped to "none after the third year",
+leaving year three undefined. The regulation sets 1% for that year. Separately,
+widely repeated secondary write-ups give a 3% first-year cap, which the
+regulation does not support. Project brief §0.2 already records the 3% error;
+this page adds that the omission of the 1% tier is the more likely mistake,
+because it survives a check against the number everyone gets wrong.
+
+## Arithmetic — verified by computation, not by citation
+
+Every figure is computed at build time by `lib/mortgage.ts`. Nothing is typed.
+
+**Independently recomputed August 21, 2026** in a script written from the
+amortization definition, sharing no code with the engine. Five cases: $100,
+$500 and $1,000 a month, one extra payment a year, and a $10,000 lump sum in
+year 10. **Payoff month agreed exactly in all five; interest saved agreed to
+under one cent.** Baseline reproduces the canonical example: $2,205.23 a month
+and $453,884.07 of interest, on $340,000 at 6.75% over 30 years.
+
+| Figure | Value |
+|---|---|
+| Interest saved per $1 extra, $50/month | $2.17 |
+| Interest saved per $1 extra, $1,000/month | $1.70 |
+| $10,000 landing in year 1 | $54,951 saved, $5.50 per $1 |
+| $10,000 landing in year 20 | $9,181 saved, $0.92 per $1 |
+| $183.77 monthly vs one $2,205.23 payment each December | $4,041.10 apart |
+
+### Stated deliberately, and why
+
+- **The per-dollar column is the page's reason to exist.** No page on either
+  SERP checked on August 20 publishes it. It points against the industry: it
+  says the smallest commitment is the most efficient per dollar, which no
+  lender-funded page has any reason to print.
+- **The per-dollar figure divides by extra principal read off the schedule, not
+  by the nominal annual cost.** They differ on the annual-extra rows because the
+  final year is capped when the balance runs out. Three extra payments a year
+  nominally costs 18 x $6,615.69, but the schedule only ever takes $112,467.
+  The nominal figure would print $1.72 where the truth is $1.83.
+- **The biweekly row is labeled as a modeling choice, in the body.** Biweekly
+  and one-extra-payment-a-year come out identical because the engine applies
+  biweekly as one extra full payment every twelfth month. Presenting that as a
+  finding would be a measurement of an output treated as evidence about its
+  source, which is the §0.1 failure. The page states which way the model errs.
+- **The Finding 3 figures carry cents and the difference is the difference of
+  the rounded pair, not the rounded difference.** True difference $4,041.09;
+  difference of the two displayed figures $4,041.10. The page prints all three
+  numbers, so the one that must hold is the one a reader gets by subtracting
+  what they can see. `SPREAD_EDGE` rounds to cents first, then subtracts.
+- **$183.77 is rendered with cents against site convention.** `formatUSD` drops
+  cents everywhere else. Whole dollars print $184, which is not one twelfth of
+  this payment and claims $2,208 a year against a stated $2,205. The section
+  turns on both methods costing the same, so precision is load-bearing.
+- **The competitor claim is counted, not estimated.** Eight of the ranking pages
+  state a loan, using five distinct rates from 4% to 7% on balances from
+  $200,000 to $500,000; two state none. An earlier draft said "nine loans at
+  nine different rates" and was wrong on both counts.
+- **Two build-time assertions hold findings that prose would otherwise assert.**
+  `DECLINE_IS_MONOTONIC` and `BELOW_BREAK_EVEN` are computed, so a future engine
+  or rate change alters the sentence instead of leaving a false one standing.
+
+### Not stated, and why
+
+- **No claim about what servicers do with unidentified money.** CLOSED as an
+  open item on August 21, 2026: the Servicing Guide was read and it does not
+  support one. The page states the identification requirement, which is what the
+  source establishes, and does not speculate past it.
+- **No claim that biweekly equals one extra payment a year in reality.** The
+  engine models them identically; the real gap favors biweekly by an amount
+  this site has not computed, and the page says exactly that.
+- **No investment comparison.** Handed to the pay-off-or-invest calculator.
+- **No recast or refinance arithmetic.** Named as different questions and left
+  to the cluster's later pages.
+
+## Still unverified — do not state these on any page yet
+
+- **What a servicer does with money NOT identified as a curtailment.** The
+  Servicing Guide is silent on it. Not stated on the page in any form.
+- **Whether the same rules bind Freddie Mac or portfolio servicers.** Only the
+  Fannie Mae Guide was read. The page limits its claim accordingly.
+- **Whether a featured snippet sits above the organic results.** The August 20
+  SERP check was organic-only and cannot see ads, People Also Ask or snippets.
