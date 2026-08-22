@@ -156,6 +156,30 @@ const LUMP_ROWS = LUMP_YEARS.map((yr) =>
   ),
 );
 
+/**
+ * The spread the first child page is built around, computed here rather than
+ * typed into the sentence that links to it.
+ *
+ * Added August 22, 2026 with that child. Two extra payments a year landing in
+ * month 1 of each loan year against month 12, same money either way. Four lines
+ * of engine is the price of the link carrying a figure at all, and a typed "5"
+ * here would be the one hand-written number on the page (§10) and would go
+ * stale silently if the example loan were ever re-rated.
+ */
+const CHILD_TIMING_SPREAD =
+  amortizePlan(
+    LOAN,
+    RATE,
+    TERM,
+    plan({ annualExtra: 2 * PAYMENT, annualExtraMonth: 12 }),
+  ).months -
+  amortizePlan(
+    LOAN,
+    RATE,
+    TERM,
+    plan({ annualExtra: 2 * PAYMENT, annualExtraMonth: 1 }),
+  ).months;
+
 const TABLE: Row[] = [
   ...MONTHLY_ROWS,
   SPREAD_ROW,
@@ -666,6 +690,16 @@ export default function ExtraPaymentsPage() {
                 is not a fixed amount of mortgage relief. Its value is set almost
                 entirely by the size of the balance it lands on, and that
                 balance falls slowly at first and then quickly.
+              </p>
+              <p>
+                The same effect runs inside a single year, not just across
+                twenty of them.{" "}
+                <InlineLink href={ROUTES.twoExtraPayments}>
+                  Two extra payments a year, taken month by month
+                </InlineLink>{" "}
+                follows one plan through all twelve months of the loan year: the
+                payoff date moves {CHILD_TIMING_SPREAD} months, and the pattern
+                connecting them turns out to be regular.
               </p>
             </>
           }

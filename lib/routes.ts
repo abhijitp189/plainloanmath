@@ -132,6 +132,27 @@ export const PMI_DROP_OFF_PATH = "/learn/when-does-pmi-drop-off/";
  */
 export const EXTRA_PAYMENTS_PATH = "/learn/extra-mortgage-payments/";
 
+/**
+ * How many years two extra payments a year take off a 30-year loan.
+ *
+ * Added August 22, 2026. The first child of EXTRA_PAYMENTS_PATH above, which
+ * shipped the day before, so the hub-before-children rule is satisfied.
+ *
+ * Long slug, on the same reasoning as PRINCIPAL_VS_INTEREST_PATH: this is an
+ * article competing on a question phrase people type close to verbatim, not a
+ * tool competing on a noun phrase, so the words in the path are the words in
+ * the query. Search Console recorded 12 impressions across six variants of the
+ * family in the 28 days to August 20, 2026 with no page targeting any of them.
+ *
+ * "two" is spelled out where the query usually carries the numeral "2". The
+ * numerals-in-slugs exception amended for TERM_COMPARE_PATH covers numbers that
+ * are part of a product's own name, which this is not, so the general rule
+ * applies. The H1, the title tag and the FAQ all carry the numeral, which is
+ * where matching the query actually earns something.
+ */
+export const TWO_EXTRA_PAYMENTS_PATH =
+  "/learn/how-many-years-two-extra-payments-take-off/";
+
 export type PayoffParams = {
   loanAmount: number;
   ratePct: number;
@@ -183,6 +204,7 @@ export const ROUTES = {
   principalVsInterest: PRINCIPAL_VS_INTEREST_PATH,
   pmiDropOff: PMI_DROP_OFF_PATH,
   extraPayments: EXTRA_PAYMENTS_PATH,
+  twoExtraPayments: TWO_EXTRA_PAYMENTS_PATH,
   methodology: "/methodology/",
   corrections: "/corrections/",
   editorialPolicy: "/editorial-policy/",
@@ -228,6 +250,8 @@ export const ROUTE_REVIEWED: Partial<Record<RouteKey, string>> = {
   // Built August 19, 2026. The rest of the site was not reviewed that day.
   pmiDropOff: "2026-08-19",
   extraPayments: "2026-08-21",
+  // Built August 22, 2026. The rest of the site was not reviewed that day.
+  twoExtraPayments: "2026-08-22",
 };
 
 /**
@@ -380,6 +404,29 @@ export const ROUTE_META: Partial<Record<RouteKey, RouteMeta>> = {
     // index with no subject of its own, and this page has one.
     topics: ["extra-payments", "payoff", "amortization", "interest"],
   },
+  twoExtraPayments: {
+    label: "How many years two extra payments take off",
+    navLabel: "Two extra payments a year",
+    silo: "learn",
+    // TWO tags, and deliberately a strict subset of the hub's four directly
+    // above. A child carrying the parent's identical set scores identically
+    // against every other route and then competes with its own parent for each
+    // related-link slot, which is the one thing a cluster child must not do.
+    //
+    // "extra-payments" is the cluster tag and is not optional. "interest" is
+    // the second because this page's whole subject is interest given up to
+    // timing. Dropping "payoff" and "amortization" is what keeps the parent
+    // ahead: the hub shares both with the payoff calculator, so leaving them
+    // here would have tied this page with the hub on the calculator and split
+    // the cluster's own link equity.
+    //
+    // Scored out on August 22: extra payments hub 4, principal vs interest 4,
+    // when PMI drops off 3, payoff calculator 2, pay off or invest 2. The hub
+    // leads on the key tiebreak, which is the intended shape for a child, and
+    // the two sibling articles fill the middle before the page reaches across
+    // the silo boundary to the calculators.
+    topics: ["extra-payments", "interest"],
+  },
   methodology: {
     label: "How we calculate",
     silo: null,
@@ -471,6 +518,7 @@ export const CALC_STRIPE: Record<
  * an article index is a reverse chronology.
  */
 export const ARTICLE_KEYS = [
+  "twoExtraPayments",
   "extraPayments",
   "pmiDropOff",
   "principalVsInterest",
@@ -494,6 +542,13 @@ export const ARTICLE_STRIPE: Record<
   extraPayments: {
     eyebrow: "Article",
     breadcrumb: "Extra payments compared",
+  },
+  // The breadcrumb leaf is short where the slug is long. A breadcrumb is a
+  // position marker, not a second H1, and the full question does not fit one
+  // at 375px without wrapping to three lines under the stripe.
+  twoExtraPayments: {
+    eyebrow: "Article",
+    breadcrumb: "Two extra payments a year",
   },
 };
 

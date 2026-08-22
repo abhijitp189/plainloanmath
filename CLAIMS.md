@@ -353,3 +353,198 @@ and $453,884.07 of interest, on $340,000 at 6.75% over 30 years.
   Fannie Mae Guide was read. The page limits its claim accordingly.
 - **Whether a featured snippet sits above the organic results.** The August 20
   SERP check was organic-only and cannot see ads, People Also Ask or snippets.
+
+## `/learn/how-many-years-two-extra-payments-take-off/`
+
+First child of the extra-payments cluster hub. Shipped August 22, 2026, the day
+after the hub, so the hub-before-children rule held.
+
+## Verified against primary sources
+
+Read for this page on August 22, 2026 rather than inherited from the hub's
+citation list above, even where the topic is the same one.
+
+| Claim on the page | Source | Verified |
+|---|---|---|
+| The servicer must immediately accept and apply an additional principal payment, a "principal curtailment", **identified by the borrower as such**, on a current mortgage loan | Fannie Mae Servicing Guide C-1.2-01, Processing Additional Principal Payments | 2026-08-22 |
+| On a delinquent mortgage loan, additional principal identified as such must first be applied toward curing the delinquency, and only remaining funds reach principal | Fannie Mae Servicing Guide C-1.2-01 | 2026-08-22 |
+| After a substantial principal curtailment the servicer **may** agree to reduce the P&I payment, re-amortizing the current unpaid balance over the remaining term at the current rate, for a current portfolio loan or a current first lien loan in an MBS pool | Fannie Mae Servicing Guide F-1-09, Processing Mortgage Loan Payments and Payoffs | 2026-08-22 |
+
+**The recast claim is stated as permissive, and the word is load-bearing.**
+F-1-09 says the servicer *may* agree to re-amortize, not that it must, and it
+limits the option to a current portfolio loan or a current first lien loan in an
+MBS pool. Writing "you can ask to have your payment recalculated" would convert
+a discretion into an entitlement, which is the same class of error the hub
+recorded against the unidentified-funds sentence. The page carries "may", the
+scope limit and the note that it is a different transaction from prepaying.
+
+**Two verified citations were CUT, not lost.** The Regulation Z prepayment
+penalty tiers at 12 C.F.R. § 1026.43(g)(2) were read against eCFR on August 22,
+2026 and confirmed: no penalty after the three-year period, 2% cap in the first
+two years, 1% in the third. They were then removed from the page along with the
+scope subsection that carried them, because prepayment penalties and the
+servicing rules for identifying a curtailment are **already sections on the
+hub**, and the cluster rule is that a child links up rather than restating. The
+citation went with the claim. A source listed in a page's reference block that
+the page no longer relies on implies a claim that is not being made, which is
+its own small dishonesty.
+
+**Scope limit stated on the page.** These rules bind servicers of loans Fannie
+Mae owns or guarantees. Same treatment as the hub and the 15-versus-30 page.
+
+## Arithmetic — verified by computation, not by citation
+
+Every figure is computed at build time by `lib/mortgage.ts`. Nothing is typed,
+including the meta description and the H1, which is why the constant block on
+this page sits above the `metadata` export rather than below it.
+
+**Independently recomputed August 22, 2026** in a Python script written from the
+closed-form amortization formula, sharing no code and not the same language as
+the engine. Six scenarios: the baseline, two extra payments landing in month 1,
+spread evenly and landing in month 12, and one and three extra payments landing
+in month 12. **Payoff month agreed exactly in all six; total interest agreed to
+zero delta at double precision.** Baseline reproduces the canonical example:
+$2,205.23 a month and $453,884.07 of interest on $340,000 at 6.75% over 30 years.
+
+| Figure | Value |
+|---|---|
+| Two extra payments a year, both in month 1 of each loan year | 241 months, 9y 11m cut, $175,899.95 saved |
+| The same annual total spread across all twelve months | 243 months, 9y 9m cut, $170,055.40 saved |
+| Two extra payments a year, both in month 12 of each loan year | 246 months, 9y 6m cut, $164,219.43 saved |
+| The spread between the best and worst timing | 5 months, $11,680.52 of interest |
+| Average interest given up per month of delay | $1,061.87 |
+| One extra payment a year, month 12 | 290 months, 5y 10m cut, $103,215.41 saved |
+| Three extra payments a year, month 12 | 216 months, 12y 0m cut, $205,353.83 saved |
+| Interest saved per $1 extra, month 1 / spread / month 12 | $1.99 / $1.91 / $1.86 |
+| Two extra payments a year at 3% against 8.5% | 6y 1m cut against 11y 2m cut |
+| One extra payment a year (the biweekly equivalent) against two | 290 months against 246, a gap of 3y 8m |
+| Spreading the annual total evenly, against the twelve single-month timings | beats 6, ties 2, loses to 4 |
+
+**Re-verified August 22, 2026 after an editing pass.** Every figure rendered
+into the built HTML was extracted and diffed against the independent Python
+implementation a second time, including figures added during the pass. All
+match. The diff found two defects, neither of them a wrong number: a biweekly
+comparison that rounded 3 years 8 months up to "roughly 4 years", which this
+site does not do, and a sentence that rendered as "a third a further 30 ." with
+the unit dropped. Both fixed.
+
+### Stated deliberately, and why
+
+- **The headline answer is a RANGE, and the single figure offered after it is
+  the LEAST favourable of the three readings.** "Two extra payments a year" does
+  not say when, and on this loan the ambiguity is worth five months. Month 12 is
+  quoted as the one number because it is the floor, because the hub already runs
+  its annual rows at `annualExtraMonth: 12` and two pages on one site must not
+  print different figures for the same strategy on the same loan, and because
+  once-a-year money is usually a bonus or a refund whose month the borrower does
+  not choose. Leading with month 1 would have been the site's own competitors'
+  move.
+- **All three readings are modelled and the page says so.** The even-spread
+  reading is one sixth of a payment added to every scheduled payment, which is
+  the same annual cash as the other two.
+- **The twelve-month staircase is the page's reason to exist.** Payoff months
+  run 241, 241, 242, 242, 243, 243, 244, 244, 245, 245, 246, 246: the date slips
+  exactly one month for every two months the money is delayed. No page checked
+  on the SERP for this query publishes the within-year timing effect at all.
+- **The loan-size invariance is exact, not approximate, and the page says
+  "exactly".** Two extra payments means twice the scheduled payment, the payment
+  is proportional to principal, so the schedule is the original scaled by a
+  constant and reaches zero in the same month. Verified across seven sizes from
+  $25,000 to $2,500,000: identical payoff month, interest exactly proportional
+  to within 3.2e-15 of the interest-to-principal ratio. Re-checked at 4%, 6.75%
+  and 9% over both 180 and 360 months.
+- **The invariance is stated WITH its condition.** It holds because the extra is
+  a multiple of the payment. A flat $500 a month is not, the invariance fails for
+  it, and the page says so rather than leaving a reader to over-generalise.
+- **"Month 1" is defined as the first month of the LOAN year, not January.** The
+  engine tests `((month - 1) % 12) + 1`, so the cycle is the loan's own. The hub
+  writes "each December" for the same plan shape, which is true only for a loan
+  whose first payment falls in January; this page is the one whose entire
+  subject is which month the money lands in, so it carries the exact statement.
+- **Three findings are held in build-time constants rather than in prose.**
+  `STAIRCASE_IS_REGULAR`, `SIZE_INVARIANT` and `SPREAD_WIDENS_WITH_RATE` are
+  computed, and each gates the sentence that reports it. A future rate change
+  that broke any of them changes the sentence instead of leaving a false one on
+  the page. Same device as `DECLINE_IS_MONOTONIC` on the hub.
+- **The per-dollar column divides by extra principal read off the schedule.**
+  Same treatment and same reason as the hub: the final year is capped when the
+  balance runs out, so the nominal annual cost overstates what was actually paid.
+- **The biweekly comparison exists because it is the confusion, not because it
+  is a keyword.** Biweekly is 26 half payments, which is 13 full payments, which
+  is ONE extra payment a year and not two. Readers searching this question
+  routinely believe the two are the same. The gap is stated exactly, as 3 years
+  8 months rather than "about 4 years", and the modelling choice behind the
+  biweekly figure is named rather than presented as a fact about the world.
+- **The spreading comparison reports wins, ties AND losses.** An earlier draft
+  said spreading "beats 6 of the twelve single-month timings", which is true and
+  misleading by omission: it also ties 2 and loses to 4. All three are computed
+  and printed, so nobody reads "beats six of twelve" as a recommendation.
+- **Written for a reader with no finance background, and measured rather than
+  assumed.** The prose scores Flesch Reading Ease 67.7 at grade level 8.4. Terms
+  of art were removed from visible copy rather than merely defined: "MBS pool",
+  "portfolio loan", "principal curtailment", "re-amortize", "amortization",
+  "invariance", "monotonically" and "double precision" no longer appear outside
+  the source titles, where they are part of a document's published name. The
+  F-1-09 recast scope survived that rewrite intact: the page still says which
+  loans the rule reaches, in plain words, because dropping the scope to simplify
+  would have turned a limited permission into a general one.
+- **Headings carry the words people type.** An earlier draft headed the opening
+  section "246 months instead of 360", which is accurate and matches nothing
+  anyone searches. The figure moved into the intro, where a computed number
+  belongs, and the headings now carry the question wording. No phrase was
+  repeated beyond where it reads naturally.
+- **The rate table is the page's real deliverable for a reader whose loan is not
+  the example.** Since the balance provably does nothing, rate and term are all
+  that is left, and the table spans 3% to 8.5%.
+- **The blurb on `/learn/` is computed, unlike the three above it.** Four lines
+  of engine in `app/learn/page.tsx`. The older three are left typed rather than
+  rewritten, because each would need its page's full constant block to reproduce
+  and a half-migrated blurb that disagreed with its own page is the defect §10
+  exists to prevent. Noted in a comment for whoever adds the next article.
+- **The hub's downlink sentence carries a computed figure too.**
+  `CHILD_TIMING_SPREAD` in the hub page, for the same reason: a typed "5" would
+  have been the one hand-written number on that page.
+
+### Not stated, and why
+
+- **No recommendation, anywhere.** The page says what two extra payments do to
+  the loan and explicitly says it cannot say whether that is a good use of the
+  money, because an emergency fund, other debt, a retirement match and the
+  alternative return are all outside what this site knows.
+- **No claim about what a servicer does with money NOT identified as a
+  curtailment.** Inherited as an open item from the hub and still open: the
+  Servicing Guide is silent, so the page states the identification requirement
+  and stops.
+- **No investment comparison.** Handed to the pay-off-or-invest calculator.
+- **No recast arithmetic.** The option is named, sourced and scoped, and the
+  numbers are left to a later page in the cluster.
+- **No biweekly row.** It belongs to the hub, which already carries the modelling
+  caveat that makes it honest, and repeating the caveat here would duplicate the
+  hub for no gain.
+- **No prepayment-penalty or curtailment-labelling section.** Both were drafted,
+  sourced and then cut as hub duplication. The page states the assumption that
+  the money reaches principal in the month it is sent, and links up for the rules
+  that govern whether it does.
+- **No twelve-row timing table.** It was drafted and cut: the chart already
+  carries every month, with bar length as interest given up and the row label as
+  the payoff time, and the table's only unique column was the same fact read from
+  the other end. The endpoints appear in the prose and the FAQ.
+- **No count of what competing pages say.** The hub counted its SERP on August
+  20 and the claim on this page is only that competitors answer with one number
+  and do not publish the within-year timing effect. A precise count for this
+  query's SERP was not taken, so no precise count is printed.
+
+## Still unverified — do not state these on any page yet
+
+- **What a servicer does with money not identified as a curtailment.** Unchanged
+  from the hub. Not stated on the page in any form.
+- **Whether Freddie Mac or portfolio servicers apply the same curtailment and
+  recast rules.** Only the Fannie Mae Guide was read. The page limits its claim.
+- **Whether the staircase pattern holds for every rate and term.** It was checked
+  at 6.75% over 360 months, where it is exactly regular, and the page states the
+  rule only for the loan on the page. The constant that gates the sentence is
+  computed from that loan, so a rate change would withdraw the claim rather than
+  generalise it.
+- **The SERP for this specific query family.** Search Console impression data
+  drove the page selection; no organic SERP check was run for this page, which is
+  why no competitor count appears in the copy.

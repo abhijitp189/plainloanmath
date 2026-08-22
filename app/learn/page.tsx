@@ -10,6 +10,12 @@ import {
   ROUTE_REVIEWED,
   type ArticleKey,
 } from "@/lib/routes";
+import {
+  amortizePlan,
+  formatUSD,
+  formatDuration,
+  NO_PLAN,
+} from "@/lib/mortgage";
 
 export const metadata: Metadata = {
   title: "Learn",
@@ -38,7 +44,50 @@ const REVIEWED = ROUTE_REVIEWED.learn ?? LAST_REVIEWED;
 // been a 404 the moment the header linked to it.
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────────────────────
+// The figures in the twoExtraPayments blurb are COMPUTED, not typed.
+//
+// The three blurbs below it type theirs, which is how this file has always
+// worked, and they are not being rewritten here: each would need its page's
+// full constant block to reproduce, and a blurb that silently disagreed with
+// its own page is exactly what project brief §10 is trying to prevent. This one
+// needs four lines of engine to be right, so it gets them, and the next article
+// added should follow this half of the file rather than the older half.
+//
+// Same canonical loan as everywhere else: $340,000 at 6.75% over 30 years.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const B_LOAN = 340_000;
+const B_RATE = 6.75;
+const B_TERM = 360;
+
+const B_BASE = amortizePlan(B_LOAN, B_RATE, B_TERM, NO_PLAN);
+const B_PAY = B_BASE.monthlyPayment;
+
+/** Both extra payments at the start of each loan year, and at the end. The two
+ *  ends of the range the child page is built around. */
+const B_EARLY = amortizePlan(B_LOAN, B_RATE, B_TERM, {
+  ...NO_PLAN,
+  annualExtra: 2 * B_PAY,
+  annualExtraMonth: 1,
+});
+const B_LATE = amortizePlan(B_LOAN, B_RATE, B_TERM, {
+  ...NO_PLAN,
+  annualExtra: 2 * B_PAY,
+  annualExtraMonth: 12,
+});
+
 const BLURB: Record<ArticleKey, { title: string; blurb: string }> = {
+  twoExtraPayments: {
+    title: "How many years do 2 extra mortgage payments take off?",
+    blurb: `Every page answering this gives one number. On ${formatUSD(
+      B_LOAN,
+    )} at ${B_RATE}% the honest answer is a range: ${formatDuration(
+      B_BASE.months - B_LATE.months,
+    )} if the money lands at the end of each loan year, ${formatDuration(
+      B_BASE.months - B_EARLY.months,
+    )} if it lands at the start. Plus the reason your balance makes no difference at all.`,
+  },
   extraPayments: {
     title: "Extra mortgage payments: what each strategy is actually worth",
     blurb:
