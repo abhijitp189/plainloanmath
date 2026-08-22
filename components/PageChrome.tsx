@@ -114,14 +114,27 @@ export function SectionHead({
 }) {
   return (
     <div className="mb-7 border-b-rule border-line-strong pb-4">
-      <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-bold leading-[1.15] tracking-[-.015em] text-ink">
-        {title}
-      </h2>
-      {/* 62ch on the intro only. A deck that runs the full 1200px is a
-          different defect from the one above, not a fix for it. */}
-      <p className="mt-2.5 max-w-[62ch] text-[1rem] leading-relaxed text-ink-2">
-        {intro}
-      </p>
+      {/* HEADING AND INTRO SHARE ONE MEASURE. Revised August 22, 2026.
+
+          The 62ch cap used to sit on the intro alone, which left the heading
+          free to run the full 1136px of the container while the deck stopped
+          at roughly 65% of it. On a short intro nothing showed. On a four-line
+          intro the two edges stepped badly and the block read as broken rather
+          than as a heading with a standfirst under it. Reported from a
+          screenshot of the two-extra-payments article, where several intros
+          run long.
+
+          `ch` here resolves against this wrapper's inherited 16px, which is
+          the intro's own font size, so the intro's line breaks are unchanged
+          and only over-long headings are pulled in. The 2px rule below stays
+          outside the cap and still spans the full width, which is what closes
+          the block and answers §3.4. */}
+      <div className="max-w-[62ch]">
+        <h2 className="text-[clamp(1.5rem,3.6vw,2rem)] font-bold leading-[1.15] tracking-[-.015em] text-ink">
+          {title}
+        </h2>
+        <p className="mt-2.5 text-[1rem] leading-relaxed text-ink-2">{intro}</p>
+      </div>
     </div>
   );
 }
